@@ -174,11 +174,11 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 ### Phase 3: 楽曲機能 (Week 5-7)
 
 #### Week 5: Hono + Spotify API統合
-- [ ] HonoでSpotify Web APIクライアント実装
-- [ ] 楽曲検索APIエンドポイント
-- [ ] 楽曲情報取得・Supabaseキャッシュ
-- [ ] Spotify OAuth認証フロー
-- [ ] プレビュー再生機能
+- [x] HonoでSpotify Web APIクライアント実装
+- [x] 楽曲検索APIエンドポイント
+- [x] 楽曲情報取得・Supabaseキャッシュ
+- [x] Spotify OAuth認証フロー
+- [x] プレビュー再生機能
 
 #### Week 6: Hono楽曲投稿機能
 - [ ] カテゴリ管理APIエンドポイント

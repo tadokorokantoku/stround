@@ -3,6 +3,7 @@ import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { prettyJSON } from 'hono/pretty-json';
 import { authMiddleware } from './middleware/auth';
+import authRouter from './routes/auth';
 import postsRouter from './routes/posts';
 import musicRouter from './routes/music';
 import likesRouter from './routes/likes';
@@ -13,6 +14,8 @@ export interface Env {
   SUPABASE_SERVICE_ROLE_KEY: string;
   SPOTIFY_CLIENT_ID: string;
   SPOTIFY_CLIENT_SECRET: string;
+  API_BASE_URL: string;
+  CLIENT_URL: string;
 }
 
 const app = new Hono<{ Bindings: Env }>();
@@ -37,6 +40,7 @@ app.get('/health', (c) => {
 app.use('/api/*', authMiddleware);
 
 // API routes
+app.route('/api/auth', authRouter);
 app.route('/api/posts', postsRouter);
 app.route('/api/music', musicRouter);
 app.route('/api/likes', likesRouter);
