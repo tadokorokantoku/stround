@@ -17,21 +17,22 @@ React Nativeを使用した音楽SNSモバイルアプリケーションの開�
 
 ### バックエンド
 - **Supabase** (BaaS - Database, Auth, Storage, Realtime)
-- **TypeScript**
+- **Hono** (TypeScript Web Framework)
 - **Supabase Client** (データベースクライアント)
 - **Supabase Auth** (認証)
 - **Supabase Storage** (ファイルストレージ)
 - **Supabase Realtime** (リアルタイム機能)
+- **Cloudflare Workers** / **Vercel Edge** (Honoデプロイ先)
 
 ### 外部サービス
 - **Spotify Web API** (楽曲検索・情報取得)
 - **Supabase Storage** (画像・ファイルストレージ)
-- **Supabase Functions** (サーバーレス関数)
 - **OneSignal** / **Expo Notifications** (プッシュ通知)
 
 ### 開発・デプロイ
 - **Expo** (開発・ビルド)
-- **Supabase** (バックエンドホスティング)
+- **Supabase** (データベース・認証ホスティング)
+- **Cloudflare Workers** / **Vercel** (Hono APIホスティング)
 - **GitHub Actions** (CI/CD)
 - **Expo EAS** (アプリビルド・デプロイ)
 
@@ -141,22 +142,26 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 - [ ] 必要なライブラリインストール
 - [ ] Git repository初期化
 
-#### Week 2: Supabase基盤
+#### Week 2: Supabase & Hono基盤
 - [ ] Supabaseプロジェクト作成
 - [ ] データベーススキーマ設計・作成
 - [ ] Row Level Security (RLS) ポリシー設定
-- [ ] Supabase Client設定
+- [ ] Hono APIプロジェクト作成
+- [ ] Hono + Cloudflare Workers / Vercel設定
+- [ ] Supabase Client設定（Hono側）
+- [ ] CORS・ミドルウェア設定
 - [ ] 認証設定（Email/Social Login）
 - [ ] Storage バケット作成
 
 ### Phase 2: 認証・ユーザー管理 (Week 3-4)
 
-#### Week 3: Supabase認証システム
-- [ ] Supabase Auth設定
-- [ ] ユーザー登録フロー実装
-- [ ] ログイン/ログアウト実装
-- [ ] プロフィール作成・更新
-- [ ] セッション管理
+#### Week 3: Hono API認証システム
+- [ ] Hono認証ミドルウェア実装
+- [ ] Supabase AuthとのJWT連携
+- [ ] ユーザー登録APIエンドポイント
+- [ ] ログイン/ログアウトAPI
+- [ ] プロフィール管理API
+- [ ] セッション検証ロジック
 - [ ] RLSポリシー設定
 
 #### Week 4: ユーザー管理UI
@@ -168,15 +173,17 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 
 ### Phase 3: 楽曲機能 (Week 5-7)
 
-#### Week 5: Spotify API統合
-- [ ] Spotify Web API設定
-- [ ] 楽曲検索API実装
-- [ ] 楽曲情報取得・キャッシュ
+#### Week 5: Hono + Spotify API統合
+- [ ] HonoでSpotify Web APIクライアント実装
+- [ ] 楽曲検索APIエンドポイント
+- [ ] 楽曲情報取得・Supabaseキャッシュ
+- [ ] Spotify OAuth認証フロー
 - [ ] プレビュー再生機能
 
-#### Week 6: 楽曲投稿機能
-- [ ] カテゴリ管理API
-- [ ] 楽曲投稿API実装
+#### Week 6: Hono楽曲投稿機能
+- [ ] カテゴリ管理APIエンドポイント
+- [ ] 楽曲投稿APIエンドポイント
+- [ ] 楽曲一覧取得API
 - [ ] 楽曲追加画面UI
 - [ ] カテゴリ選択UI
 - [ ] 楽曲検索UI
@@ -189,36 +196,45 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 
 ### Phase 4: ソーシャル機能 (Week 8-10)
 
-#### Week 8: フォロー機能
-- [ ] フォロー/アンフォローAPI
-- [ ] ユーザー検索API
-- [ ] フォロー関係表示
-- [ ] ユーザー検索画面
+#### Week 8: Honoフォロー機能
+- [ ] フォロー/アンフォローAPIエンドポイント
+- [ ] ユーザー検索APIエンドポイント
+- [ ] フォローリスト取得API
+- [ ] フォロー関係表示UI
+- [ ] ユーザー検索画面UI
 
-#### Week 9: タイムライン
-- [ ] タイムラインAPI実装
-- [ ] ホーム画面実装
-- [ ] 投稿一覧表示
-- [ ] 無限スクロール
+#### Week 9: Honoタイムライン
+- [ ] タイムラインAPIエンドポイント
+- [ ] フォローユーザー投稿取得ロジック
+- [ ] ページネーション実装
+- [ ] ホーム画面UI実装
+- [ ] 投稿一覧表示UI
+- [ ] 無限スクロールUI
 
-#### Week 10: いいね機能
-- [ ] いいねAPI実装
+#### Week 10: Honoいいね機能
+- [ ] いいねAPIエンドポイント
+- [ ] いいね状態取得API
+- [ ] いいね数カウントAPI
 - [ ] いいねボタンUI
-- [ ] いいね数表示
-- [ ] いいねしたユーザー一覧
+- [ ] いいね数表示UI
+- [ ] いいねしたユーザー一覧UI
 
 ### Phase 5: コメント・通知 (Week 11-12)
 
-#### Week 11: コメント機能
-- [ ] コメントAPI実装
-- [ ] 返信（ネスト）機能
+#### Week 11: Honoコメント機能
+- [ ] コメントCRUD APIエンドポイント
+- [ ] 返信（ネスト）機能API
+- [ ] コメントツリー取得ロジック
 - [ ] コメント表示UI
 - [ ] コメント投稿UI
+- [ ] 返信UI
 
-#### Week 12: 通知システム
-- [ ] 通知テーブル・関数実装
+#### Week 12: Hono通知システム
+- [ ] 通知作成APIエンドポイント
+- [ ] 通知一覧取得API
+- [ ] 通知既読API
 - [ ] Supabase Realtimeでリアルタイム通知
-- [ ] 通知画面実装
+- [ ] 通知画面UI実装
 - [ ] プッシュ通知設定（Expo Notifications）
 
 ### Phase 6: 追加機能・最適化 (Week 13-14)
@@ -273,14 +289,37 @@ src/
 └── constants/          # 定数
 ```
 
-### Supabase関連
+### バックエンド構成
 
+#### Hono API (TypeScript)
+```
+api/
+├── src/
+│   ├── routes/           # API ルート定義
+│   │   ├── auth.ts      # 認証関連API
+│   │   ├── users.ts     # ユーザー管理API
+│   │   ├── tracks.ts    # 楽曲関連API
+│   │   ├── comments.ts  # コメント関連API
+│   │   └── search.ts    # 検索API
+│   ├── middleware/      # ミドルウェア
+│   │   ├── auth.ts      # 認証ミドルウェア
+│   │   ├── cors.ts      # CORS設定
+│   │   └── logger.ts    # ログ出力
+│   ├── services/        # ビジネスロジック
+│   │   ├── spotify.ts   # Spotify API連携
+│   │   ├── supabase.ts  # Supabase操作
+│   │   └── notifications.ts # 通知処理
+│   ├── types/           # TypeScript型定義
+│   └── utils/           # ユーティリティ関数
+├── package.json
+└── wrangler.toml       # Cloudflare Workers設定
+```
+
+#### Supabase関連
 ```
 supabase/
 ├── migrations/         # データベースマイグレーション
-├── functions/          # Supabase Edge Functions
-│   ├── spotify-search/ # Spotify API連携関数
-│   └── notifications/  # 通知処理関数
+├── seed.sql           # 初期データ
 └── config.toml        # Supabase設定
 
 src/lib/
