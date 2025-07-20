@@ -16,6 +16,8 @@ export interface Env {
   SUPABASE_ANON_KEY: string;
   SPOTIFY_CLIENT_ID: string;
   SPOTIFY_CLIENT_SECRET: string;
+  API_BASE_URL: string;
+  CLIENT_URL: string;
 }
 
 const app = new Hono<{ Bindings: Env }>();
@@ -48,6 +50,8 @@ app.use('/api/music/*', authMiddleware);
 app.use('/api/likes/*', authMiddleware);
 app.use('/api/comments/*', authMiddleware);
 
+// API routes
+app.route('/api/auth', authRouter);
 app.route('/api/posts', postsRouter);
 app.route('/api/music', musicRouter);
 app.route('/api/likes', likesRouter);

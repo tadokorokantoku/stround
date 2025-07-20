@@ -11,7 +11,15 @@ compatibility_date = "2024-01-01"
 # SPOTIFY_CLIENT_SECRET
 
 [env.production]
-vars = { ENVIRONMENT = "production" }
+vars = { 
+  ENVIRONMENT = "production",
+  API_BASE_URL = "https://stround-api.your-domain.workers.dev",
+  CLIENT_URL = "https://your-app-domain.com"
+}
 
-[env.development]  
-vars = { ENVIRONMENT = "development" }
+[env.development]
+vars = { 
+  ENVIRONMENT = "development",
+  API_BASE_URL = "http://localhost:8787",
+  CLIENT_URL = "http://localhost:8081"
+}
