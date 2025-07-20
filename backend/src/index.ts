@@ -4,6 +4,7 @@ import { logger } from 'hono/logger';
 import { prettyJSON } from 'hono/pretty-json';
 import { authMiddleware } from './middleware/auth';
 import authRouter from './routes/auth';
+import profilesRouter from './routes/profiles';
 import postsRouter from './routes/posts';
 import musicRouter from './routes/music';
 import likesRouter from './routes/likes';
@@ -12,6 +13,7 @@ import commentsRouter from './routes/comments';
 export interface Env {
   SUPABASE_URL: string;
   SUPABASE_SERVICE_ROLE_KEY: string;
+  SUPABASE_ANON_KEY: string;
   SPOTIFY_CLIENT_ID: string;
   SPOTIFY_CLIENT_SECRET: string;
   API_BASE_URL: string;
@@ -36,8 +38,17 @@ app.get('/health', (c) => {
   return c.json({ status: 'healthy', timestamp: new Date().toISOString() });
 });
 
+// Public routes (no auth required)
+app.route('/auth', authRouter);
+
+// API routes with selective auth middleware
+app.route('/api/profiles', profilesRouter);
+
 // Protected routes
-app.use('/api/*', authMiddleware);
+app.use('/api/posts/*', authMiddleware);
+app.use('/api/music/*', authMiddleware);
+app.use('/api/likes/*', authMiddleware);
+app.use('/api/comments/*', authMiddleware);
 
 // API routes
 app.route('/api/auth', authRouter);

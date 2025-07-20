@@ -156,20 +156,20 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 ### Phase 2: 認証・ユーザー管理 (Week 3-4)
 
 #### Week 3: Hono API認証システム
-- [ ] Hono認証ミドルウェア実装
-- [ ] Supabase AuthとのJWT連携
-- [ ] ユーザー登録APIエンドポイント
-- [ ] ログイン/ログアウトAPI
-- [ ] プロフィール管理API
-- [ ] セッション検証ロジック
-- [ ] RLSポリシー設定
+- [x] Hono認証ミドルウェア実装
+- [x] Supabase AuthとのJWT連携
+- [x] ユーザー登録APIエンドポイント
+- [x] ログイン/ログアウトAPI
+- [x] プロフィール管理API
+- [x] セッション検証ロジック
+- [x] RLSポリシー設定
 
 #### Week 4: ユーザー管理UI
-- [ ] ログイン画面実装
-- [ ] ユーザー登録画面実装
-- [ ] 認証状態管理（Zustand/Redux）
-- [ ] ナビゲーション設定（認証前/後）
-- [ ] プロフィール編集画面
+- [x] ログイン画面実装
+- [x] ユーザー登録画面実装
+- [x] 認証状態管理（Zustand/Redux）
+- [x] ナビゲーション設定（認証前/後）
+- [x] プロフィール編集画面
 
 ### Phase 3: 楽曲機能 (Week 5-7)
 
