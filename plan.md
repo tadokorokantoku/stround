@@ -165,11 +165,11 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 - [x] RLSポリシー設定
 
 #### Week 4: ユーザー管理UI
-- [ ] ログイン画面実装
-- [ ] ユーザー登録画面実装
-- [ ] 認証状態管理（Zustand/Redux）
-- [ ] ナビゲーション設定（認証前/後）
-- [ ] プロフィール編集画面
+- [x] ログイン画面実装
+- [x] ユーザー登録画面実装
+- [x] 認証状態管理（Zustand/Redux）
+- [x] ナビゲーション設定（認証前/後）
+- [x] プロフィール編集画面
 
 ### Phase 3: 楽曲機能 (Week 5-7)
 
