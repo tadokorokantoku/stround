@@ -7,16 +7,19 @@ import {
   Avatar, 
   Divider, 
   Chip,
-  List,
-  Surface,
-  IconButton,
   ActivityIndicator 
 } from 'react-native-paper';
 import { useAuthStore } from '../../stores/authStore';
 import { supabase } from '../../lib/supabase';
+import { API_BASE_URL } from '../../constants';
 import MusicPlayer from '../../components/music/MusicPlayer';
 import TrackItem from '../../components/music/TrackItem';
 import { useMusicPlayer } from '../../hooks/useMusicPlayer';
+
+interface FollowStats {
+  followingCount: number;
+  followersCount: number;
+}
 
 interface Category {
   id: string;
@@ -53,14 +56,13 @@ interface Profile {
   display_name: string | null;
   bio: string | null;
   profile_image_url: string | null;
-  followers: { count: number }[];
-  following: { count: number }[];
 }
 
 export default function ProfileScreen() {
   const { user, signOut } = useAuthStore();
   const { currentTrack, isPlayerVisible, playTrack, closePlayer } = useMusicPlayer();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [followStats, setFollowStats] = useState<FollowStats>({ followingCount: 0, followersCount: 0 });
   const [categories, setCategories] = useState<Category[]>([]);
   const [userTracks, setUserTracks] = useState<UserTrack[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
@@ -68,8 +70,11 @@ export default function ProfileScreen() {
   const [tracksLoading, setTracksLoading] = useState(false);
 
   useEffect(() => {
-    fetchProfile();
-    fetchCategories();
+    if (user) {
+      fetchProfile();
+      fetchFollowStats();
+      fetchCategories();
+    }
   }, [user]);
 
   useEffect(() => {
@@ -80,23 +85,39 @@ export default function ProfileScreen() {
 
   const fetchProfile = async () => {
     try {
-      // TODO: APIエンドポイントを使用してプロフィールを取得
-      // 現在はuser情報を直接使用
       if (user) {
-        const mockProfile: Profile = {
+        const profile: Profile = {
           id: user.id,
           username: user.user_metadata?.username || 'user',
           display_name: user.user_metadata?.display_name || null,
           bio: user.user_metadata?.bio || null,
           profile_image_url: null,
-          followers: [{ count: 0 }],
-          following: [{ count: 0 }],
         };
-        setProfile(mockProfile);
+        setProfile(profile);
       }
     } catch (error) {
       console.error('プロフィール取得エラー:', error);
       Alert.alert('エラー', 'プロフィールの取得に失敗しました');
+    }
+  };
+
+  const fetchFollowStats = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/follows/status/${user?.id}`, {
+        headers: {
+          'Authorization': `Bearer ${user?.access_token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFollowStats({
+          followingCount: data.followingCount,
+          followersCount: data.followersCount,
+        });
+      }
+    } catch (error) {
+      console.error('フォロー統計の取得に失敗:', error);
     } finally {
       setLoading(false);
     }
@@ -106,8 +127,6 @@ export default function ProfileScreen() {
     if (!user) return;
     
     try {
-      // TODO: userTracks APIを使用してカテゴリを取得
-      // 現在はSupabaseクライアントを直接使用
       const { data, error } = await supabase
         .from('categories')
         .select('*')
@@ -137,8 +156,6 @@ export default function ProfileScreen() {
     
     setTracksLoading(true);
     try {
-      // TODO: userTracks APIを使用
-      // 現在はSupabaseクライアントを直接使用
       const { data, error } = await supabase
         .from('user_tracks')
         .select(`
@@ -196,16 +213,17 @@ export default function ProfileScreen() {
             {profile?.username && profile?.display_name && (
               <Text style={styles.usernameSmall}>@{profile.username}</Text>
             )}
+            <Text style={styles.email}>{user?.email}</Text>
             {profile?.bio && (
               <Text style={styles.bio}>{profile.bio}</Text>
             )}
             <View style={styles.stats}>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{profile?.followers[0]?.count || 0}</Text>
+                <Text style={styles.statNumber}>{followStats.followersCount}</Text>
                 <Text style={styles.statLabel}>フォロワー</Text>
               </View>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{profile?.following[0]?.count || 0}</Text>
+                <Text style={styles.statNumber}>{followStats.followingCount}</Text>
                 <Text style={styles.statLabel}>フォロー中</Text>
               </View>
             </View>
@@ -360,7 +378,7 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#6200ee',
   },
   statLabel: {
     fontSize: 14,
@@ -411,5 +429,10 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     marginTop: 8,
+  },
+  email: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 8,
   },
 });
