@@ -72,6 +72,49 @@ likesRouter.delete('/:postId', async (c) => {
   }
 });
 
+// Get like status for current user
+likesRouter.get('/status/:postId', async (c) => {
+  const user = c.get('user');
+  const postId = c.req.param('postId');
+  const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+
+  try {
+    const { data: like } = await supabase
+      .from('likes')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('post_id', postId)
+      .single();
+
+    return c.json({ isLiked: !!like });
+  } catch (error) {
+    console.error('Get like status error:', error);
+    return c.json({ isLiked: false });
+  }
+});
+
+// Get like count for post
+likesRouter.get('/count/:postId', async (c) => {
+  const postId = c.req.param('postId');
+  const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+
+  try {
+    const { count, error } = await supabase
+      .from('likes')
+      .select('*', { count: 'exact', head: true })
+      .eq('post_id', postId);
+
+    if (error) {
+      throw error;
+    }
+
+    return c.json({ count: count || 0 });
+  } catch (error) {
+    console.error('Get like count error:', error);
+    return c.json({ error: 'Failed to get like count' }, 500);
+  }
+});
+
 likesRouter.get('/post/:postId', async (c) => {
   const postId = c.req.param('postId');
   const page = parseInt(c.req.query('page') || '1');

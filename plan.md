@@ -212,12 +212,12 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 - [ ] 無限スクロールUI
 
 #### Week 10: Honoいいね機能
-- [ ] いいねAPIエンドポイント
-- [ ] いいね状態取得API
-- [ ] いいね数カウントAPI
-- [ ] いいねボタンUI
-- [ ] いいね数表示UI
-- [ ] いいねしたユーザー一覧UI
+- [x] いいねAPIエンドポイント
+- [x] いいね状態取得API
+- [x] いいね数カウントAPI
+- [x] いいねボタンUI
+- [x] いいね数表示UI
+- [x] いいねしたユーザー一覧UI
 
 ### Phase 5: コメント・通知 (Week 11-12)
 
