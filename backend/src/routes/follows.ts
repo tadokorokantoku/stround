@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { supabaseClient } from '../lib/supabase';
 import type { Env } from '../index';
+import { createNotification } from './notifications';
 
 interface AuthContext {
   user: {
@@ -77,6 +78,14 @@ followsRouter.post('/:followingId', async (c) => {
       console.error('Follow error:', followError);
       return c.json({ error: 'フォローに失敗しました' }, 500);
     }
+
+    // Create follow notification
+    await createNotification(
+      followingId,
+      'follow',
+      user.id,
+      `${user.username}があなたをフォローしました`
+    );
 
     return c.json({ follow, message: 'フォローしました' }, 201);
   } catch (error) {

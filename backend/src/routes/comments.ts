@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { createSupabaseClient } from '../lib/supabase';
 import type { Env } from '../index';
+import { createNotification } from './notifications';
 
 interface CommentWithProfile {
   id: string;
@@ -118,10 +119,10 @@ commentsRouter.post('/', async (c) => {
   const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
 
   try {
-    // Check if user track exists
+    // Check if user track exists and get track owner
     const { data: userTrack } = await supabase
       .from('user_tracks')
-      .select('id')
+      .select('id, user_id')
       .eq('id', user_track_id)
       .single();
 
@@ -130,10 +131,11 @@ commentsRouter.post('/', async (c) => {
     }
 
     // If this is a reply, check if parent comment exists and belongs to the same user track
+    let parentCommentOwner = null;
     if (parent_comment_id) {
       const { data: parentComment } = await supabase
         .from('comments')
-        .select('id, user_track_id')
+        .select('id, user_track_id, user_id')
         .eq('id', parent_comment_id)
         .single();
 
@@ -144,6 +146,8 @@ commentsRouter.post('/', async (c) => {
       if (parentComment.user_track_id !== user_track_id) {
         return c.json({ error: 'Parent comment does not belong to the same user track' }, 400);
       }
+
+      parentCommentOwner = parentComment.user_id;
     }
 
     const { data: comment, error } = await supabase
@@ -167,6 +171,25 @@ commentsRouter.post('/', async (c) => {
 
     if (error) {
       throw error;
+    }
+
+    // Create notifications
+    if (parent_comment_id && parentCommentOwner && parentCommentOwner !== user.id) {
+      // Reply notification - notify parent comment author
+      await createNotification(
+        parentCommentOwner,
+        'reply',
+        comment.id,
+        `${user.username}があなたのコメントに返信しました`
+      );
+    } else if (!parent_comment_id && userTrack.user_id !== user.id) {
+      // New comment notification - notify track owner
+      await createNotification(
+        userTrack.user_id,
+        'comment',
+        comment.id,
+        `${user.username}があなたの楽曲にコメントしました`
+      );
     }
 
     return c.json({ comment }, 201);

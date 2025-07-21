@@ -13,6 +13,7 @@ import categoriesRouter from './routes/categories';
 import userTracksRouter from './routes/userTracks';
 import followsRouter from './routes/follows';
 import timelineRouter from './routes/timeline';
+import { notifications } from './routes/notifications';
 
 export interface Env {
   SUPABASE_URL: string;
@@ -56,6 +57,7 @@ app.use('/api/comments/*', authMiddleware);
 app.use('/api/user-tracks/*', authMiddleware);
 app.use('/api/follows/*', authMiddleware);
 app.use('/api/timeline/*', authMiddleware);
+app.use('/api/notifications/*', authMiddleware);
 
 // Public routes for categories (read-only)
 app.route('/api/categories', categoriesRouter);
@@ -69,5 +71,6 @@ app.route('/api/comments', commentsRouter);
 app.route('/api/user-tracks', userTracksRouter);
 app.route('/api/follows', followsRouter);
 app.route('/api/timeline', timelineRouter);
+app.route('/api/notifications', notifications);
 
 export default app;
