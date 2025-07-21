@@ -230,12 +230,12 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 - [x] 返信UI
 
 #### Week 12: Hono通知システム
-- [ ] 通知作成APIエンドポイント
-- [ ] 通知一覧取得API
-- [ ] 通知既読API
-- [ ] Supabase Realtimeでリアルタイム通知
-- [ ] 通知画面UI実装
-- [ ] プッシュ通知設定（Expo Notifications）
+- [x] 通知作成APIエンドポイント
+- [x] 通知一覧取得API
+- [x] 通知既読API
+- [x] Supabase Realtimeでリアルタイム通知
+- [x] 通知画面UI実装
+- [x] プッシュ通知設定（Expo Notifications）
 
 ### Phase 6: 追加機能・最適化 (Week 13-14)
 

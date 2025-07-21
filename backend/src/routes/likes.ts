@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { createSupabaseClient } from '../lib/supabase';
 import type { Env } from '../index';
+import { createNotification } from './notifications';
 
 const likesRouter = new Hono<{ Bindings: Env }>();
 
@@ -16,10 +17,10 @@ likesRouter.post('/', async (c) => {
   const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
 
   try {
-    // Check if user track exists
+    // Check if user track exists and get track owner
     const { data: userTrack } = await supabase
       .from('user_tracks')
-      .select('id')
+      .select('id, user_id')
       .eq('id', user_track_id)
       .single();
 
@@ -51,6 +52,16 @@ likesRouter.post('/', async (c) => {
 
     if (error) {
       throw error;
+    }
+
+    // Create notification if the liker is not the track owner
+    if (userTrack.user_id !== user.id) {
+      await createNotification(
+        userTrack.user_id,
+        'like',
+        user_track_id,
+        `${user.username}があなたの楽曲にいいねしました`
+      );
     }
 
     return c.json({ like }, 201);
