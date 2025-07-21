@@ -197,11 +197,11 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 ### Phase 4: ソーシャル機能 (Week 8-10)
 
 #### Week 8: Honoフォロー機能
-- [ ] フォロー/アンフォローAPIエンドポイント
-- [ ] ユーザー検索APIエンドポイント
-- [ ] フォローリスト取得API
-- [ ] フォロー関係表示UI
-- [ ] ユーザー検索画面UI
+- [x] フォロー/アンフォローAPIエンドポイント
+- [x] ユーザー検索APIエンドポイント
+- [x] フォローリスト取得API
+- [x] フォロー関係表示UI
+- [x] ユーザー検索画面UI
 
 #### Week 9: Honoタイムライン
 - [ ] タイムラインAPIエンドポイント

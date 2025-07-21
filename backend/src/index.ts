@@ -11,6 +11,7 @@ import likesRouter from './routes/likes';
 import commentsRouter from './routes/comments';
 import categoriesRouter from './routes/categories';
 import userTracksRouter from './routes/userTracks';
+import followsRouter from './routes/follows';
 
 export interface Env {
   SUPABASE_URL: string;
@@ -52,6 +53,7 @@ app.use('/api/music/*', authMiddleware);
 app.use('/api/likes/*', authMiddleware);
 app.use('/api/comments/*', authMiddleware);
 app.use('/api/user-tracks/*', authMiddleware);
+app.use('/api/follows/*', authMiddleware);
 
 // Public routes for categories (read-only)
 app.route('/api/categories', categoriesRouter);
@@ -63,5 +65,6 @@ app.route('/api/music', musicRouter);
 app.route('/api/likes', likesRouter);
 app.route('/api/comments', commentsRouter);
 app.route('/api/user-tracks', userTracksRouter);
+app.route('/api/follows', followsRouter);
 
 export default app;
