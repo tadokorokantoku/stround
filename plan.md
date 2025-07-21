@@ -189,10 +189,10 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 - [x] 楽曲検索UI
 
 #### Week 7: プロフィール画面
-- [ ] マイページ実装
-- [ ] 他人のプロフィール画面
-- [ ] カテゴリ別楽曲表示
-- [ ] 楽曲再生UI
+- [x] マイページ実装
+- [x] 他人のプロフィール画面
+- [x] カテゴリ別楽曲表示
+- [x] 楽曲再生UI
 
 ### Phase 4: ソーシャル機能 (Week 8-10)
 
