@@ -1,56 +1,61 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Text, Button } from 'react-native-paper';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { Appbar, Segment } from 'react-native-paper';
 import { useAuthStore } from '../../stores/authStore';
+import useTimeline from '../../hooks/useTimeline';
+import TimelineList from '../../components/timeline/TimelineList';
 
 export default function HomeScreen() {
-  const { user, signOut } = useAuthStore();
+  const { user } = useAuthStore();
+  const [timelineType, setTimelineType] = React.useState('personal');
+  
+  const personalTimeline = useTimeline();
+  const publicTimeline = useTimeline({ isPublic: true });
+
+  const currentTimeline = timelineType === 'personal' ? personalTimeline : publicTimeline;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>ホーム</Text>
-      <Text style={styles.welcome}>
-        ようこそ、{user?.user_metadata?.username || user?.email}さん！
-      </Text>
-      <Text style={styles.description}>
-        ここにタイムラインが表示されます
-      </Text>
-      <Button 
-        mode="outlined" 
-        onPress={signOut}
-        style={styles.button}
-      >
-        ログアウト
-      </Button>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Appbar.Header>
+        <Appbar.Content title="タイムライン" />
+      </Appbar.Header>
+      
+      <View style={styles.segmentContainer}>
+        <Segment
+          value={timelineType}
+          onValueChange={setTimelineType}
+          style={styles.segment}
+        >
+          <Segment.Item value="personal" label="フォロー中" />
+          <Segment.Item value="public" label="みんな" />
+        </Segment>
+      </View>
+
+      <TimelineList
+        posts={currentTimeline.posts}
+        loading={currentTimeline.loading}
+        refreshing={currentTimeline.refreshing}
+        hasMore={currentTimeline.hasMore}
+        currentUserId={user?.id}
+        onRefresh={currentTimeline.refresh}
+        onLoadMore={currentTimeline.loadMore}
+        onPostUpdate={currentTimeline.invalidateTimeline}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
     backgroundColor: '#fff',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
+  segmentContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#fff',
   },
-  welcome: {
-    fontSize: 18,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  description: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 32,
-  },
-  button: {
-    marginTop: 16,
+  segment: {
+    backgroundColor: '#f5f5f5',
   },
 });
