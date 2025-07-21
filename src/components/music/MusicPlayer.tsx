@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { Card, IconButton, Text, ProgressBar } from 'react-native-paper';
-import { Audio } from 'expo-av';
+import { useAudioPlayer } from 'expo-audio';
 
 interface Track {
   id: string;
@@ -20,23 +20,18 @@ interface MusicPlayerProps {
 }
 
 export default function MusicPlayer({ track, onClose }: MusicPlayerProps) {
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [player, setPlayer] = useState<any>(null);
 
   useEffect(() => {
     if (track) {
       loadAudio();
     }
     return () => {
-      if (sound) {
-        sound.unloadAsync();
-      }
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+      if (player) {
+        player.remove();
       }
     };
   }, [track]);
@@ -49,50 +44,20 @@ export default function MusicPlayer({ track, onClose }: MusicPlayerProps) {
 
     try {
       setIsLoading(true);
-
-      // 既存の音声を停止・アンロード
-      if (sound) {
-        await sound.unloadAsync();
-        setSound(null);
+      if (player) {
+        player.remove();
+        setPlayer(null);
       }
-
-      // Audioモードを設定
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-        staysActiveInBackground: false,
-        playsInSilentModeIOS: true,
-        shouldDuckAndroid: true,
-        playThroughEarpieceAndroid: false,
-      });
-
-      // 新しい音声をロード
-      const { sound: newSound } = await Audio.Sound.createAsync(
-        { uri: track.preview_url },
-        { shouldPlay: false }
-      );
-
-      setSound(newSound);
-
-      // 音声の情報を取得
-      const status = await newSound.getStatusAsync();
-      if (status.isLoaded) {
-        setDuration(status.durationMillis || 30000); // デフォルト30秒
-      }
-
-      // 再生状況を監視
-      newSound.setOnPlaybackStatusUpdate((status) => {
-        if (status.isLoaded) {
-          setPosition(status.positionMillis || 0);
-          setIsPlaying(status.isPlaying || false);
-          
-          // 再生終了時の処理
-          if (status.didJustFinish) {
-            setIsPlaying(false);
-            setPosition(0);
-          }
+      const newPlayer = useAudioPlayer({ uri: track.preview_url });
+      setPlayer(newPlayer);
+      // 状態監視
+      const interval = setInterval(() => {
+        if (newPlayer) {
+          setPosition(newPlayer.currentTime * 1000);
+          setDuration(newPlayer.duration * 1000 || 30000);
         }
-      });
-
+      }, 200);
+      return () => clearInterval(interval);
     } catch (error) {
       console.error('Audio load error:', error);
       Alert.alert('エラー', '音楽の読み込みに失敗しました');
@@ -102,16 +67,12 @@ export default function MusicPlayer({ track, onClose }: MusicPlayerProps) {
   };
 
   const handlePlayPause = async () => {
-    if (!sound) return;
-
+    if (!player) return;
     try {
-      const status = await sound.getStatusAsync();
-      if (status.isLoaded) {
-        if (isPlaying) {
-          await sound.pauseAsync();
-        } else {
-          await sound.playAsync();
-        }
+      if (player.playing) {
+        player.pause();
+      } else {
+        player.play();
       }
     } catch (error) {
       console.error('Play/Pause error:', error);
@@ -120,11 +81,10 @@ export default function MusicPlayer({ track, onClose }: MusicPlayerProps) {
   };
 
   const handleSeek = async (progress: number) => {
-    if (!sound || !duration) return;
-
+    if (!player || !duration) return;
     try {
       const newPosition = progress * duration;
-      await sound.setPositionAsync(newPosition);
+      player.seekTo(newPosition / 1000);
     } catch (error) {
       console.error('Seek error:', error);
     }
@@ -146,6 +106,7 @@ export default function MusicPlayer({ track, onClose }: MusicPlayerProps) {
   if (!track) return null;
 
   const progress = duration > 0 ? position / duration : 0;
+  const isPlaying = player ? player.playing : false;
 
   return (
     <Card style={styles.container} elevation={8}>

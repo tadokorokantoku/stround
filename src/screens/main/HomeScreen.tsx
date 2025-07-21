@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
-import { Appbar, Segment } from 'react-native-paper';
+import { Appbar, SegmentedButtons } from 'react-native-paper';
 import { useAuthStore } from '../../stores/authStore';
 import useTimeline from '../../hooks/useTimeline';
 import TimelineList from '../../components/timeline/TimelineList';
@@ -21,14 +21,15 @@ export default function HomeScreen() {
       </Appbar.Header>
       
       <View style={styles.segmentContainer}>
-        <Segment
+        <SegmentedButtons
           value={timelineType}
           onValueChange={setTimelineType}
           style={styles.segment}
-        >
-          <Segment.Item value="personal" label="フォロー中" />
-          <Segment.Item value="public" label="みんな" />
-        </Segment>
+          buttons={[
+            { value: 'personal', label: 'フォロー中' },
+            { value: 'public', label: 'みんな' },
+          ]}
+        />
       </View>
 
       <TimelineList

@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { supabaseClient } from '../lib/supabase';
+import { createSupabaseClient } from '../lib/supabase';
 import type { Env } from '../index';
 import { createNotification } from './notifications';
 
@@ -26,12 +26,12 @@ followsRouter.post('/:followingId', async (c) => {
       return c.json({ error: '自分をフォローすることはできません' }, 400);
     }
 
-    const supabase = supabaseClient(c.env);
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
 
     // Check if user exists
     const { data: targetUser, error: userError } = await supabase
       .from('profiles')
-      .select('id')
+      .select('id, username')
       .eq('id', followingId)
       .single();
 
@@ -84,7 +84,7 @@ followsRouter.post('/:followingId', async (c) => {
       followingId,
       'follow',
       user.id,
-      `${user.username}があなたをフォローしました`
+      `${targetUser.username}があなたをフォローしました`
     );
 
     return c.json({ follow, message: 'フォローしました' }, 201);
@@ -104,7 +104,7 @@ followsRouter.delete('/:followingId', async (c) => {
       return c.json({ error: '認証が必要です' }, 401);
     }
 
-    const supabase = supabaseClient(c.env);
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
 
     const { error } = await supabase
       .from('follows')
@@ -132,7 +132,7 @@ followsRouter.get('/following/:userId', async (c) => {
     const limit = Number(c.req.query('limit')) || 20;
     const offset = (page - 1) * limit;
 
-    const supabase = supabaseClient(c.env);
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
 
     const { data: following, error } = await supabase
       .from('follows')
@@ -170,7 +170,7 @@ followsRouter.get('/followers/:userId', async (c) => {
     const limit = Number(c.req.query('limit')) || 20;
     const offset = (page - 1) * limit;
 
-    const supabase = supabaseClient(c.env);
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
 
     const { data: followers, error } = await supabase
       .from('follows')
@@ -206,7 +206,7 @@ followsRouter.get('/status/:followerId/:followingId', async (c) => {
     const followerId = c.req.param('followerId');
     const followingId = c.req.param('followingId');
 
-    const supabase = supabaseClient(c.env);
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
 
     const { data: follow, error } = await supabase
       .from('follows')
@@ -241,7 +241,7 @@ followsRouter.get('/status/:userId', async (c) => {
       return c.json({ error: 'ユーザーIDが必要です' }, 400);
     }
 
-    const supabase = supabaseClient(c.env);
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
 
     // Check if current user is following target user
     const { data: followData, error: followError } = await supabase
@@ -288,7 +288,7 @@ followsRouter.get('/status/:userId', async (c) => {
 followsRouter.get('/counts/:userId', async (c) => {
   try {
     const userId = c.req.param('userId');
-    const supabase = supabaseClient(c.env);
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
 
     // Get followers count
     const { count: followersCount, error: followersError } = await supabase

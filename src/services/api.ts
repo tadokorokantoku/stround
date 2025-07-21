@@ -170,6 +170,27 @@ class ApiService {
   async getTrack(trackId: string): Promise<any> {
     return this.request(`/music/track/${trackId}`);
   }
+
+  // Notification endpoints
+  async getNotifications(): Promise<any> {
+    return this.request('/notifications');
+  }
+
+  async getUnreadNotificationCount(): Promise<any> {
+    return this.request('/notifications/unread-count');
+  }
+
+  async markNotificationAsRead(notificationId: string): Promise<any> {
+    return this.request(`/notifications/${notificationId}/read`, {
+      method: 'PUT',
+    });
+  }
+
+  async markAllNotificationsAsRead(): Promise<any> {
+    return this.request('/notifications/read-all', {
+      method: 'PUT',
+    });
+  }
 }
 
 export const apiService = new ApiService();

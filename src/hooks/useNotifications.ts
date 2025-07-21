@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { supabase } from '../lib/supabase';
-import { api } from '../services/api';
+import { apiService } from '../services/api';
 
 interface Notification {
   id: string;
@@ -19,21 +19,17 @@ interface Notification {
 }
 
 export const useNotifications = () => {
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const fetchNotifications = async () => {
-    if (!user?.token) return;
-
+    if (!session?.access_token) return;
     try {
-      const response = await api.get('/api/notifications', {
-        headers: { Authorization: `Bearer ${user.token}` }
-      });
-      
-      if (response.data) {
-        setNotifications(response.data);
+      const response = await apiService.getNotifications();
+      if (response) {
+        setNotifications(response);
       }
     } catch (error) {
       console.error('通知取得エラー:', error);
@@ -43,15 +39,11 @@ export const useNotifications = () => {
   };
 
   const fetchUnreadCount = async () => {
-    if (!user?.token) return;
-
+    if (!session?.access_token) return;
     try {
-      const response = await api.get('/api/notifications/unread-count', {
-        headers: { Authorization: `Bearer ${user.token}` }
-      });
-      
-      if (response.data) {
-        setUnreadCount(response.data.count);
+      const response = await apiService.getUnreadNotificationCount();
+      if (response && typeof response.count === 'number') {
+        setUnreadCount(response.count);
       }
     } catch (error) {
       console.error('未読数取得エラー:', error);
@@ -59,13 +51,9 @@ export const useNotifications = () => {
   };
 
   const markAsRead = async (notificationId: string) => {
-    if (!user?.token) return;
-
+    if (!session?.access_token) return;
     try {
-      await api.put(`/api/notifications/${notificationId}/read`, {}, {
-        headers: { Authorization: `Bearer ${user.token}` }
-      });
-
+      await apiService.markNotificationAsRead(notificationId);
       setNotifications(prevNotifications =>
         prevNotifications.map(notification =>
           notification.id === notificationId
@@ -73,7 +61,6 @@ export const useNotifications = () => {
             : notification
         )
       );
-      
       await fetchUnreadCount();
     } catch (error) {
       console.error('既読処理エラー:', error);
@@ -81,20 +68,15 @@ export const useNotifications = () => {
   };
 
   const markAllAsRead = async () => {
-    if (!user?.token) return;
-
+    if (!session?.access_token) return;
     try {
-      await api.put('/api/notifications/read-all', {}, {
-        headers: { Authorization: `Bearer ${user.token}` }
-      });
-
+      await apiService.markAllNotificationsAsRead();
       setNotifications(prevNotifications =>
         prevNotifications.map(notification => ({
           ...notification,
           is_read: true
         }))
       );
-      
       setUnreadCount(0);
     } catch (error) {
       console.error('全既読処理エラー:', error);
@@ -117,8 +99,6 @@ export const useNotifications = () => {
         },
         (payload) => {
           console.log('新しい通知:', payload.new);
-          
-          // 新しい通知を追加
           const newNotification = payload.new as Notification;
           setNotifications(prev => [newNotification, ...prev]);
           setUnreadCount(prev => prev + 1);
@@ -134,8 +114,6 @@ export const useNotifications = () => {
         },
         (payload) => {
           console.log('通知更新:', payload.new);
-          
-          // 通知の既読状態を更新
           const updatedNotification = payload.new as Notification;
           setNotifications(prev =>
             prev.map(notification =>
@@ -150,14 +128,13 @@ export const useNotifications = () => {
         console.log('通知チャンネル状態:', status);
       });
 
-    // 初期データの取得
     fetchNotifications();
     fetchUnreadCount();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user?.id, user?.token]);
+  }, [user?.id, session?.access_token]);
 
   return {
     notifications,

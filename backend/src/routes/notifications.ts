@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { supabase } from '../lib/supabase';
+import { createSupabaseClient } from '../lib/supabase';
 import { authMiddleware } from '../middleware/auth';
 
 export const notifications = new Hono();
@@ -22,6 +22,7 @@ notifications.post('/', async (c) => {
       return c.json({ message: '自分への通知は作成されません' }, 200);
     }
 
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
     const { data, error } = await supabase
       .from('notifications')
       .insert({
@@ -58,6 +59,7 @@ notifications.get('/', async (c) => {
     const limit = parseInt(c.req.query('limit') || '20');
     const offset = (page - 1) * limit;
 
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
     const { data, error } = await supabase
       .from('notifications')
       .select(`
@@ -95,6 +97,7 @@ notifications.put('/:id/read', async (c) => {
       return c.json({ error: '認証が必要です' }, 401);
     }
 
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
     const { data, error } = await supabase
       .from('notifications')
       .update({ is_read: true })
@@ -128,6 +131,7 @@ notifications.put('/read-all', async (c) => {
       return c.json({ error: '認証が必要です' }, 401);
     }
 
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
     const { error } = await supabase
       .from('notifications')
       .update({ is_read: true })
@@ -155,6 +159,7 @@ notifications.get('/unread-count', async (c) => {
       return c.json({ error: '認証が必要です' }, 401);
     }
 
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
     const { count, error } = await supabase
       .from('notifications')
       .select('*', { count: 'exact', head: true })
@@ -181,6 +186,7 @@ export const createNotification = async (
   message?: string
 ) => {
   try {
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
     const { error } = await supabase
       .from('notifications')
       .insert({
