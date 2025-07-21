@@ -5,21 +5,16 @@ import {
   Button, 
   Card, 
   Avatar, 
-  Divider, 
   Chip,
+  Surface,
+  IconButton,
   ActivityIndicator 
 } from 'react-native-paper';
 import { useAuthStore } from '../../stores/authStore';
 import { supabase } from '../../lib/supabase';
-import { API_BASE_URL } from '../../constants';
 import MusicPlayer from '../../components/music/MusicPlayer';
 import TrackItem from '../../components/music/TrackItem';
 import { useMusicPlayer } from '../../hooks/useMusicPlayer';
-
-interface FollowStats {
-  followingCount: number;
-  followersCount: number;
-}
 
 interface Category {
   id: string;
@@ -56,26 +51,41 @@ interface Profile {
   display_name: string | null;
   bio: string | null;
   profile_image_url: string | null;
+  followers: { count: number }[];
+  following: { count: number }[];
 }
 
-export default function ProfileScreen() {
-  const { user, signOut } = useAuthStore();
+interface UserProfileScreenProps {
+  route: {
+    params: {
+      userId: string;
+    };
+  };
+  navigation: any;
+}
+
+export default function UserProfileScreen({ route, navigation }: UserProfileScreenProps) {
+  const { userId } = route.params;
+  const { user } = useAuthStore();
   const { currentTrack, isPlayerVisible, playTrack, closePlayer } = useMusicPlayer();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [followStats, setFollowStats] = useState<FollowStats>({ followingCount: 0, followersCount: 0 });
   const [categories, setCategories] = useState<Category[]>([]);
   const [userTracks, setUserTracks] = useState<UserTrack[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [tracksLoading, setTracksLoading] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
+
+  const isOwnProfile = user?.id === userId;
 
   useEffect(() => {
-    if (user) {
-      fetchProfile();
-      fetchFollowStats();
-      fetchCategories();
+    fetchProfile();
+    fetchCategories();
+    if (!isOwnProfile) {
+      checkFollowStatus();
     }
-  }, [user]);
+  }, [userId]);
 
   useEffect(() => {
     if (selectedCategoryId) {
@@ -85,48 +95,35 @@ export default function ProfileScreen() {
 
   const fetchProfile = async () => {
     try {
-      if (user) {
-        const profile: Profile = {
-          id: user.id,
-          username: user.user_metadata?.username || 'user',
-          display_name: user.user_metadata?.display_name || null,
-          bio: user.user_metadata?.bio || null,
-          profile_image_url: null,
-        };
-        setProfile(profile);
-      }
+      // TODO: API エンドポイントを使用してプロフィールを取得
+      // 現在はSupabaseクライアントを直接使用
+      const { data, error } = await supabase
+        .from('profiles')
+        .select(`
+          *,
+          followers:follows!follows_following_id_fkey(count),
+          following:follows!follows_follower_id_fkey(count)
+        `)
+        .eq('id', userId)
+        .single();
+
+      if (error) throw error;
+
+      setProfile(data);
     } catch (error) {
       console.error('プロフィール取得エラー:', error);
-      Alert.alert('エラー', 'プロフィールの取得に失敗しました');
-    }
-  };
-
-  const fetchFollowStats = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/follows/status/${user?.id}`, {
-        headers: {
-          'Authorization': `Bearer ${user?.access_token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setFollowStats({
-          followingCount: data.followingCount,
-          followersCount: data.followersCount,
-        });
-      }
-    } catch (error) {
-      console.error('フォロー統計の取得に失敗:', error);
+      Alert.alert('エラー', 'プロフィールの取得に失敗しました', [
+        { text: 'OK', onPress: () => navigation.goBack() }
+      ]);
     } finally {
       setLoading(false);
     }
   };
 
   const fetchCategories = async () => {
-    if (!user) return;
-    
     try {
+      // TODO: userTracks APIを使用してカテゴリを取得
+      // 現在はSupabaseクライアントを直接使用
       const { data, error } = await supabase
         .from('categories')
         .select('*')
@@ -152,10 +149,10 @@ export default function ProfileScreen() {
   };
 
   const fetchUserTracks = async (categoryId: string) => {
-    if (!user) return;
-    
     setTracksLoading(true);
     try {
+      // TODO: userTracks APIを使用
+      // 現在はSupabaseクライアントを直接使用
       const { data, error } = await supabase
         .from('user_tracks')
         .select(`
@@ -163,7 +160,7 @@ export default function ProfileScreen() {
           categories!user_tracks_category_id_fkey(*),
           music!user_tracks_spotify_track_id_fkey(*)
         `)
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .eq('category_id', categoryId)
         .order('created_at', { ascending: false });
 
@@ -175,6 +172,60 @@ export default function ProfileScreen() {
       Alert.alert('エラー', '楽曲の取得に失敗しました');
     } finally {
       setTracksLoading(false);
+    }
+  };
+
+  const checkFollowStatus = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('follows')
+        .select('*')
+        .eq('follower_id', user.id)
+        .eq('following_id', userId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+
+      setIsFollowing(!!data);
+    } catch (error) {
+      console.error('フォロー状態確認エラー:', error);
+    }
+  };
+
+  const handleFollow = async () => {
+    if (!user || followLoading) return;
+    
+    setFollowLoading(true);
+    try {
+      if (isFollowing) {
+        // アンフォロー
+        const { error } = await supabase
+          .from('follows')
+          .delete()
+          .eq('follower_id', user.id)
+          .eq('following_id', userId);
+
+        if (error) throw error;
+        setIsFollowing(false);
+      } else {
+        // フォロー
+        const { error } = await supabase
+          .from('follows')
+          .insert({
+            follower_id: user.id,
+            following_id: userId,
+          });
+
+        if (error) throw error;
+        setIsFollowing(true);
+      }
+    } catch (error) {
+      console.error('フォロー処理エラー:', error);
+      Alert.alert('エラー', 'フォロー処理に失敗しました');
+    } finally {
+      setFollowLoading(false);
     }
   };
 
@@ -198,6 +249,15 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView style={styles.container}>
+      {/* ヘッダー */}
+      <View style={styles.header}>
+        <IconButton
+          icon="arrow-left"
+          size={24}
+          onPress={() => navigation.goBack()}
+        />
+      </View>
+
       {/* プロフィールヘッダー */}
       <Card style={styles.card}>
         <Card.Content>
@@ -213,20 +273,34 @@ export default function ProfileScreen() {
             {profile?.username && profile?.display_name && (
               <Text style={styles.usernameSmall}>@{profile.username}</Text>
             )}
-            <Text style={styles.email}>{user?.email}</Text>
             {profile?.bio && (
               <Text style={styles.bio}>{profile.bio}</Text>
             )}
             <View style={styles.stats}>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{followStats.followersCount}</Text>
+                <Text style={styles.statNumber}>{profile?.followers[0]?.count || 0}</Text>
                 <Text style={styles.statLabel}>フォロワー</Text>
               </View>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{followStats.followingCount}</Text>
+                <Text style={styles.statNumber}>{profile?.following[0]?.count || 0}</Text>
                 <Text style={styles.statLabel}>フォロー中</Text>
               </View>
             </View>
+            
+            {/* フォローボタン（自分以外の場合） */}
+            {!isOwnProfile && (
+              <View style={styles.actionButtons}>
+                <Button
+                  mode={isFollowing ? "outlined" : "contained"}
+                  onPress={handleFollow}
+                  loading={followLoading}
+                  disabled={followLoading}
+                  style={styles.followButton}
+                >
+                  {isFollowing ? 'フォロー中' : 'フォロー'}
+                </Button>
+              </View>
+            )}
           </View>
         </Card.Content>
       </Card>
@@ -234,7 +308,9 @@ export default function ProfileScreen() {
       {/* カテゴリ選択 */}
       <Card style={styles.card}>
         <Card.Content>
-          <Text style={styles.sectionTitle}>マイミュージック</Text>
+          <Text style={styles.sectionTitle}>
+            {isOwnProfile ? 'マイミュージック' : `${profile?.display_name || profile?.username}の音楽`}
+          </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
             {categories.map((category) => (
               <Chip
@@ -272,45 +348,17 @@ export default function ProfileScreen() {
               />
             ) : (
               <View style={styles.emptyState}>
-                <Text style={styles.emptyStateText}>この カテゴリにはまだ楽曲がありません</Text>
-                <Button mode="outlined" onPress={() => {}} style={styles.addMusicButton}>
-                  楽曲を追加する
-                </Button>
+                <Text style={styles.emptyStateText}>
+                  {isOwnProfile 
+                    ? 'このカテゴリにはまだ楽曲がありません'
+                    : 'このカテゴリには楽曲がありません'
+                  }
+                </Text>
               </View>
             )}
           </Card.Content>
         </Card>
       )}
-
-      {/* 設定メニュー */}
-      <Card style={styles.card}>
-        <Card.Content>
-          <Text style={styles.sectionTitle}>設定</Text>
-          <Button
-            mode="outlined"
-            onPress={() => {}}
-            style={styles.menuButton}
-          >
-            プロフィール編集
-          </Button>
-          <Button
-            mode="outlined"
-            onPress={() => {}}
-            style={styles.menuButton}
-          >
-            設定
-          </Button>
-          <Divider style={styles.divider} />
-          <Button
-            mode="contained"
-            onPress={signOut}
-            style={styles.logoutButton}
-            buttonColor="#B00020"
-          >
-            ログアウト
-          </Button>
-        </Card.Content>
-      </Card>
 
       {/* 音楽プレイヤー */}
       {isPlayerVisible && (
@@ -338,6 +386,12 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 16,
     color: '#666',
+  },
+  header: {
+    paddingHorizontal: 8,
+    paddingTop: 50,
+    paddingBottom: 8,
+    backgroundColor: '#fff',
   },
   card: {
     margin: 16,
@@ -371,6 +425,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 32,
+    marginBottom: 16,
   },
   statItem: {
     alignItems: 'center',
@@ -378,11 +433,18 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#6200ee',
+    color: '#333',
   },
   statLabel: {
     fontSize: 14,
     color: '#666',
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  followButton: {
+    minWidth: 120,
   },
   sectionTitle: {
     fontSize: 18,
@@ -415,24 +477,6 @@ const styles = StyleSheet.create({
   emptyStateText: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 16,
     textAlign: 'center',
-  },
-  addMusicButton: {
-    marginTop: 8,
-  },
-  menuButton: {
-    marginBottom: 8,
-  },
-  divider: {
-    marginVertical: 16,
-  },
-  logoutButton: {
-    marginTop: 8,
-  },
-  email: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 8,
   },
 });
