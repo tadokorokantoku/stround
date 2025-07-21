@@ -101,15 +101,27 @@ class ApiService {
   }
 
   // Comment endpoints
-  async createComment(userTrackId: string, content: string): Promise<any> {
+  async createComment(userTrackId: string, content: string, parentCommentId?: string): Promise<any> {
     return this.request('/comments', {
       method: 'POST',
-      body: JSON.stringify({ user_track_id: userTrackId, content }),
+      body: JSON.stringify({ 
+        user_track_id: userTrackId, 
+        content,
+        parent_comment_id: parentCommentId 
+      }),
     });
   }
 
-  async getComments(userTrackId: string, page: number = 1, limit: number = 20): Promise<any> {
+  async createReply(userTrackId: string, content: string, parentCommentId: string): Promise<any> {
+    return this.createComment(userTrackId, content, parentCommentId);
+  }
+
+  async getComments(userTrackId: string, page: number = 1, limit: number = 50): Promise<any> {
     return this.request(`/comments/user-track/${userTrackId}?page=${page}&limit=${limit}`);
+  }
+
+  async getComment(commentId: string): Promise<any> {
+    return this.request(`/comments/${commentId}`);
   }
 
   async updateComment(commentId: string, content: string): Promise<any> {

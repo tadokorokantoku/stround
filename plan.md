@@ -222,12 +222,12 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 ### Phase 5: コメント・通知 (Week 11-12)
 
 #### Week 11: Honoコメント機能
-- [ ] コメントCRUD APIエンドポイント
-- [ ] 返信（ネスト）機能API
-- [ ] コメントツリー取得ロジック
-- [ ] コメント表示UI
-- [ ] コメント投稿UI
-- [ ] 返信UI
+- [x] コメントCRUD APIエンドポイント
+- [x] 返信（ネスト）機能API
+- [x] コメントツリー取得ロジック
+- [x] コメント表示UI
+- [x] コメント投稿UI
+- [x] 返信UI
 
 #### Week 12: Hono通知システム
 - [ ] 通知作成APIエンドポイント
