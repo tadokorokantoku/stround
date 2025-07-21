@@ -7,25 +7,36 @@ const likesRouter = new Hono<{ Bindings: Env }>();
 likesRouter.post('/', async (c) => {
   const user = c.get('user');
   const body = await c.req.json();
-  const { post_id } = body;
+  const { user_track_id } = body;
 
-  if (!post_id) {
-    return c.json({ error: 'Post ID is required' }, 400);
+  if (!user_track_id) {
+    return c.json({ error: 'User track ID is required' }, 400);
   }
 
   const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
 
   try {
+    // Check if user track exists
+    const { data: userTrack } = await supabase
+      .from('user_tracks')
+      .select('id')
+      .eq('id', user_track_id)
+      .single();
+
+    if (!userTrack) {
+      return c.json({ error: 'User track not found' }, 404);
+    }
+
     // Check if like already exists
     const { data: existingLike } = await supabase
       .from('likes')
       .select('id')
       .eq('user_id', user.id)
-      .eq('post_id', post_id)
+      .eq('user_track_id', user_track_id)
       .single();
 
     if (existingLike) {
-      return c.json({ error: 'Post already liked' }, 409);
+      return c.json({ error: 'User track already liked' }, 409);
     }
 
     // Create like
@@ -33,7 +44,7 @@ likesRouter.post('/', async (c) => {
       .from('likes')
       .insert({
         user_id: user.id,
-        post_id,
+        user_track_id,
       })
       .select()
       .single();
@@ -45,13 +56,13 @@ likesRouter.post('/', async (c) => {
     return c.json({ like }, 201);
   } catch (error) {
     console.error('Create like error:', error);
-    return c.json({ error: 'Failed to like post' }, 500);
+    return c.json({ error: 'Failed to like user track' }, 500);
   }
 });
 
-likesRouter.delete('/:postId', async (c) => {
+likesRouter.delete('/:userTrackId', async (c) => {
   const user = c.get('user');
-  const postId = c.req.param('postId');
+  const userTrackId = c.req.param('userTrackId');
   const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
 
   try {
@@ -59,7 +70,7 @@ likesRouter.delete('/:postId', async (c) => {
       .from('likes')
       .delete()
       .eq('user_id', user.id)
-      .eq('post_id', postId);
+      .eq('user_track_id', userTrackId);
 
     if (error) {
       throw error;
@@ -68,12 +79,12 @@ likesRouter.delete('/:postId', async (c) => {
     return c.json({ message: 'Like removed successfully' });
   } catch (error) {
     console.error('Delete like error:', error);
-    return c.json({ error: 'Failed to unlike post' }, 500);
+    return c.json({ error: 'Failed to unlike user track' }, 500);
   }
 });
 
-likesRouter.get('/post/:postId', async (c) => {
-  const postId = c.req.param('postId');
+likesRouter.get('/user-track/:userTrackId', async (c) => {
+  const userTrackId = c.req.param('userTrackId');
   const page = parseInt(c.req.query('page') || '1');
   const limit = parseInt(c.req.query('limit') || '20');
   const offset = (page - 1) * limit;
@@ -92,7 +103,7 @@ likesRouter.get('/post/:postId', async (c) => {
           avatar_url
         )
       `)
-      .eq('post_id', postId)
+      .eq('user_track_id', userTrackId)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 

@@ -101,19 +101,19 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          post_id: string;
+          user_track_id: string;
           created_at: string;
         };
         Insert: {
           id?: string;
           user_id: string;
-          post_id: string;
+          user_track_id: string;
           created_at?: string;
         };
         Update: {
           id?: string;
           user_id?: string;
-          post_id?: string;
+          user_track_id?: string;
           created_at?: string;
         };
       };
@@ -121,7 +121,7 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          post_id: string;
+          user_track_id: string;
           content: string;
           created_at: string;
           updated_at: string;
@@ -129,7 +129,7 @@ export interface Database {
         Insert: {
           id?: string;
           user_id: string;
-          post_id: string;
+          user_track_id: string;
           content: string;
           created_at?: string;
           updated_at?: string;
@@ -137,7 +137,7 @@ export interface Database {
         Update: {
           id?: string;
           user_id?: string;
-          post_id?: string;
+          user_track_id?: string;
           content?: string;
           created_at?: string;
           updated_at?: string;
@@ -160,6 +160,55 @@ export interface Database {
           id?: string;
           follower_id?: string;
           following_id?: string;
+          created_at?: string;
+        };
+      };
+      categories: {
+        Row: {
+          id: string;
+          name: string;
+          description: string | null;
+          is_default: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          description?: string | null;
+          is_default?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          description?: string | null;
+          is_default?: boolean;
+          created_at?: string;
+        };
+      };
+      user_tracks: {
+        Row: {
+          id: string;
+          user_id: string;
+          category_id: string;
+          spotify_track_id: string;
+          comment: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          category_id: string;
+          spotify_track_id: string;
+          comment?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          category_id?: string;
+          spotify_track_id?: string;
+          comment?: string | null;
           created_at?: string;
         };
       };
