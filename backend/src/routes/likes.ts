@@ -83,6 +83,86 @@ likesRouter.delete('/:userTrackId', async (c) => {
   }
 });
 
+// Get like status for current user on a post
+likesRouter.get('/status/:postId', async (c) => {
+  const user = c.get('user');
+  const postId = c.req.param('postId');
+  const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+
+  try {
+    const { data: like } = await supabase
+      .from('likes')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('post_id', postId)
+      .single();
+
+    return c.json({ isLiked: !!like });
+  } catch (error) {
+    console.error('Get like status error:', error);
+    return c.json({ isLiked: false });
+  }
+});
+
+// Get like count for post
+likesRouter.get('/count/:postId', async (c) => {
+  const postId = c.req.param('postId');
+  const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+
+  try {
+    const { count, error } = await supabase
+      .from('likes')
+      .select('*', { count: 'exact', head: true })
+      .eq('post_id', postId);
+
+    if (error) {
+      throw error;
+    }
+
+    return c.json({ count: count || 0 });
+  } catch (error) {
+    console.error('Get like count error:', error);
+    return c.json({ error: 'Failed to get like count' }, 500);
+  }
+});
+
+// Get likes for a specific post
+likesRouter.get('/post/:postId', async (c) => {
+  const postId = c.req.param('postId');
+  const page = parseInt(c.req.query('page') || '1');
+  const limit = parseInt(c.req.query('limit') || '20');
+  const offset = (page - 1) * limit;
+
+  const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+
+  try {
+    const { data: likes, error } = await supabase
+      .from('likes')
+      .select(`
+        *,
+        profiles!likes_user_id_fkey (
+          id,
+          username,
+          display_name,
+          avatar_url
+        )
+      `)
+      .eq('post_id', postId)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (error) {
+      throw error;
+    }
+
+    return c.json({ likes, page, limit });
+  } catch (error) {
+    console.error('Get likes error:', error);
+    return c.json({ error: 'Failed to get likes' }, 500);
+  }
+});
+
+// Get likes for a specific user track
 likesRouter.get('/user-track/:userTrackId', async (c) => {
   const userTrackId = c.req.param('userTrackId');
   const page = parseInt(c.req.query('page') || '1');
