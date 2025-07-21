@@ -181,12 +181,12 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 - [x] プレビュー再生機能
 
 #### Week 6: Hono楽曲投稿機能
-- [ ] カテゴリ管理APIエンドポイント
-- [ ] 楽曲投稿APIエンドポイント
-- [ ] 楽曲一覧取得API
-- [ ] 楽曲追加画面UI
-- [ ] カテゴリ選択UI
-- [ ] 楽曲検索UI
+- [x] カテゴリ管理APIエンドポイント
+- [x] 楽曲投稿APIエンドポイント
+- [x] 楽曲一覧取得API
+- [x] 楽曲追加画面UI
+- [x] カテゴリ選択UI
+- [x] 楽曲検索UI
 
 #### Week 7: プロフィール画面
 - [ ] マイページ実装
