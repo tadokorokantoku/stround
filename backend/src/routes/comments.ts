@@ -4,8 +4,8 @@ import type { Env } from '../index';
 
 const commentsRouter = new Hono<{ Bindings: Env }>();
 
-commentsRouter.get('/post/:postId', async (c) => {
-  const postId = c.req.param('postId');
+commentsRouter.get('/user-track/:userTrackId', async (c) => {
+  const userTrackId = c.req.param('userTrackId');
   const page = parseInt(c.req.query('page') || '1');
   const limit = parseInt(c.req.query('limit') || '20');
   const offset = (page - 1) * limit;
@@ -24,7 +24,7 @@ commentsRouter.get('/post/:postId', async (c) => {
           avatar_url
         )
       `)
-      .eq('post_id', postId)
+      .eq('user_track_id', userTrackId)
       .order('created_at', { ascending: true })
       .range(offset, offset + limit - 1);
 
@@ -42,20 +42,31 @@ commentsRouter.get('/post/:postId', async (c) => {
 commentsRouter.post('/', async (c) => {
   const user = c.get('user');
   const body = await c.req.json();
-  const { post_id, content } = body;
+  const { user_track_id, content } = body;
 
-  if (!post_id || !content || content.trim() === '') {
-    return c.json({ error: 'Post ID and content are required' }, 400);
+  if (!user_track_id || !content || content.trim() === '') {
+    return c.json({ error: 'User track ID and content are required' }, 400);
   }
 
   const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
 
   try {
+    // Check if user track exists
+    const { data: userTrack } = await supabase
+      .from('user_tracks')
+      .select('id')
+      .eq('id', user_track_id)
+      .single();
+
+    if (!userTrack) {
+      return c.json({ error: 'User track not found' }, 404);
+    }
+
     const { data: comment, error } = await supabase
       .from('comments')
       .insert({
         user_id: user.id,
-        post_id,
+        user_track_id,
         content: content.trim(),
       })
       .select(`
