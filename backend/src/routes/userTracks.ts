@@ -422,4 +422,61 @@ userTracksRouter.get('/user/:userId/categories', async (c) => {
   }
 });
 
+// Search user tracks by tags (category names)
+userTracksRouter.post('/search/tags', async (c) => {
+  const body = await c.req.json();
+  const { tags } = body;
+  const page = parseInt(c.req.query('page') || '1');
+  const limit = parseInt(c.req.query('limit') || '20');
+  const offset = (page - 1) * limit;
+
+  if (!tags || !Array.isArray(tags) || tags.length === 0) {
+    return c.json({ error: 'Tags array is required' }, 400);
+  }
+
+  const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+
+  try {
+    const { data: userTracks, error } = await supabase
+      .from('user_tracks')
+      .select(`
+        *,
+        profiles!user_tracks_user_id_fkey (
+          id,
+          username,
+          display_name,
+          avatar_url
+        ),
+        categories!user_tracks_category_id_fkey (
+          id,
+          name,
+          description
+        ),
+        music!user_tracks_spotify_track_id_fkey (
+          id,
+          spotify_id,
+          title,
+          artist,
+          album,
+          image_url,
+          preview_url,
+          external_url,
+          duration_ms
+        )
+      `)
+      .in('categories.name', tags)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (error) {
+      throw error;
+    }
+
+    return c.json({ userTracks: userTracks || [], page, limit });
+  } catch (error) {
+    console.error('Search user tracks by tags error:', error);
+    return c.json({ error: 'Failed to search user tracks by tags' }, 500);
+  }
+});
+
 export default userTracksRouter;

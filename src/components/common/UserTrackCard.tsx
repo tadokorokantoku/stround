@@ -43,7 +43,7 @@ interface UserTrack {
 interface UserTrackCardProps {
   userTrack: UserTrack;
   onUserPress?: (userId: string) => void;
-  onTrackPress?: (trackId: string) => void;
+  onTrackPress?: (userTrack: UserTrack) => void;
 }
 
 export const UserTrackCard: React.FC<UserTrackCardProps> = ({
@@ -119,7 +119,7 @@ export const UserTrackCard: React.FC<UserTrackCardProps> = ({
         {userTrack.tracks && (
           <TouchableOpacity 
             style={styles.trackInfo}
-            onPress={() => onTrackPress?.(userTrack.tracks!.spotify_id)}
+            onPress={() => onTrackPress?.(userTrack)}
           >
             {userTrack.tracks.image_url && (
               <Avatar.Image

@@ -27,7 +27,14 @@ musicRouter.get('/search', async (c) => {
         .eq('spotify_id', track.id)
         .single();
 
+      // Get user tracks count for this track
+      const { count: userTracksCount } = await supabase
+        .from('user_tracks')
+        .select('*', { count: 'exact' })
+        .eq('spotify_track_id', track.id);
+
       const trackData = {
+        id: track.id,
         spotify_id: track.id,
         title: track.name,
         artist: track.artists.map(artist => artist.name).join(', '),
@@ -36,13 +43,23 @@ musicRouter.get('/search', async (c) => {
         preview_url: track.preview_url,
         external_url: track.external_urls.spotify,
         duration_ms: track.duration_ms || null,
+        user_tracks_count: userTracksCount || 0,
       };
 
       if (!existingTrack) {
         // Cache the track in Supabase
         const { data: cachedTrack, error } = await supabase
           .from('music')
-          .insert(trackData)
+          .insert({
+            spotify_id: track.id,
+            title: track.name,
+            artist: track.artists.map(artist => artist.name).join(', '),
+            album: track.album.name,
+            image_url: track.album.images[0]?.url || null,
+            preview_url: track.preview_url,
+            external_url: track.external_urls.spotify,
+            duration_ms: track.duration_ms || null,
+          })
           .select()
           .single();
 

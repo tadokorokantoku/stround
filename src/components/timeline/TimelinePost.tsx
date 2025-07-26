@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, Pressable, Alert } from 'react-native';
+import { View, StyleSheet, Image, Pressable, Alert, TouchableOpacity } from 'react-native';
 import { Text, Card, IconButton, Menu, Divider } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { formatDistanceToNow } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { apiService } from '../../services/api';
+import { RootStackParamList } from '../../navigation/AppNavigator';
+
+type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 interface TimelinePostProps {
   post: {
@@ -45,6 +50,7 @@ export default function TimelinePost({
   onLikePress, 
   onCommentPress 
 }: TimelinePostProps) {
+  const navigation = useNavigation<NavigationProp>();
   const [isLiked, setIsLiked] = useState(post.is_liked_by_user);
   const [likesCount, setLikesCount] = useState(post.likes_count);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -97,6 +103,48 @@ export default function TimelinePost({
     }
   };
 
+  const handleTrackPress = () => {
+    if (post.music) {
+      // Convert post to UserTrack format for navigation
+      const userTrack = {
+        id: post.id,
+        userId: post.profiles.id,
+        categoryId: post.categories.id,
+        spotifyTrackId: post.music.id,
+        comment: post.comment,
+        createdAt: post.created_at,
+        user: {
+          id: post.profiles.id,
+          username: post.profiles.username,
+          displayName: post.profiles.display_name,
+          bio: null,
+          profileImageUrl: post.profiles.avatar_url,
+          createdAt: '',
+          updatedAt: '',
+        },
+        category: {
+          id: post.categories.id,
+          name: post.categories.name,
+          description: post.categories.description,
+          isDefault: true,
+          createdAt: '',
+        },
+        track: {
+          spotifyId: post.music.id,
+          title: post.music.title,
+          artist: post.music.artist,
+          album: post.music.album,
+          imageUrl: post.music.image_url,
+          previewUrl: post.music.preview_url,
+          externalUrl: post.music.external_url,
+          createdAt: '',
+        }
+      };
+      
+      navigation.navigate('TrackDetail', { userTrack });
+    }
+  };
+
   const relativeTime = formatDistanceToNow(new Date(post.created_at), {
     addSuffix: true,
     locale: ja,
@@ -146,7 +194,7 @@ export default function TimelinePost({
       </View>
 
       {post.music && (
-        <View style={styles.musicInfo}>
+        <TouchableOpacity style={styles.musicInfo} onPress={handleTrackPress}>
           {post.music.image_url && (
             <Image source={{ uri: post.music.image_url }} style={styles.albumArt} />
           )}
@@ -163,7 +211,7 @@ export default function TimelinePost({
               </Text>
             )}
           </View>
-        </View>
+        </TouchableOpacity>
       )}
 
       {post.comment && (
