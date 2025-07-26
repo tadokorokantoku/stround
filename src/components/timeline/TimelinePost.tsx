@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { View, StyleSheet, Image, Pressable, Alert, TouchableOpacity } from 'react-native';
 import { Text, Card, IconButton, Menu, Divider } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { formatDistanceToNow } from 'date-fns';
 import { ja } from 'date-fns/locale';
-import { apiService } from '../../services/api';
+import { useLikeUserTrack, useUnlikeUserTrack } from '../../hooks/useOptimizedApi';
 import { RootStackParamList } from '../../navigation/AppNavigator';
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
@@ -44,7 +44,7 @@ interface TimelinePostProps {
   onCommentPress?: () => void;
 }
 
-export default function TimelinePost({ 
+const TimelinePost = memo(function TimelinePost({ 
   post, 
   currentUserId, 
   onLikePress, 
@@ -54,36 +54,35 @@ export default function TimelinePost({
   const [isLiked, setIsLiked] = useState(post.is_liked_by_user);
   const [likesCount, setLikesCount] = useState(post.likes_count);
   const [menuVisible, setMenuVisible] = useState(false);
-  const [liking, setLiking] = useState(false);
+  
+  const likeMutation = useLikeUserTrack();
+  const unlikeMutation = useUnlikeUserTrack();
 
   const handleLikePress = async () => {
-    if (liking) return;
+    if (likeMutation.isPending || unlikeMutation.isPending) return;
+    
+    const previousLiked = isLiked;
+    const previousCount = likesCount;
+    
+    // Optimistic update
+    setIsLiked(!isLiked);
+    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
     
     try {
-      setLiking(true);
-      const previousLiked = isLiked;
-      const previousCount = likesCount;
-      
-      // Optimistic update
-      setIsLiked(!isLiked);
-      setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
-      
       if (isLiked) {
-        await apiService.unlikeUserTrack(post.id);
+        await unlikeMutation.mutateAsync(post.id);
       } else {
-        await apiService.likeUserTrack(post.id);
+        await likeMutation.mutateAsync(post.id);
       }
       
       onLikePress?.();
     } catch (error) {
       // Revert on error
-      setIsLiked(isLiked);
-      setLikesCount(likesCount);
+      setIsLiked(previousLiked);
+      setLikesCount(previousCount);
       
       console.error('Failed to toggle like:', error);
       Alert.alert('エラー', 'いいねの操作に失敗しました');
-    } finally {
-      setLiking(false);
     }
   };
 
@@ -226,7 +225,7 @@ export default function TimelinePost({
         <Pressable 
           style={styles.actionButton}
           onPress={handleLikePress}
-          disabled={liking}
+          disabled={likeMutation.isPending || unlikeMutation.isPending}
         >
           <IconButton
             icon={isLiked ? 'heart' : 'heart-outline'}
@@ -252,7 +251,9 @@ export default function TimelinePost({
       </View>
     </Card>
   );
-}
+});
+
+export default TimelinePost;
 
 const styles = StyleSheet.create({
   card: {

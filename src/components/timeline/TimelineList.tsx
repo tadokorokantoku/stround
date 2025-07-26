@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, memo } from 'react';
 import { 
   FlatList, 
   RefreshControl, 
@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import { Text } from 'react-native-paper';
 import TimelinePost from './TimelinePost';
-import { apiService } from '../../services/api';
 
 interface TimelineListProps {
   posts: any[];
@@ -21,7 +20,7 @@ interface TimelineListProps {
   onPostUpdate?: () => void;
 }
 
-export default function TimelineList({
+const TimelineList = memo(function TimelineList({
   posts,
   loading,
   refreshing,
@@ -46,7 +45,7 @@ export default function TimelineList({
     [currentUserId, onPostUpdate]
   );
 
-  const renderFooter = () => {
+  const renderFooter = useCallback(() => {
     if (!hasMore) return null;
     
     return (
@@ -54,9 +53,9 @@ export default function TimelineList({
         <ActivityIndicator size="small" color="#1976d2" />
       </View>
     );
-  };
+  }, [hasMore]);
 
-  const renderEmpty = () => {
+  const renderEmpty = useCallback(() => {
     if (loading) {
       return (
         <View style={styles.emptyContainer}>
@@ -74,7 +73,7 @@ export default function TimelineList({
         </Text>
       </View>
     );
-  };
+  }, [loading]);
 
   const handleEndReached = useCallback(() => {
     if (!loading && hasMore) {
@@ -84,11 +83,21 @@ export default function TimelineList({
 
   const keyExtractor = useCallback((item: any) => item.id.toString(), []);
 
+  const getItemLayout = useCallback(
+    (_: any, index: number) => ({
+      length: 200, // 推定の高さ
+      offset: 200 * index,
+      index,
+    }),
+    []
+  );
+
   return (
     <FlatList
       data={posts}
       renderItem={renderPost}
       keyExtractor={keyExtractor}
+      getItemLayout={getItemLayout}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
@@ -102,9 +111,16 @@ export default function TimelineList({
       ListEmptyComponent={renderEmpty}
       showsVerticalScrollIndicator={false}
       style={styles.list}
+      removeClippedSubviews={true}
+      maxToRenderPerBatch={10}
+      updateCellsBatchingPeriod={50}
+      initialNumToRender={10}
+      windowSize={10}
     />
   );
-}
+});
+
+export default TimelineList;
 
 const styles = StyleSheet.create({
   list: {
