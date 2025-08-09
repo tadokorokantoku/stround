@@ -3,7 +3,7 @@ import { cacheService, CacheKeys } from './cacheService';
 import { errorHandler, NetworkError, AuthError, RateLimitError, ServerError } from './errorHandler';
 import { rateLimiter, retryManager } from './rateLimiter';
 
-const API_BASE_URL = 'http://localhost:8787/api';
+const API_BASE_URL = 'https://stround-api.katsuki104.workers.dev';
 
 interface ApiResponse<T> {
   data?: T;
@@ -48,8 +48,18 @@ class ApiService {
 
       try {
         const headers = await this.getAuthHeaders();
+        const url = `${API_BASE_URL}${endpoint}`;
         
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        console.log('🌐 API Request:', {
+          url,
+          method: options.method || 'GET',
+          headers,
+        });
+        
+        // デバッグ用alert（一時的）
+        alert(`API Request: ${url}`);
+        
+        const response = await fetch(url, {
           ...options,
           headers: {
             ...headers,
@@ -71,6 +81,15 @@ class ApiService {
 
         return data;
       } catch (error) {
+        console.error('🚨 API Error:', {
+          url: `${API_BASE_URL}${endpoint}`,
+          error: error.message,
+          stack: error.stack,
+        });
+        
+        // デバッグ用alert（一時的）
+        alert(`API Error: ${error.message}`);
+        
         // ネットワークエラーやフェッチエラーをハンドリング
         if (error instanceof TypeError || error?.name === 'TypeError') {
           throw new NetworkError('ネットワークに接続できません', endpoint, options.method);
