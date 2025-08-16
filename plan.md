@@ -143,15 +143,15 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 - [ ] Git repository初期化
 
 #### Week 2: Supabase & Hono基盤
-- [ ] Supabaseプロジェクト作成
-- [ ] データベーススキーマ設計・作成
-- [ ] Row Level Security (RLS) ポリシー設定
-- [ ] Hono APIプロジェクト作成
-- [ ] Hono + Cloudflare Workers / Vercel設定
-- [ ] Supabase Client設定（Hono側）
-- [ ] CORS・ミドルウェア設定
-- [ ] 認証設定（Email/Social Login）
-- [ ] Storage バケット作成
+- [x] Supabaseプロジェクト作成
+- [x] データベーススキーマ設計・作成
+- [x] Row Level Security (RLS) ポリシー設定
+- [x] Hono APIプロジェクト作成
+- [x] Hono + Cloudflare Workers / Vercel設定
+- [x] Supabase Client設定（Hono側）
+- [x] CORS・ミドルウェア設定
+- [x] 認証設定（Email/Social Login）
+- [x] Storage バケット作成
 
 ### Phase 2: 認証・ユーザー管理 (Week 3-4)
 
