@@ -158,13 +158,14 @@ export const CacheKeys = {
   timeline: (page: number) => `timeline_${page}`,
   userTimeline: (userId: string, page: number) => `user_timeline_${userId}_${page}`,
   publicTimeline: (page: number) => `public_timeline_${page}`,
-  userTracks: (userId?: string, categoryId?: string, page: number = 1) => 
+  userTracks: (userId?: string, categoryId?: string, page: number = 1) =>
     `user_tracks_${userId || 'all'}_${categoryId || 'all'}_${page}`,
   comments: (userTrackId: string) => `comments_${userTrackId}`,
   notifications: () => 'notifications',
   unreadCount: () => 'unread_count',
   categories: () => 'categories',
   searchTracks: (query: string) => `search_tracks_${query}`,
+  newReleases: (country: string) => `new_releases_${country}`,
   followCounts: (userId: string) => `follow_counts_${userId}`,
   trackDetail: (trackId: string) => `track_detail_${trackId}`,
   userProfile: (userId: string) => `user_profile_${userId}`,

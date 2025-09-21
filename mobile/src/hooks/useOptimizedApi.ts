@@ -103,6 +103,15 @@ export function useSearchTracks(query: string, enabled = true) {
   });
 }
 
+export function useNewReleases(limit: number = 20, country: string = 'JP') {
+  return useQuery({
+    queryKey: ['tracks', 'new-releases', country, limit],
+    queryFn: () => apiService.getNewReleases(limit, country),
+    staleTime: 30 * 60 * 1000, // 30分
+    gcTime: 60 * 60 * 1000, // 1時間
+  });
+}
+
 export function useFollowCounts(userId: string) {
   return useQuery({
     queryKey: ['follows', 'counts', userId],

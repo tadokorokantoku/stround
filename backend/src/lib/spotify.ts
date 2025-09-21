@@ -27,6 +27,7 @@ export class SpotifyAPI {
   private clientSecret: string;
   private accessToken: string | null = null;
   private tokenExpiry: number = 0;
+  private redirectUri: string = 'https://stround.example.com/auth/spotify/callback';
 
   constructor(clientId: string, clientSecret: string) {
     this.clientId = clientId;
@@ -83,7 +84,7 @@ export class SpotifyAPI {
 
   async getTrack(trackId: string): Promise<SpotifyTrack> {
     const accessToken = await this.getAccessToken();
-    
+
     const response = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -95,6 +96,59 @@ export class SpotifyAPI {
     }
 
     return await response.json();
+  }
+
+  async getNewReleases(limit: number = 20, country: string = 'JP'): Promise<SpotifyTrack[]> {
+    const accessToken = await this.getAccessToken();
+
+    const searchParams = new URLSearchParams({
+      limit: limit.toString(),
+      offset: '0',
+      country: country,
+    });
+
+    const response = await fetch(`https://api.spotify.com/v1/browse/new-releases?${searchParams}`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get new releases');
+    }
+
+    const data: any = await response.json();
+    const albums = data.albums.items;
+
+    const tracks: SpotifyTrack[] = [];
+    for (const album of albums) {
+      const albumTracksResponse = await fetch(`https://api.spotify.com/v1/albums/${album.id}/tracks?limit=1`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+
+      if (albumTracksResponse.ok) {
+        const tracksData: any = await albumTracksResponse.json();
+        if (tracksData.items && tracksData.items.length > 0) {
+          const track = tracksData.items[0];
+          tracks.push({
+            id: track.id,
+            name: track.name,
+            artists: track.artists,
+            album: {
+              name: album.name,
+              images: album.images,
+            },
+            preview_url: track.preview_url || null,
+            external_urls: track.external_urls,
+            duration_ms: track.duration_ms,
+          });
+        }
+      }
+    }
+
+    return tracks;
   }
 
   // OAuth methods

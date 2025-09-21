@@ -16,7 +16,7 @@ musicRouter.get('/search', async (c) => {
   try {
     const spotify = new SpotifyAPI(c.env.SPOTIFY_CLIENT_ID, c.env.SPOTIFY_CLIENT_SECRET);
     const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
-    
+
     const tracks = await spotify.searchTracks(query, limit);
 
     const formattedTracks = await Promise.all(tracks.map(async (track) => {
@@ -77,6 +77,77 @@ musicRouter.get('/search', async (c) => {
   } catch (error) {
     console.error('Music search error:', error);
     return c.json({ error: 'Failed to search music' }, 500);
+  }
+});
+
+musicRouter.get('/new-releases', async (c) => {
+  const limit = parseInt(c.req.query('limit') || '20');
+  const country = c.req.query('country') || 'JP';
+
+  try {
+    const spotify = new SpotifyAPI(c.env.SPOTIFY_CLIENT_ID, c.env.SPOTIFY_CLIENT_SECRET);
+    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+
+    const tracks = await spotify.getNewReleases(limit, country);
+
+    const formattedTracks = await Promise.all(tracks.map(async (track) => {
+      // Check if track already exists in cache
+      const { data: existingTrack } = await supabase
+        .from('music')
+        .select('*')
+        .eq('spotify_id', track.id)
+        .single();
+
+      // Get user tracks count for this track
+      const { count: userTracksCount } = await supabase
+        .from('user_tracks')
+        .select('*', { count: 'exact' })
+        .eq('spotify_track_id', track.id);
+
+      const trackData = {
+        id: track.id,
+        spotify_id: track.id,
+        title: track.name,
+        artist: track.artists.map(artist => artist.name).join(', '),
+        album: track.album.name,
+        image_url: track.album.images[0]?.url || null,
+        preview_url: track.preview_url,
+        external_url: track.external_urls.spotify,
+        duration_ms: track.duration_ms || null,
+        user_tracks_count: userTracksCount || 0,
+      };
+
+      if (!existingTrack) {
+        // Cache the track in Supabase
+        const { data: cachedTrack, error } = await supabase
+          .from('music')
+          .insert({
+            spotify_id: track.id,
+            title: track.name,
+            artist: track.artists.map(artist => artist.name).join(', '),
+            album: track.album.name,
+            image_url: track.album.images[0]?.url || null,
+            preview_url: track.preview_url,
+            external_url: track.external_urls.spotify,
+            duration_ms: track.duration_ms || null,
+          })
+          .select()
+          .single();
+
+        if (!error && cachedTrack) {
+          return { ...trackData, id: cachedTrack.id };
+        }
+      } else {
+        return { ...trackData, id: existingTrack.id };
+      }
+
+      return trackData;
+    }));
+
+    return c.json({ tracks: formattedTracks });
+  } catch (error) {
+    console.error('New releases error:', error);
+    return c.json({ error: 'Failed to get new releases' }, 500);
   }
 });
 

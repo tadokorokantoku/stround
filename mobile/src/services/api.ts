@@ -339,6 +339,15 @@ class ApiService {
     );
   }
 
+  async getNewReleases(limit: number = 20, country: string = 'JP'): Promise<any> {
+    return this.request(
+      `/music/new-releases?limit=${limit}&country=${country}`,
+      {},
+      CacheKeys.newReleases(country),
+      30 * 60 * 1000 // 30分
+    );
+  }
+
   async getTrack(trackId: string): Promise<any> {
     return this.request(
       `/music/track/${trackId}`,
