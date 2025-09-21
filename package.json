@@ -10,16 +10,19 @@
     "web": "pnpm --filter stround-mobile web",
     "test": "pnpm --filter stround-mobile test",
     "test:coverage": "pnpm --filter stround-mobile test:coverage",
-    "lint": "pnpm --filter stround-mobile lint",
-    "lint:fix": "pnpm --filter stround-mobile lint:fix",
-    "format": "pnpm --filter stround-mobile format",
-    "typecheck": "pnpm --filter stround-mobile typecheck",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "typecheck": "pnpm --filter stround-mobile typecheck && pnpm --filter stround-backend typecheck",
     "backend:dev": "pnpm --filter stround-backend dev",
     "backend:deploy": "pnpm --filter stround-backend deploy",
     "backend:typecheck": "pnpm --filter stround-backend typecheck",
     "commit": "cz"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.2.4",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0"
   },

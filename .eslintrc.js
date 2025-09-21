@@ -1,10 +1,5 @@
 module.exports = {
-  extends: [
-    'expo',
-    '@typescript-eslint/recommended',
-    'prettier',
-    'plugin:prettier/recommended',
-  ],
+  extends: ['expo', '@typescript-eslint/recommended', 'prettier', 'plugin:prettier/recommended'],
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {
     'prettier/prettier': 'error',

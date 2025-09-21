@@ -12,20 +12,31 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm test` - テスト実行
 - `npm run test:watch` - テスト監視モード
 - `npm run test:coverage` - テストカバレッジ
-- `npm run lint` - ESLint実行
-- `npm run lint:fix` - ESLint自動修正
-- `npm run format` - Prettier実行
+- `npm run lint` - Biome lint実行
+- `npm run lint:fix` - Biome lint自動修正
+- `npm run format` - Biome format実行
+- `npm run check` - Biome全体チェック
+- `npm run check:fix` - Biome全体チェック＆修正
 - `npm run typecheck` - TypeScript型チェック
 
 ### バックエンド（Hono API）
 - `cd backend && npm run dev` - Cloudflare Workers開発サーバー
 - `cd backend && npm run deploy` - 本番デプロイ
 - `cd backend && npm run build` - TypeScriptビルド
+- `cd backend && npm run lint` - Biome lint実行
+- `cd backend && npm run lint:fix` - Biome lint自動修正
+- `cd backend && npm run format` - Biome format実行
+- `cd backend && npm run check` - Biome全体チェック
+- `cd backend && npm run check:fix` - Biome全体チェック＆修正
 - `cd backend && npm run typecheck` - 型チェック
 
 ### モバイル専用
 - `cd mobile && npm start` - モバイル専用Expo開発
-- `cd mobile && npm run lint` - モバイル専用lint
+- `cd mobile && npm run lint` - モバイル専用Biome lint
+- `cd mobile && npm run lint:fix` - モバイル専用Biome lint自動修正
+- `cd mobile && npm run format` - モバイル専用Biome format
+- `cd mobile && npm run check` - モバイル専用Biome全体チェック
+- `cd mobile && npm run check:fix` - モバイル専用Biome全体チェック＆修正
 - `cd mobile && npm run typecheck` - モバイル専用型チェック
 
 ### データベース
