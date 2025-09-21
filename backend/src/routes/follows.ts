@@ -1,7 +1,7 @@
-import { Hono } from 'hono';
-import { createSupabaseClient } from '../lib/supabase';
-import type { Env } from '../index';
-import { createNotification } from './notifications';
+import { Hono } from "hono";
+import type { Env } from "../index";
+import { createSupabaseClient } from "../lib/supabase";
+import { createNotification } from "./notifications";
 
 interface AuthContext {
   user: {
@@ -13,52 +13,55 @@ interface AuthContext {
 const followsRouter = new Hono<{ Bindings: Env; Variables: AuthContext }>();
 
 // Follow a user
-followsRouter.post('/:followingId', async (c) => {
+followsRouter.post("/:followingId", async (c) => {
   try {
-    const user = c.get('user');
-    const followingId = c.req.param('followingId');
+    const user = c.get("user");
+    const followingId = c.req.param("followingId");
 
     if (!user) {
-      return c.json({ error: '認証が必要です' }, 401);
+      return c.json({ error: "認証が必要です" }, 401);
     }
 
     if (user.id === followingId) {
-      return c.json({ error: '自分をフォローすることはできません' }, 400);
+      return c.json({ error: "自分をフォローすることはできません" }, 400);
     }
 
-    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+    const supabase = createSupabaseClient(
+      c.env.SUPABASE_URL,
+      c.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
 
     // Check if user exists
     const { data: targetUser, error: userError } = await supabase
-      .from('profiles')
-      .select('id, username')
-      .eq('id', followingId)
+      .from("profiles")
+      .select("id, username")
+      .eq("id", followingId)
       .single();
 
     if (userError || !targetUser) {
-      return c.json({ error: 'ユーザーが見つかりません' }, 404);
+      return c.json({ error: "ユーザーが見つかりません" }, 404);
     }
 
     // Check if already following
     const { data: existingFollow, error: checkError } = await supabase
-      .from('follows')
-      .select('id')
-      .eq('follower_id', user.id)
-      .eq('following_id', followingId)
+      .from("follows")
+      .select("id")
+      .eq("follower_id", user.id)
+      .eq("following_id", followingId)
       .single();
 
-    if (checkError && checkError.code !== 'PGRST116') {
-      console.error('Check follow error:', checkError);
-      return c.json({ error: 'フォロー状態の確認に失敗しました' }, 500);
+    if (checkError && checkError.code !== "PGRST116") {
+      console.error("Check follow error:", checkError);
+      return c.json({ error: "フォロー状態の確認に失敗しました" }, 500);
     }
 
     if (existingFollow) {
-      return c.json({ error: '既にフォローしています' }, 409);
+      return c.json({ error: "既にフォローしています" }, 409);
     }
 
     // Create follow relationship
     const { data: follow, error: followError } = await supabase
-      .from('follows')
+      .from("follows")
       .insert({
         follower_id: user.id,
         following_id: followingId,
@@ -75,67 +78,73 @@ followsRouter.post('/:followingId', async (c) => {
       .single();
 
     if (followError) {
-      console.error('Follow error:', followError);
-      return c.json({ error: 'フォローに失敗しました' }, 500);
+      console.error("Follow error:", followError);
+      return c.json({ error: "フォローに失敗しました" }, 500);
     }
 
     // Create follow notification
     await createNotification(
       followingId,
-      'follow',
+      "follow",
       user.id,
-      `${targetUser.username}があなたをフォローしました`
+      `${targetUser.username}があなたをフォローしました`,
     );
 
-    return c.json({ follow, message: 'フォローしました' }, 201);
+    return c.json({ follow, message: "フォローしました" }, 201);
   } catch (error) {
-    console.error('Follow endpoint error:', error);
-    return c.json({ error: 'サーバーエラーが発生しました' }, 500);
+    console.error("Follow endpoint error:", error);
+    return c.json({ error: "サーバーエラーが発生しました" }, 500);
   }
 });
 
 // Unfollow a user
-followsRouter.delete('/:followingId', async (c) => {
+followsRouter.delete("/:followingId", async (c) => {
   try {
-    const user = c.get('user');
-    const followingId = c.req.param('followingId');
+    const user = c.get("user");
+    const followingId = c.req.param("followingId");
 
     if (!user) {
-      return c.json({ error: '認証が必要です' }, 401);
+      return c.json({ error: "認証が必要です" }, 401);
     }
 
-    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+    const supabase = createSupabaseClient(
+      c.env.SUPABASE_URL,
+      c.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
 
     const { error } = await supabase
-      .from('follows')
+      .from("follows")
       .delete()
-      .eq('follower_id', user.id)
-      .eq('following_id', followingId);
+      .eq("follower_id", user.id)
+      .eq("following_id", followingId);
 
     if (error) {
-      console.error('Unfollow error:', error);
-      return c.json({ error: 'アンフォローに失敗しました' }, 500);
+      console.error("Unfollow error:", error);
+      return c.json({ error: "アンフォローに失敗しました" }, 500);
     }
 
-    return c.json({ message: 'アンフォローしました' });
+    return c.json({ message: "アンフォローしました" });
   } catch (error) {
-    console.error('Unfollow endpoint error:', error);
-    return c.json({ error: 'サーバーエラーが発生しました' }, 500);
+    console.error("Unfollow endpoint error:", error);
+    return c.json({ error: "サーバーエラーが発生しました" }, 500);
   }
 });
 
 // Get user's following
-followsRouter.get('/following/:userId', async (c) => {
+followsRouter.get("/following/:userId", async (c) => {
   try {
-    const userId = c.req.param('userId');
-    const page = Number(c.req.query('page')) || 1;
-    const limit = Number(c.req.query('limit')) || 20;
+    const userId = c.req.param("userId");
+    const page = Number(c.req.query("page")) || 1;
+    const limit = Number(c.req.query("limit")) || 20;
     const offset = (page - 1) * limit;
 
-    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+    const supabase = createSupabaseClient(
+      c.env.SUPABASE_URL,
+      c.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
 
     const { data: following, error } = await supabase
-      .from('follows')
+      .from("follows")
       .select(`
         created_at,
         profiles!follows_following_id_fkey (
@@ -146,34 +155,37 @@ followsRouter.get('/following/:userId', async (c) => {
           avatar_url
         )
       `)
-      .eq('follower_id', userId)
-      .order('created_at', { ascending: false })
+      .eq("follower_id", userId)
+      .order("created_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
     if (error) {
-      console.error('Get following error:', error);
-      return c.json({ error: 'フォロー中ユーザー取得に失敗しました' }, 500);
+      console.error("Get following error:", error);
+      return c.json({ error: "フォロー中ユーザー取得に失敗しました" }, 500);
     }
 
     return c.json({ following, page, limit });
   } catch (error) {
-    console.error('Get following endpoint error:', error);
-    return c.json({ error: 'サーバーエラーが発生しました' }, 500);
+    console.error("Get following endpoint error:", error);
+    return c.json({ error: "サーバーエラーが発生しました" }, 500);
   }
 });
 
 // Get user's followers
-followsRouter.get('/followers/:userId', async (c) => {
+followsRouter.get("/followers/:userId", async (c) => {
   try {
-    const userId = c.req.param('userId');
-    const page = Number(c.req.query('page')) || 1;
-    const limit = Number(c.req.query('limit')) || 20;
+    const userId = c.req.param("userId");
+    const page = Number(c.req.query("page")) || 1;
+    const limit = Number(c.req.query("limit")) || 20;
     const offset = (page - 1) * limit;
 
-    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+    const supabase = createSupabaseClient(
+      c.env.SUPABASE_URL,
+      c.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
 
     const { data: followers, error } = await supabase
-      .from('follows')
+      .from("follows")
       .select(`
         created_at,
         profiles!follows_follower_id_fkey (
@@ -184,93 +196,102 @@ followsRouter.get('/followers/:userId', async (c) => {
           avatar_url
         )
       `)
-      .eq('following_id', userId)
-      .order('created_at', { ascending: false })
+      .eq("following_id", userId)
+      .order("created_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
     if (error) {
-      console.error('Get followers error:', error);
-      return c.json({ error: 'フォロワー取得に失敗しました' }, 500);
+      console.error("Get followers error:", error);
+      return c.json({ error: "フォロワー取得に失敗しました" }, 500);
     }
 
     return c.json({ followers, page, limit });
   } catch (error) {
-    console.error('Get followers endpoint error:', error);
-    return c.json({ error: 'サーバーエラーが発生しました' }, 500);
+    console.error("Get followers endpoint error:", error);
+    return c.json({ error: "サーバーエラーが発生しました" }, 500);
   }
 });
 
 // Check if user is following another user
-followsRouter.get('/status/:followerId/:followingId', async (c) => {
+followsRouter.get("/status/:followerId/:followingId", async (c) => {
   try {
-    const followerId = c.req.param('followerId');
-    const followingId = c.req.param('followingId');
+    const followerId = c.req.param("followerId");
+    const followingId = c.req.param("followingId");
 
-    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+    const supabase = createSupabaseClient(
+      c.env.SUPABASE_URL,
+      c.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
 
     const { data: follow, error } = await supabase
-      .from('follows')
-      .select('id')
-      .eq('follower_id', followerId)
-      .eq('following_id', followingId)
+      .from("follows")
+      .select("id")
+      .eq("follower_id", followerId)
+      .eq("following_id", followingId)
       .single();
 
-    if (error && error.code !== 'PGRST116') {
-      console.error('Check follow status error:', error);
-      return c.json({ error: 'フォロー状態の確認に失敗しました' }, 500);
+    if (error && error.code !== "PGRST116") {
+      console.error("Check follow status error:", error);
+      return c.json({ error: "フォロー状態の確認に失敗しました" }, 500);
     }
 
     return c.json({ isFollowing: !!follow });
   } catch (error) {
-    console.error('Check follow status error:', error);
-    return c.json({ error: 'サーバーエラーが発生しました' }, 500);
+    console.error("Check follow status error:", error);
+    return c.json({ error: "サーバーエラーが発生しました" }, 500);
   }
 });
 
 // Get follow status for authenticated user
-followsRouter.get('/status/:userId', async (c) => {
+followsRouter.get("/status/:userId", async (c) => {
   try {
-    const currentUserId = c.get('user')?.id;
-    const targetUserId = c.req.param('userId');
+    const currentUserId = c.get("user")?.id;
+    const targetUserId = c.req.param("userId");
 
     if (!currentUserId) {
-      return c.json({ error: '認証が必要です' }, 401);
+      return c.json({ error: "認証が必要です" }, 401);
     }
 
     if (!targetUserId) {
-      return c.json({ error: 'ユーザーIDが必要です' }, 400);
+      return c.json({ error: "ユーザーIDが必要です" }, 400);
     }
 
-    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+    const supabase = createSupabaseClient(
+      c.env.SUPABASE_URL,
+      c.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
 
     // Check if current user is following target user
     const { data: followData, error: followError } = await supabase
-      .from('follows')
-      .select('id')
-      .eq('follower_id', currentUserId)
-      .eq('following_id', targetUserId)
+      .from("follows")
+      .select("id")
+      .eq("follower_id", currentUserId)
+      .eq("following_id", targetUserId)
       .single();
 
-    if (followError && followError.code !== 'PGRST116') {
-      console.error('Follow status check error:', followError);
-      return c.json({ error: 'フォロー状態の確認に失敗しました' }, 500);
+    if (followError && followError.code !== "PGRST116") {
+      console.error("Follow status check error:", followError);
+      return c.json({ error: "フォロー状態の確認に失敗しました" }, 500);
     }
 
     // Get follow counts
     const [followingCountResult, followersCountResult] = await Promise.all([
       supabase
-        .from('follows')
-        .select('*', { count: 'exact', head: true })
-        .eq('follower_id', targetUserId),
+        .from("follows")
+        .select("*", { count: "exact", head: true })
+        .eq("follower_id", targetUserId),
       supabase
-        .from('follows')
-        .select('*', { count: 'exact', head: true })
-        .eq('following_id', targetUserId),
+        .from("follows")
+        .select("*", { count: "exact", head: true })
+        .eq("following_id", targetUserId),
     ]);
 
     if (followingCountResult.error || followersCountResult.error) {
-      console.error('Count error:', followingCountResult.error || followersCountResult.error);
-      return c.json({ error: 'フォロー数の取得に失敗しました' }, 500);
+      console.error(
+        "Count error:",
+        followingCountResult.error || followersCountResult.error,
+      );
+      return c.json({ error: "フォロー数の取得に失敗しました" }, 500);
     }
 
     return c.json({
@@ -279,37 +300,40 @@ followsRouter.get('/status/:userId', async (c) => {
       followersCount: followersCountResult.count || 0,
     });
   } catch (error) {
-    console.error('Follow status endpoint error:', error);
-    return c.json({ error: 'サーバーエラーが発生しました' }, 500);
+    console.error("Follow status endpoint error:", error);
+    return c.json({ error: "サーバーエラーが発生しました" }, 500);
   }
 });
 
 // Get follow counts for a user
-followsRouter.get('/counts/:userId', async (c) => {
+followsRouter.get("/counts/:userId", async (c) => {
   try {
-    const userId = c.req.param('userId');
-    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+    const userId = c.req.param("userId");
+    const supabase = createSupabaseClient(
+      c.env.SUPABASE_URL,
+      c.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
 
     // Get followers count
     const { count: followersCount, error: followersError } = await supabase
-      .from('follows')
-      .select('*', { count: 'exact', head: true })
-      .eq('following_id', userId);
+      .from("follows")
+      .select("*", { count: "exact", head: true })
+      .eq("following_id", userId);
 
     if (followersError) {
-      console.error('Get followers count error:', followersError);
-      return c.json({ error: 'フォロワー数の取得に失敗しました' }, 500);
+      console.error("Get followers count error:", followersError);
+      return c.json({ error: "フォロワー数の取得に失敗しました" }, 500);
     }
 
     // Get following count
     const { count: followingCount, error: followingError } = await supabase
-      .from('follows')
-      .select('*', { count: 'exact', head: true })
-      .eq('follower_id', userId);
+      .from("follows")
+      .select("*", { count: "exact", head: true })
+      .eq("follower_id", userId);
 
     if (followingError) {
-      console.error('Get following count error:', followingError);
-      return c.json({ error: 'フォロー中数の取得に失敗しました' }, 500);
+      console.error("Get following count error:", followingError);
+      return c.json({ error: "フォロー中数の取得に失敗しました" }, 500);
     }
 
     return c.json({
@@ -317,8 +341,8 @@ followsRouter.get('/counts/:userId', async (c) => {
       following: followingCount || 0,
     });
   } catch (error) {
-    console.error('Get follow counts error:', error);
-    return c.json({ error: 'サーバーエラーが発生しました' }, 500);
+    console.error("Get follow counts error:", error);
+    return c.json({ error: "サーバーエラーが発生しました" }, 500);
   }
 });
 

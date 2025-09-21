@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Surface, Text, Avatar, IconButton, Portal, Modal } from 'react-native-paper';
-import LikeButton from './LikeButton';
-import LikesList from './LikesList';
+import React, { useState } from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Avatar,
+  IconButton,
+  Modal,
+  Portal,
+  Surface,
+  Text,
+} from "react-native-paper";
+import LikeButton from "./LikeButton";
+import LikesList from "./LikesList";
 
 interface Post {
   id: string;
@@ -25,7 +32,11 @@ interface PostCardProps {
   onUserPress?: (userId: string) => void;
 }
 
-export default function PostCard({ post, onCommentPress, onUserPress }: PostCardProps) {
+export default function PostCard({
+  post,
+  onCommentPress,
+  onUserPress,
+}: PostCardProps) {
   const [likesModalVisible, setLikesModalVisible] = useState(false);
 
   const formatDate = (dateString: string) => {
@@ -41,7 +52,7 @@ export default function PostCard({ post, onCommentPress, onUserPress }: PostCard
       return `${diffHours}時間前`;
     } else {
       const diffMinutes = Math.floor(diffMs / (1000 * 60));
-      return diffMinutes > 0 ? `${diffMinutes}分前` : '今';
+      return diffMinutes > 0 ? `${diffMinutes}分前` : "今";
     }
   };
 
@@ -90,13 +101,11 @@ export default function PostCard({ post, onCommentPress, onUserPress }: PostCard
               onPress={() => onCommentPress?.(post.id)}
               style={styles.iconButton}
             />
-            <Text style={styles.actionCount}>
-              {post.comment_count || 0}
-            </Text>
+            <Text style={styles.actionCount}>{post.comment_count || 0}</Text>
           </View>
 
-          <TouchableOpacity 
-            style={styles.actionButton} 
+          <TouchableOpacity
+            style={styles.actionButton}
             onPress={handleLikeCountPress}
           >
             <LikeButton
@@ -132,15 +141,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     marginVertical: 4,
     borderRadius: 8,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   header: {
     padding: 16,
     paddingBottom: 8,
   },
   userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   avatar: {
     marginRight: 12,
@@ -150,12 +159,12 @@ const styles = StyleSheet.create({
   },
   displayName: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 2,
   },
   username: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   content: {
     paddingHorizontal: 16,
@@ -166,15 +175,15 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   actions: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 8,
     paddingVertical: 8,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: "#f0f0f0",
   },
   actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 32,
   },
   iconButton: {
@@ -182,13 +191,13 @@ const styles = StyleSheet.create({
   },
   actionCount: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginLeft: 4,
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     margin: 20,
     borderRadius: 8,
-    height: '70%',
+    height: "70%",
   },
 });

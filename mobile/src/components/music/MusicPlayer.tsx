@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { Card, IconButton, Text, ProgressBar } from 'react-native-paper';
-import { useAudioPlayer } from 'expo-audio';
+import { useAudioPlayer } from "expo-audio";
+import React, { useEffect, useRef, useState } from "react";
+import { Alert, StyleSheet, View } from "react-native";
+import { Card, IconButton, ProgressBar, Text } from "react-native-paper";
 
 interface Track {
   id: string;
@@ -38,7 +38,10 @@ export default function MusicPlayer({ track, onClose }: MusicPlayerProps) {
 
   const loadAudio = async () => {
     if (!track?.preview_url) {
-      Alert.alert('プレビュー再生不可', 'この楽曲にはプレビューが提供されていません');
+      Alert.alert(
+        "プレビュー再生不可",
+        "この楽曲にはプレビューが提供されていません",
+      );
       return;
     }
 
@@ -59,8 +62,8 @@ export default function MusicPlayer({ track, onClose }: MusicPlayerProps) {
       }, 200);
       return () => clearInterval(interval);
     } catch (error) {
-      console.error('Audio load error:', error);
-      Alert.alert('エラー', '音楽の読み込みに失敗しました');
+      console.error("Audio load error:", error);
+      Alert.alert("エラー", "音楽の読み込みに失敗しました");
     } finally {
       setIsLoading(false);
     }
@@ -75,8 +78,8 @@ export default function MusicPlayer({ track, onClose }: MusicPlayerProps) {
         player.play();
       }
     } catch (error) {
-      console.error('Play/Pause error:', error);
-      Alert.alert('エラー', '再生操作に失敗しました');
+      console.error("Play/Pause error:", error);
+      Alert.alert("エラー", "再生操作に失敗しました");
     }
   };
 
@@ -86,20 +89,20 @@ export default function MusicPlayer({ track, onClose }: MusicPlayerProps) {
       const newPosition = progress * duration;
       player.seekTo(newPosition / 1000);
     } catch (error) {
-      console.error('Seek error:', error);
+      console.error("Seek error:", error);
     }
   };
 
   const formatTime = (milliseconds: number) => {
     const minutes = Math.floor(milliseconds / 60000);
     const seconds = Math.floor((milliseconds % 60000) / 1000);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const handleOpenSpotify = () => {
     if (track?.external_url) {
       // TODO: Linking.openURL(track.external_url)を実装
-      Alert.alert('Spotify', 'Spotifyでフル楽曲を聴くことができます');
+      Alert.alert("Spotify", "Spotifyでフル楽曲を聴くことができます");
     }
   };
 
@@ -121,11 +124,7 @@ export default function MusicPlayer({ track, onClose }: MusicPlayerProps) {
               {track.artist}
             </Text>
           </View>
-          <IconButton
-            icon="close"
-            size={24}
-            onPress={onClose}
-          />
+          <IconButton icon="close" size={24} onPress={onClose} />
         </View>
 
         {/* プレイヤーコントロール */}
@@ -179,19 +178,19 @@ export default function MusicPlayer({ track, onClose }: MusicPlayerProps) {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 16,
     left: 16,
     right: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     zIndex: 1000,
   },
   content: {
     paddingVertical: 12,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
   },
   trackInfo: {
@@ -199,15 +198,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   artist: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   controls: {
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 8,
   },
   progressSection: {
@@ -215,33 +214,33 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 4,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: "#e0e0e0",
   },
   timeLabels: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 4,
   },
   timeText: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
   },
   previewNote: {
     fontSize: 12,
-    color: '#888',
-    textAlign: 'center',
+    color: "#888",
+    textAlign: "center",
     marginVertical: 4,
   },
   spotifyButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 8,
   },
   spotifyText: {
     fontSize: 14,
-    color: '#1DB954',
+    color: "#1DB954",
     marginLeft: 8,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });

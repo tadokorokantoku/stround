@@ -1,33 +1,35 @@
-import 'react-native-gesture-handler/jestSetup';
-import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock';
+import "react-native-gesture-handler/jestSetup";
+import mockAsyncStorage from "@react-native-async-storage/async-storage/jest/async-storage-mock";
 
 // AsyncStorage のモック
-jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
+jest.mock("@react-native-async-storage/async-storage", () => mockAsyncStorage);
 
 // React Native Reanimated のモック
-jest.mock('react-native-reanimated', () => {
-  const Reanimated = require('react-native-reanimated/mock');
+jest.mock("react-native-reanimated", () => {
+  const Reanimated = require("react-native-reanimated/mock");
   Reanimated.default.call = () => {};
   return Reanimated;
 });
 
 // Expo modules のモック
-jest.mock('expo-constants', () => ({
+jest.mock("expo-constants", () => ({
   default: {
-    experienceUrl: 'http://localhost:8081',
+    experienceUrl: "http://localhost:8081",
     manifest: {},
   },
 }));
 
-jest.mock('expo-notifications', () => ({
-  requestPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
-  getPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
+jest.mock("expo-notifications", () => ({
+  requestPermissionsAsync: jest.fn(() =>
+    Promise.resolve({ status: "granted" }),
+  ),
+  getPermissionsAsync: jest.fn(() => Promise.resolve({ status: "granted" })),
   setNotificationHandler: jest.fn(),
   scheduleNotificationAsync: jest.fn(),
   cancelAllScheduledNotificationsAsync: jest.fn(),
 }));
 
-jest.mock('expo-av', () => ({
+jest.mock("expo-av", () => ({
   Audio: {
     Recording: {
       createAsync: jest.fn(),
@@ -37,10 +39,12 @@ jest.mock('expo-av', () => ({
 }));
 
 // Supabase のモック
-jest.mock('../lib/supabase', () => ({
+jest.mock("../lib/supabase", () => ({
   supabase: {
     auth: {
-      getSession: jest.fn(() => Promise.resolve({ data: { session: null }, error: null })),
+      getSession: jest.fn(() =>
+        Promise.resolve({ data: { session: null }, error: null }),
+      ),
       signInWithPassword: jest.fn(),
       signUp: jest.fn(),
       signOut: jest.fn(),
@@ -58,7 +62,7 @@ jest.mock('../lib/supabase', () => ({
 }));
 
 // React Navigation のモック
-jest.mock('@react-navigation/native', () => ({
+jest.mock("@react-navigation/native", () => ({
   useNavigation: () => ({
     navigate: jest.fn(),
     goBack: jest.fn(),
@@ -71,7 +75,7 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 // React Query のモック
-jest.mock('@tanstack/react-query', () => ({
+jest.mock("@tanstack/react-query", () => ({
   useQuery: jest.fn(() => ({
     data: null,
     isLoading: false,
@@ -107,19 +111,19 @@ global.fetch = jest.fn(() =>
     ok: true,
     status: 200,
     json: () => Promise.resolve({}),
-  })
+  }),
 ) as jest.Mock;
 
 // タイムゾーンを固定
-process.env.TZ = 'Asia/Tokyo';
+process.env.TZ = "Asia/Tokyo";
 
 // Console warnings を抑制（テスト中の不要な警告を減らす）
 const originalWarn = console.warn;
 beforeAll(() => {
   console.warn = (...args) => {
     if (
-      typeof args[0] === 'string' &&
-      args[0].includes('Warning: ReactDOM.render is no longer supported')
+      typeof args[0] === "string" &&
+      args[0].includes("Warning: ReactDOM.render is no longer supported")
     ) {
       return;
     }

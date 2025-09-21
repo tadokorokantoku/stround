@@ -1,68 +1,87 @@
-var __create = Object.create;
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-var __esm = (fn, res) => function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-};
-var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
-var __export = (target, all) => {
+var Create = Object.create;
+var DefProp = Object.defineProperty;
+var GetOwnPropDesc = Object.getOwnPropertyDescriptor;
+var GetOwnPropNames = Object.getOwnPropertyNames;
+var GetProtoOf = Object.getPrototypeOf;
+var HasOwnProp = Object.prototype.hasOwnProperty;
+var Name = (target, value) =>
+  DefProp(target, "name", { value, configurable: true });
+var Esm = (fn, res) =>
+  function Init() {
+    return fn && (res = (0, fn[GetOwnPropNames(fn)[0]])((fn = 0))), res;
+  };
+var CommonJs = (cb, mod) =>
+  function Require() {
+    return (
+      mod ||
+        (0, cb[GetOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod),
+      mod.exports
+    );
+  };
+var Export = (target, all) => {
   for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
+    DefProp(target, name, { get: all[name], enumerable: true });
 };
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+var CopyProps = (to, from, except, desc) => {
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of GetOwnPropNames(from))
+      if (!HasOwnProp.call(to, key) && key !== except)
+        DefProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = GetOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var ToEsm = (mod, isNodeMode, target) => (
+  (target = mod != null ? Create(GetProtoOf(mod)) : {}),
+  CopyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule
+      ? DefProp(target, "default", { value: mod, enumerable: true })
+      : target,
+    mod,
+  )
+);
+var ToCommonJs = (mod) =>
+  CopyProps(DefProp({}, "__esModule", { value: true }), mod);
 
 // .wrangler/tmp/bundle-ZWIRFQ/checked-fetch.js
 function checkURL(request, init) {
-  const url = request instanceof URL ? request : new URL(
-    (typeof request === "string" ? new Request(request, init) : request).url
-  );
+  const url =
+    request instanceof URL
+      ? request
+      : new URL(
+          (typeof request === "string" ? new Request(request, init) : request)
+            .url,
+        );
   if (url.port && url.port !== "443" && url.protocol === "https:") {
     if (!urls.has(url.toString())) {
       urls.add(url.toString());
       console.warn(
         `WARNING: known issue with \`fetch()\` requests to custom HTTPS ports in published Workers:
  - ${url.toString()} - the custom port will be ignored when the Worker is published using the \`wrangler deploy\` command.
-`
+`,
       );
     }
   }
 }
 var urls;
-var init_checked_fetch = __esm({
+var initCheckedFetch = Esm({
   ".wrangler/tmp/bundle-ZWIRFQ/checked-fetch.js"() {
-    "use strict";
     urls = /* @__PURE__ */ new Set();
-    __name(checkURL, "checkURL");
+    Name(checkURL, "checkURL");
     globalThis.fetch = new Proxy(globalThis.fetch, {
       apply(target, thisArg, argArray) {
         const [request, init] = argArray;
         checkURL(request, init);
         return Reflect.apply(target, thisArg, argArray);
-      }
+      },
     });
-  }
+  },
 });
 
 // .wrangler/tmp/bundle-ZWIRFQ/strip-cf-connecting-ip-header.js
@@ -71,53 +90,57 @@ function stripCfConnectingIPHeader(input, init) {
   request.headers.delete("CF-Connecting-IP");
   return request;
 }
-var init_strip_cf_connecting_ip_header = __esm({
+var initStripCfConnectingIpHeader = Esm({
   ".wrangler/tmp/bundle-ZWIRFQ/strip-cf-connecting-ip-header.js"() {
-    "use strict";
-    __name(stripCfConnectingIPHeader, "stripCfConnectingIPHeader");
+    Name(stripCfConnectingIPHeader, "stripCfConnectingIPHeader");
     globalThis.fetch = new Proxy(globalThis.fetch, {
       apply(target, thisArg, argArray) {
         return Reflect.apply(target, thisArg, [
-          stripCfConnectingIPHeader.apply(null, argArray)
+          stripCfConnectingIPHeader.apply(null, argArray),
         ]);
-      }
+      },
     });
-  }
+  },
 });
 
 // wrangler-modules-watch:wrangler:modules-watch
-var init_wrangler_modules_watch = __esm({
+var initWranglerModulesWatch = Esm({
   "wrangler-modules-watch:wrangler:modules-watch"() {
-    init_checked_fetch();
-    init_strip_cf_connecting_ip_header();
-    init_modules_watch_stub();
-  }
+    initCheckedFetch();
+    initStripCfConnectingIpHeader();
+    initModulesWatchStub();
+  },
 });
 
 // node_modules/wrangler/templates/modules-watch-stub.js
-var init_modules_watch_stub = __esm({
+var initModulesWatchStub = Esm({
   "node_modules/wrangler/templates/modules-watch-stub.js"() {
-    init_wrangler_modules_watch();
-  }
+    initWranglerModulesWatch();
+  },
 });
 
 // node_modules/@supabase/node-fetch/browser.js
-var browser_exports = {};
-__export(browser_exports, {
+var browserExports = {};
+Export(browserExports, {
   Headers: () => Headers2,
   Request: () => Request2,
   Response: () => Response2,
-  default: () => browser_default,
-  fetch: () => fetch2
+  default: () => browserDefault,
+  fetch: () => fetch2,
 });
-var getGlobal, globalObject, fetch2, browser_default, Headers2, Request2, Response2;
-var init_browser = __esm({
+var getGlobal,
+  globalObject,
+  fetch2,
+  browserDefault,
+  Headers2,
+  Request2,
+  Response2;
+var initBrowser = Esm({
   "node_modules/@supabase/node-fetch/browser.js"() {
-    "use strict";
-    init_checked_fetch();
-    init_strip_cf_connecting_ip_header();
-    init_modules_watch_stub();
-    getGlobal = /* @__PURE__ */ __name(function() {
+    initCheckedFetch();
+    initStripCfConnectingIpHeader();
+    initModulesWatchStub();
+    getGlobal = /* @__PURE__ */ Name(() => {
       if (typeof self !== "undefined") {
         return self;
       }
@@ -131,20 +154,19 @@ var init_browser = __esm({
     }, "getGlobal");
     globalObject = getGlobal();
     fetch2 = globalObject.fetch;
-    browser_default = globalObject.fetch.bind(globalObject);
+    browserDefault = globalObject.fetch.bind(globalObject);
     Headers2 = globalObject.Headers;
     Request2 = globalObject.Request;
     Response2 = globalObject.Response;
-  }
+  },
 });
 
 // node_modules/@supabase/postgrest-js/dist/cjs/PostgrestError.js
-var require_PostgrestError = __commonJS({
+var requirePostgrestError = CommonJs({
   "node_modules/@supabase/postgrest-js/dist/cjs/PostgrestError.js"(exports) {
-    "use strict";
-    init_checked_fetch();
-    init_strip_cf_connecting_ip_header();
-    init_modules_watch_stub();
+    initCheckedFetch();
+    initStripCfConnectingIpHeader();
+    initModulesWatchStub();
     Object.defineProperty(exports, "__esModule", { value: true });
     var PostgrestError2 = class extends Error {
       constructor(context) {
@@ -155,24 +177,23 @@ var require_PostgrestError = __commonJS({
         this.code = context.code;
       }
     };
-    __name(PostgrestError2, "PostgrestError");
+    Name(PostgrestError2, "PostgrestError");
     exports.default = PostgrestError2;
-  }
+  },
 });
 
 // node_modules/@supabase/postgrest-js/dist/cjs/PostgrestBuilder.js
-var require_PostgrestBuilder = __commonJS({
+var requirePostgrestBuilder = CommonJs({
   "node_modules/@supabase/postgrest-js/dist/cjs/PostgrestBuilder.js"(exports) {
-    "use strict";
-    init_checked_fetch();
-    init_strip_cf_connecting_ip_header();
-    init_modules_watch_stub();
-    var __importDefault = exports && exports.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
+    initCheckedFetch();
+    initStripCfConnectingIpHeader();
+    initModulesWatchStub();
+    var ImportDefault =
+      (exports && exports.__importDefault) ||
+      ((mod) => (mod && mod.__esModule ? mod : { default: mod }));
     Object.defineProperty(exports, "__esModule", { value: true });
-    var node_fetch_1 = __importDefault((init_browser(), __toCommonJS(browser_exports)));
-    var PostgrestError_1 = __importDefault(require_PostgrestError());
+    var nodeFetch1 = ImportDefault((initBrowser(), ToCommonJs(browserExports)));
+    var PostgrestError1 = ImportDefault(requirePostgrestError());
     var PostgrestBuilder2 = class {
       constructor(builder) {
         this.shouldThrowOnError = false;
@@ -187,7 +208,7 @@ var require_PostgrestBuilder = __commonJS({
         if (builder.fetch) {
           this.fetch = builder.fetch;
         } else if (typeof fetch === "undefined") {
-          this.fetch = node_fetch_1.default;
+          this.fetch = nodeFetch1.default;
         } else {
           this.fetch = fetch;
         }
@@ -220,14 +241,14 @@ var require_PostgrestBuilder = __commonJS({
         if (this.method !== "GET" && this.method !== "HEAD") {
           this.headers["Content-Type"] = "application/json";
         }
-        const _fetch = this.fetch;
-        let res = _fetch(this.url.toString(), {
+        const Fetch = this.fetch;
+        let res = Fetch(this.url.toString(), {
           method: this.method,
           headers: this.headers,
           body: JSON.stringify(this.body),
-          signal: this.signal
+          signal: this.signal,
         }).then(async (res2) => {
-          var _a, _b, _c;
+          var A, B, C;
           let error = null;
           let data = null;
           let count = null;
@@ -239,25 +260,41 @@ var require_PostgrestBuilder = __commonJS({
               if (body === "") {
               } else if (this.headers["Accept"] === "text/csv") {
                 data = body;
-              } else if (this.headers["Accept"] && this.headers["Accept"].includes("application/vnd.pgrst.plan+text")) {
+              } else if (
+                this.headers["Accept"] &&
+                this.headers["Accept"].includes(
+                  "application/vnd.pgrst.plan+text",
+                )
+              ) {
                 data = body;
               } else {
                 data = JSON.parse(body);
               }
             }
-            const countHeader = (_a = this.headers["Prefer"]) === null || _a === void 0 ? void 0 : _a.match(/count=(exact|planned|estimated)/);
-            const contentRange = (_b = res2.headers.get("content-range")) === null || _b === void 0 ? void 0 : _b.split("/");
+            const countHeader =
+              (A = this.headers["Prefer"]) === null || A === void 0
+                ? void 0
+                : A.match(/count=(exact|planned|estimated)/);
+            const contentRange =
+              (B = res2.headers.get("content-range")) === null || B === void 0
+                ? void 0
+                : B.split("/");
             if (countHeader && contentRange && contentRange.length > 1) {
               count = parseInt(contentRange[1]);
             }
-            if (this.isMaybeSingle && this.method === "GET" && Array.isArray(data)) {
+            if (
+              this.isMaybeSingle &&
+              this.method === "GET" &&
+              Array.isArray(data)
+            ) {
               if (data.length > 1) {
                 error = {
                   // https://github.com/PostgREST/postgrest/blob/a867d79c42419af16c18c3fb019eba8df992626f/src/PostgREST/Error.hs#L553
                   code: "PGRST116",
                   details: `Results contain ${data.length} rows, application/vnd.pgrst.object+json requires 1 row`,
                   hint: null,
-                  message: "JSON object requested, multiple (or no) rows returned"
+                  message:
+                    "JSON object requested, multiple (or no) rows returned",
                 };
                 data = null;
                 count = null;
@@ -285,17 +322,25 @@ var require_PostgrestBuilder = __commonJS({
                 statusText = "No Content";
               } else {
                 error = {
-                  message: body
+                  message: body,
                 };
               }
             }
-            if (error && this.isMaybeSingle && ((_c = error === null || error === void 0 ? void 0 : error.details) === null || _c === void 0 ? void 0 : _c.includes("0 rows"))) {
+            if (
+              error &&
+              this.isMaybeSingle &&
+              ((C =
+                error === null || error === void 0 ? void 0 : error.details) ===
+                null || C === void 0
+                ? void 0
+                : C.includes("0 rows"))
+            ) {
               error = null;
               status = 200;
               statusText = "OK";
             }
             if (error && this.shouldThrowOnError) {
-              throw new PostgrestError_1.default(error);
+              throw new PostgrestError1.default(error);
             }
           }
           const postgrestResponse = {
@@ -303,24 +348,24 @@ var require_PostgrestBuilder = __commonJS({
             data,
             count,
             status,
-            statusText
+            statusText,
           };
           return postgrestResponse;
         });
         if (!this.shouldThrowOnError) {
           res = res.catch((fetchError) => {
-            var _a, _b, _c;
+            var A, B, C;
             return {
               error: {
-                message: `${(_a = fetchError === null || fetchError === void 0 ? void 0 : fetchError.name) !== null && _a !== void 0 ? _a : "FetchError"}: ${fetchError === null || fetchError === void 0 ? void 0 : fetchError.message}`,
-                details: `${(_b = fetchError === null || fetchError === void 0 ? void 0 : fetchError.stack) !== null && _b !== void 0 ? _b : ""}`,
+                message: `${(A = fetchError === null || fetchError === void 0 ? void 0 : fetchError.name) !== null && A !== void 0 ? A : "FetchError"}: ${fetchError === null || fetchError === void 0 ? void 0 : fetchError.message}`,
+                details: `${(B = fetchError === null || fetchError === void 0 ? void 0 : fetchError.stack) !== null && B !== void 0 ? B : ""}`,
                 hint: "",
-                code: `${(_c = fetchError === null || fetchError === void 0 ? void 0 : fetchError.code) !== null && _c !== void 0 ? _c : ""}`
+                code: `${(C = fetchError === null || fetchError === void 0 ? void 0 : fetchError.code) !== null && C !== void 0 ? C : ""}`,
               },
               data: null,
               count: null,
               status: 0,
-              statusText: ""
+              statusText: "",
             };
           });
         }
@@ -361,24 +406,25 @@ var require_PostgrestBuilder = __commonJS({
         return this;
       }
     };
-    __name(PostgrestBuilder2, "PostgrestBuilder");
+    Name(PostgrestBuilder2, "PostgrestBuilder");
     exports.default = PostgrestBuilder2;
-  }
+  },
 });
 
 // node_modules/@supabase/postgrest-js/dist/cjs/PostgrestTransformBuilder.js
-var require_PostgrestTransformBuilder = __commonJS({
-  "node_modules/@supabase/postgrest-js/dist/cjs/PostgrestTransformBuilder.js"(exports) {
-    "use strict";
-    init_checked_fetch();
-    init_strip_cf_connecting_ip_header();
-    init_modules_watch_stub();
-    var __importDefault = exports && exports.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
+var requirePostgrestTransformBuilder = CommonJs({
+  "node_modules/@supabase/postgrest-js/dist/cjs/PostgrestTransformBuilder.js"(
+    exports,
+  ) {
+    initCheckedFetch();
+    initStripCfConnectingIpHeader();
+    initModulesWatchStub();
+    var ImportDefault =
+      (exports && exports.__importDefault) ||
+      ((mod) => (mod && mod.__esModule ? mod : { default: mod }));
     Object.defineProperty(exports, "__esModule", { value: true });
-    var PostgrestBuilder_1 = __importDefault(require_PostgrestBuilder());
-    var PostgrestTransformBuilder2 = class extends PostgrestBuilder_1.default {
+    var PostgrestBuilder1 = ImportDefault(requirePostgrestBuilder());
+    var PostgrestTransformBuilder2 = class extends PostgrestBuilder1.default {
       /**
        * Perform a SELECT on the query result.
        *
@@ -390,15 +436,20 @@ var require_PostgrestTransformBuilder = __commonJS({
        */
       select(columns) {
         let quoted = false;
-        const cleanedColumns = (columns !== null && columns !== void 0 ? columns : "*").split("").map((c2) => {
-          if (/\s/.test(c2) && !quoted) {
-            return "";
-          }
-          if (c2 === '"') {
-            quoted = !quoted;
-          }
-          return c2;
-        }).join("");
+        const cleanedColumns = (
+          columns !== null && columns !== void 0 ? columns : "*"
+        )
+          .split("")
+          .map((c2) => {
+            if (/\s/.test(c2) && !quoted) {
+              return "";
+            }
+            if (c2 === '"') {
+              quoted = !quoted;
+            }
+            return c2;
+          })
+          .join("");
         this.url.searchParams.set("select", cleanedColumns);
         if (this.headers["Prefer"]) {
           this.headers["Prefer"] += ",";
@@ -424,10 +475,21 @@ var require_PostgrestTransformBuilder = __commonJS({
        * @param options.foreignTable - Deprecated, use `options.referencedTable`
        * instead
        */
-      order(column, { ascending = true, nullsFirst, foreignTable, referencedTable = foreignTable } = {}) {
+      order(
+        column,
+        {
+          ascending = true,
+          nullsFirst,
+          foreignTable,
+          referencedTable = foreignTable,
+        } = {},
+      ) {
         const key = referencedTable ? `${referencedTable}.order` : "order";
         const existingOrder = this.url.searchParams.get(key);
-        this.url.searchParams.set(key, `${existingOrder ? `${existingOrder},` : ""}${column}.${ascending ? "asc" : "desc"}${nullsFirst === void 0 ? "" : nullsFirst ? ".nullsfirst" : ".nullslast"}`);
+        this.url.searchParams.set(
+          key,
+          `${existingOrder ? `${existingOrder},` : ""}${column}.${ascending ? "asc" : "desc"}${nullsFirst === void 0 ? "" : nullsFirst ? ".nullsfirst" : ".nullslast"}`,
+        );
         return this;
       }
       /**
@@ -441,7 +503,10 @@ var require_PostgrestTransformBuilder = __commonJS({
        * instead
        */
       limit(count, { foreignTable, referencedTable = foreignTable } = {}) {
-        const key = typeof referencedTable === "undefined" ? "limit" : `${referencedTable}.limit`;
+        const key =
+          typeof referencedTable === "undefined"
+            ? "limit"
+            : `${referencedTable}.limit`;
         this.url.searchParams.set(key, `${count}`);
         return this;
       }
@@ -461,8 +526,14 @@ var require_PostgrestTransformBuilder = __commonJS({
        * instead
        */
       range(from, to, { foreignTable, referencedTable = foreignTable } = {}) {
-        const keyOffset = typeof referencedTable === "undefined" ? "offset" : `${referencedTable}.offset`;
-        const keyLimit = typeof referencedTable === "undefined" ? "limit" : `${referencedTable}.limit`;
+        const keyOffset =
+          typeof referencedTable === "undefined"
+            ? "offset"
+            : `${referencedTable}.offset`;
+        const keyLimit =
+          typeof referencedTable === "undefined"
+            ? "limit"
+            : `${referencedTable}.limit`;
         this.url.searchParams.set(keyOffset, `${from}`);
         this.url.searchParams.set(keyLimit, `${to - from + 1}`);
         return this;
@@ -540,21 +611,32 @@ var require_PostgrestTransformBuilder = __commonJS({
        * @param options.format - The format of the output, can be `"text"` (default)
        * or `"json"`
        */
-      explain({ analyze = false, verbose = false, settings = false, buffers = false, wal = false, format = "text" } = {}) {
-        var _a;
+      explain({
+        analyze = false,
+        verbose = false,
+        settings = false,
+        buffers = false,
+        wal = false,
+        format = "text",
+      } = {}) {
+        var A;
         const options = [
           analyze ? "analyze" : null,
           verbose ? "verbose" : null,
           settings ? "settings" : null,
           buffers ? "buffers" : null,
-          wal ? "wal" : null
-        ].filter(Boolean).join("|");
-        const forMediatype = (_a = this.headers["Accept"]) !== null && _a !== void 0 ? _a : "application/json";
-        this.headers["Accept"] = `application/vnd.pgrst.plan+${format}; for="${forMediatype}"; options=${options};`;
-        if (format === "json")
-          return this;
-        else
-          return this;
+          wal ? "wal" : null,
+        ]
+          .filter(Boolean)
+          .join("|");
+        const forMediatype =
+          (A = this.headers["Accept"]) !== null && A !== void 0
+            ? A
+            : "application/json";
+        this.headers["Accept"] =
+          `application/vnd.pgrst.plan+${format}; for="${forMediatype}"; options=${options};`;
+        if (format === "json") return this;
+        else return this;
       }
       /**
        * Rollback the query.
@@ -562,8 +644,13 @@ var require_PostgrestTransformBuilder = __commonJS({
        * `data` will still be returned, but the query is not committed.
        */
       rollback() {
-        var _a;
-        if (((_a = this.headers["Prefer"]) !== null && _a !== void 0 ? _a : "").trim().length > 0) {
+        var A;
+        if (
+          ((A = this.headers["Prefer"]) !== null && A !== void 0
+            ? A
+            : ""
+          ).trim().length > 0
+        ) {
           this.headers["Prefer"] += ",tx=rollback";
         } else {
           this.headers["Prefer"] = "tx=rollback";
@@ -580,24 +667,27 @@ var require_PostgrestTransformBuilder = __commonJS({
         return this;
       }
     };
-    __name(PostgrestTransformBuilder2, "PostgrestTransformBuilder");
+    Name(PostgrestTransformBuilder2, "PostgrestTransformBuilder");
     exports.default = PostgrestTransformBuilder2;
-  }
+  },
 });
 
 // node_modules/@supabase/postgrest-js/dist/cjs/PostgrestFilterBuilder.js
-var require_PostgrestFilterBuilder = __commonJS({
-  "node_modules/@supabase/postgrest-js/dist/cjs/PostgrestFilterBuilder.js"(exports) {
-    "use strict";
-    init_checked_fetch();
-    init_strip_cf_connecting_ip_header();
-    init_modules_watch_stub();
-    var __importDefault = exports && exports.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
+var requirePostgrestFilterBuilder = CommonJs({
+  "node_modules/@supabase/postgrest-js/dist/cjs/PostgrestFilterBuilder.js"(
+    exports,
+  ) {
+    initCheckedFetch();
+    initStripCfConnectingIpHeader();
+    initModulesWatchStub();
+    var ImportDefault =
+      (exports && exports.__importDefault) ||
+      ((mod) => (mod && mod.__esModule ? mod : { default: mod }));
     Object.defineProperty(exports, "__esModule", { value: true });
-    var PostgrestTransformBuilder_1 = __importDefault(require_PostgrestTransformBuilder());
-    var PostgrestFilterBuilder2 = class extends PostgrestTransformBuilder_1.default {
+    var PostgrestTransformBuilder1 = ImportDefault(
+      requirePostgrestTransformBuilder(),
+    );
+    var PostgrestFilterBuilder2 = class extends PostgrestTransformBuilder1.default {
       /**
        * Match only rows where `column` is equal to `value`.
        *
@@ -677,7 +767,10 @@ var require_PostgrestFilterBuilder = __commonJS({
        * @param patterns - The patterns to match with
        */
       likeAllOf(column, patterns) {
-        this.url.searchParams.append(column, `like(all).{${patterns.join(",")}}`);
+        this.url.searchParams.append(
+          column,
+          `like(all).{${patterns.join(",")}}`,
+        );
         return this;
       }
       /**
@@ -687,7 +780,10 @@ var require_PostgrestFilterBuilder = __commonJS({
        * @param patterns - The patterns to match with
        */
       likeAnyOf(column, patterns) {
-        this.url.searchParams.append(column, `like(any).{${patterns.join(",")}}`);
+        this.url.searchParams.append(
+          column,
+          `like(any).{${patterns.join(",")}}`,
+        );
         return this;
       }
       /**
@@ -707,7 +803,10 @@ var require_PostgrestFilterBuilder = __commonJS({
        * @param patterns - The patterns to match with
        */
       ilikeAllOf(column, patterns) {
-        this.url.searchParams.append(column, `ilike(all).{${patterns.join(",")}}`);
+        this.url.searchParams.append(
+          column,
+          `ilike(all).{${patterns.join(",")}}`,
+        );
         return this;
       }
       /**
@@ -717,7 +816,10 @@ var require_PostgrestFilterBuilder = __commonJS({
        * @param patterns - The patterns to match with
        */
       ilikeAnyOf(column, patterns) {
-        this.url.searchParams.append(column, `ilike(any).{${patterns.join(",")}}`);
+        this.url.searchParams.append(
+          column,
+          `ilike(any).{${patterns.join(",")}}`,
+        );
         return this;
       }
       /**
@@ -743,12 +845,12 @@ var require_PostgrestFilterBuilder = __commonJS({
        * @param values - The values array to filter with
        */
       in(column, values) {
-        const cleanedValues = Array.from(new Set(values)).map((s) => {
-          if (typeof s === "string" && new RegExp("[,()]").test(s))
-            return `"${s}"`;
-          else
-            return `${s}`;
-        }).join(",");
+        const cleanedValues = Array.from(new Set(values))
+          .map((s) => {
+            if (typeof s === "string" && /[,()]/.test(s)) return `"${s}"`;
+            else return `${s}`;
+          })
+          .join(",");
         this.url.searchParams.append(column, `in.(${cleanedValues})`);
         return this;
       }
@@ -879,7 +981,10 @@ var require_PostgrestFilterBuilder = __commonJS({
           typePart = "w";
         }
         const configPart = config === void 0 ? "" : `(${config})`;
-        this.url.searchParams.append(column, `${typePart}fts${configPart}.${query}`);
+        this.url.searchParams.append(
+          column,
+          `${typePart}fts${configPart}.${query}`,
+        );
         return this;
       }
       /**
@@ -950,23 +1055,26 @@ var require_PostgrestFilterBuilder = __commonJS({
         return this;
       }
     };
-    __name(PostgrestFilterBuilder2, "PostgrestFilterBuilder");
+    Name(PostgrestFilterBuilder2, "PostgrestFilterBuilder");
     exports.default = PostgrestFilterBuilder2;
-  }
+  },
 });
 
 // node_modules/@supabase/postgrest-js/dist/cjs/PostgrestQueryBuilder.js
-var require_PostgrestQueryBuilder = __commonJS({
-  "node_modules/@supabase/postgrest-js/dist/cjs/PostgrestQueryBuilder.js"(exports) {
-    "use strict";
-    init_checked_fetch();
-    init_strip_cf_connecting_ip_header();
-    init_modules_watch_stub();
-    var __importDefault = exports && exports.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
+var requirePostgrestQueryBuilder = CommonJs({
+  "node_modules/@supabase/postgrest-js/dist/cjs/PostgrestQueryBuilder.js"(
+    exports,
+  ) {
+    initCheckedFetch();
+    initStripCfConnectingIpHeader();
+    initModulesWatchStub();
+    var ImportDefault =
+      (exports && exports.__importDefault) ||
+      ((mod) => (mod && mod.__esModule ? mod : { default: mod }));
     Object.defineProperty(exports, "__esModule", { value: true });
-    var PostgrestFilterBuilder_1 = __importDefault(require_PostgrestFilterBuilder());
+    var PostgrestFilterBuilder1 = ImportDefault(
+      requirePostgrestFilterBuilder(),
+    );
     var PostgrestQueryBuilder2 = class {
       constructor(url, { headers = {}, schema, fetch: fetch3 }) {
         this.url = url;
@@ -998,26 +1106,31 @@ var require_PostgrestQueryBuilder = __commonJS({
       select(columns, { head: head2 = false, count } = {}) {
         const method = head2 ? "HEAD" : "GET";
         let quoted = false;
-        const cleanedColumns = (columns !== null && columns !== void 0 ? columns : "*").split("").map((c2) => {
-          if (/\s/.test(c2) && !quoted) {
-            return "";
-          }
-          if (c2 === '"') {
-            quoted = !quoted;
-          }
-          return c2;
-        }).join("");
+        const cleanedColumns = (
+          columns !== null && columns !== void 0 ? columns : "*"
+        )
+          .split("")
+          .map((c2) => {
+            if (/\s/.test(c2) && !quoted) {
+              return "";
+            }
+            if (c2 === '"') {
+              quoted = !quoted;
+            }
+            return c2;
+          })
+          .join("");
         this.url.searchParams.set("select", cleanedColumns);
         if (count) {
           this.headers["Prefer"] = `count=${count}`;
         }
-        return new PostgrestFilterBuilder_1.default({
+        return new PostgrestFilterBuilder1.default({
           method,
           url: this.url,
           headers: this.headers,
           schema: this.schema,
           fetch: this.fetch,
-          allowEmpty: false
+          allowEmpty: false,
         });
       }
       /**
@@ -1060,20 +1173,25 @@ var require_PostgrestQueryBuilder = __commonJS({
         }
         this.headers["Prefer"] = prefersHeaders.join(",");
         if (Array.isArray(values)) {
-          const columns = values.reduce((acc, x) => acc.concat(Object.keys(x)), []);
+          const columns = values.reduce(
+            (acc, x) => acc.concat(Object.keys(x)),
+            [],
+          );
           if (columns.length > 0) {
-            const uniqueColumns = [...new Set(columns)].map((column) => `"${column}"`);
+            const uniqueColumns = [...new Set(columns)].map(
+              (column) => `"${column}"`,
+            );
             this.url.searchParams.set("columns", uniqueColumns.join(","));
           }
         }
-        return new PostgrestFilterBuilder_1.default({
+        return new PostgrestFilterBuilder1.default({
           method,
           url: this.url,
           headers: this.headers,
           schema: this.schema,
           body: values,
           fetch: this.fetch,
-          allowEmpty: false
+          allowEmpty: false,
         });
       }
       /**
@@ -1114,9 +1232,19 @@ var require_PostgrestQueryBuilder = __commonJS({
        * inserting new rows, not when merging with existing rows under
        * `ignoreDuplicates: false`. This also only applies when doing bulk upserts.
        */
-      upsert(values, { onConflict, ignoreDuplicates = false, count, defaultToNull = true } = {}) {
+      upsert(
+        values,
+        {
+          onConflict,
+          ignoreDuplicates = false,
+          count,
+          defaultToNull = true,
+        } = {},
+      ) {
         const method = "POST";
-        const prefersHeaders = [`resolution=${ignoreDuplicates ? "ignore" : "merge"}-duplicates`];
+        const prefersHeaders = [
+          `resolution=${ignoreDuplicates ? "ignore" : "merge"}-duplicates`,
+        ];
         if (onConflict !== void 0)
           this.url.searchParams.set("on_conflict", onConflict);
         if (this.headers["Prefer"]) {
@@ -1130,20 +1258,25 @@ var require_PostgrestQueryBuilder = __commonJS({
         }
         this.headers["Prefer"] = prefersHeaders.join(",");
         if (Array.isArray(values)) {
-          const columns = values.reduce((acc, x) => acc.concat(Object.keys(x)), []);
+          const columns = values.reduce(
+            (acc, x) => acc.concat(Object.keys(x)),
+            [],
+          );
           if (columns.length > 0) {
-            const uniqueColumns = [...new Set(columns)].map((column) => `"${column}"`);
+            const uniqueColumns = [...new Set(columns)].map(
+              (column) => `"${column}"`,
+            );
             this.url.searchParams.set("columns", uniqueColumns.join(","));
           }
         }
-        return new PostgrestFilterBuilder_1.default({
+        return new PostgrestFilterBuilder1.default({
           method,
           url: this.url,
           headers: this.headers,
           schema: this.schema,
           body: values,
           fetch: this.fetch,
-          allowEmpty: false
+          allowEmpty: false,
         });
       }
       /**
@@ -1177,14 +1310,14 @@ var require_PostgrestQueryBuilder = __commonJS({
           prefersHeaders.push(`count=${count}`);
         }
         this.headers["Prefer"] = prefersHeaders.join(",");
-        return new PostgrestFilterBuilder_1.default({
+        return new PostgrestFilterBuilder1.default({
           method,
           url: this.url,
           headers: this.headers,
           schema: this.schema,
           body: values,
           fetch: this.fetch,
-          allowEmpty: false
+          allowEmpty: false,
         });
       }
       /**
@@ -1216,62 +1349,63 @@ var require_PostgrestQueryBuilder = __commonJS({
           prefersHeaders.unshift(this.headers["Prefer"]);
         }
         this.headers["Prefer"] = prefersHeaders.join(",");
-        return new PostgrestFilterBuilder_1.default({
+        return new PostgrestFilterBuilder1.default({
           method,
           url: this.url,
           headers: this.headers,
           schema: this.schema,
           fetch: this.fetch,
-          allowEmpty: false
+          allowEmpty: false,
         });
       }
     };
-    __name(PostgrestQueryBuilder2, "PostgrestQueryBuilder");
+    Name(PostgrestQueryBuilder2, "PostgrestQueryBuilder");
     exports.default = PostgrestQueryBuilder2;
-  }
+  },
 });
 
 // node_modules/@supabase/postgrest-js/dist/cjs/version.js
-var require_version = __commonJS({
+var requireVersion = CommonJs({
   "node_modules/@supabase/postgrest-js/dist/cjs/version.js"(exports) {
-    "use strict";
-    init_checked_fetch();
-    init_strip_cf_connecting_ip_header();
-    init_modules_watch_stub();
+    initCheckedFetch();
+    initStripCfConnectingIpHeader();
+    initModulesWatchStub();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.version = void 0;
     exports.version = "0.0.0-automated";
-  }
+  },
 });
 
 // node_modules/@supabase/postgrest-js/dist/cjs/constants.js
-var require_constants = __commonJS({
+var requireConstants = CommonJs({
   "node_modules/@supabase/postgrest-js/dist/cjs/constants.js"(exports) {
-    "use strict";
-    init_checked_fetch();
-    init_strip_cf_connecting_ip_header();
-    init_modules_watch_stub();
+    initCheckedFetch();
+    initStripCfConnectingIpHeader();
+    initModulesWatchStub();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.DEFAULT_HEADERS = void 0;
-    var version_1 = require_version();
-    exports.DEFAULT_HEADERS = { "X-Client-Info": `postgrest-js/${version_1.version}` };
-  }
+    var version1 = requireVersion();
+    exports.DEFAULT_HEADERS = {
+      "X-Client-Info": `postgrest-js/${version1.version}`,
+    };
+  },
 });
 
 // node_modules/@supabase/postgrest-js/dist/cjs/PostgrestClient.js
-var require_PostgrestClient = __commonJS({
+var requirePostgrestClient = CommonJs({
   "node_modules/@supabase/postgrest-js/dist/cjs/PostgrestClient.js"(exports) {
-    "use strict";
-    init_checked_fetch();
-    init_strip_cf_connecting_ip_header();
-    init_modules_watch_stub();
-    var __importDefault = exports && exports.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
+    initCheckedFetch();
+    initStripCfConnectingIpHeader();
+    initModulesWatchStub();
+    var ImportDefault =
+      (exports && exports.__importDefault) ||
+      ((mod) => (mod && mod.__esModule ? mod : { default: mod }));
     Object.defineProperty(exports, "__esModule", { value: true });
-    var PostgrestQueryBuilder_1 = __importDefault(require_PostgrestQueryBuilder());
-    var PostgrestFilterBuilder_1 = __importDefault(require_PostgrestFilterBuilder());
-    var constants_1 = require_constants();
+    var PostgrestQueryBuilder1 = ImportDefault(requirePostgrestQueryBuilder());
+    var PostgrestFilterBuilder1 = ImportDefault(
+      requirePostgrestFilterBuilder(),
+    );
+    var constants1 = requireConstants();
     var PostgrestClient2 = class {
       // TODO: Add back shouldThrowOnError once we figure out the typings
       /**
@@ -1285,7 +1419,10 @@ var require_PostgrestClient = __commonJS({
        */
       constructor(url, { headers = {}, schema, fetch: fetch3 } = {}) {
         this.url = url;
-        this.headers = Object.assign(Object.assign({}, constants_1.DEFAULT_HEADERS), headers);
+        this.headers = Object.assign(
+          Object.assign({}, constants1.DEFAULT_HEADERS),
+          headers,
+        );
         this.schemaName = schema;
         this.fetch = fetch3;
       }
@@ -1296,10 +1433,10 @@ var require_PostgrestClient = __commonJS({
        */
       from(relation) {
         const url = new URL(`${this.url}/${relation}`);
-        return new PostgrestQueryBuilder_1.default(url, {
+        return new PostgrestQueryBuilder1.default(url, {
           headers: Object.assign({}, this.headers),
           schema: this.schemaName,
-          fetch: this.fetch
+          fetch: this.fetch,
         });
       }
       /**
@@ -1313,7 +1450,7 @@ var require_PostgrestClient = __commonJS({
         return new PostgrestClient2(this.url, {
           headers: this.headers,
           schema,
-          fetch: this.fetch
+          fetch: this.fetch,
         });
       }
       /**
@@ -1339,15 +1476,25 @@ var require_PostgrestClient = __commonJS({
        * `"estimated"`: Uses exact count for low numbers and planned count for high
        * numbers.
        */
-      rpc(fn, args = {}, { head: head2 = false, get: get2 = false, count } = {}) {
+      rpc(
+        fn,
+        args = {},
+        { head: head2 = false, get: get2 = false, count } = {},
+      ) {
         let method;
         const url = new URL(`${this.url}/rpc/${fn}`);
         let body;
         if (head2 || get2) {
           method = head2 ? "HEAD" : "GET";
-          Object.entries(args).filter(([_, value]) => value !== void 0).map(([name, value]) => [name, Array.isArray(value) ? `{${value.join(",")}}` : `${value}`]).forEach(([name, value]) => {
-            url.searchParams.append(name, value);
-          });
+          Object.entries(args)
+            .filter(([_, value]) => value !== void 0)
+            .map(([name, value]) => [
+              name,
+              Array.isArray(value) ? `{${value.join(",")}}` : `${value}`,
+            ])
+            .forEach(([name, value]) => {
+              url.searchParams.append(name, value);
+            });
         } else {
           method = "POST";
           body = args;
@@ -1356,92 +1503,101 @@ var require_PostgrestClient = __commonJS({
         if (count) {
           headers["Prefer"] = `count=${count}`;
         }
-        return new PostgrestFilterBuilder_1.default({
+        return new PostgrestFilterBuilder1.default({
           method,
           url,
           headers,
           schema: this.schemaName,
           body,
           fetch: this.fetch,
-          allowEmpty: false
+          allowEmpty: false,
         });
       }
     };
-    __name(PostgrestClient2, "PostgrestClient");
+    Name(PostgrestClient2, "PostgrestClient");
     exports.default = PostgrestClient2;
-  }
+  },
 });
 
 // node_modules/@supabase/postgrest-js/dist/cjs/index.js
-var require_cjs = __commonJS({
+var requireCjs = CommonJs({
   "node_modules/@supabase/postgrest-js/dist/cjs/index.js"(exports) {
-    "use strict";
-    init_checked_fetch();
-    init_strip_cf_connecting_ip_header();
-    init_modules_watch_stub();
-    var __importDefault = exports && exports.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
-    };
+    initCheckedFetch();
+    initStripCfConnectingIpHeader();
+    initModulesWatchStub();
+    var ImportDefault =
+      (exports && exports.__importDefault) ||
+      ((mod) => (mod && mod.__esModule ? mod : { default: mod }));
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.PostgrestError = exports.PostgrestBuilder = exports.PostgrestTransformBuilder = exports.PostgrestFilterBuilder = exports.PostgrestQueryBuilder = exports.PostgrestClient = void 0;
-    var PostgrestClient_1 = __importDefault(require_PostgrestClient());
-    exports.PostgrestClient = PostgrestClient_1.default;
-    var PostgrestQueryBuilder_1 = __importDefault(require_PostgrestQueryBuilder());
-    exports.PostgrestQueryBuilder = PostgrestQueryBuilder_1.default;
-    var PostgrestFilterBuilder_1 = __importDefault(require_PostgrestFilterBuilder());
-    exports.PostgrestFilterBuilder = PostgrestFilterBuilder_1.default;
-    var PostgrestTransformBuilder_1 = __importDefault(require_PostgrestTransformBuilder());
-    exports.PostgrestTransformBuilder = PostgrestTransformBuilder_1.default;
-    var PostgrestBuilder_1 = __importDefault(require_PostgrestBuilder());
-    exports.PostgrestBuilder = PostgrestBuilder_1.default;
-    var PostgrestError_1 = __importDefault(require_PostgrestError());
-    exports.PostgrestError = PostgrestError_1.default;
+    exports.PostgrestError =
+      exports.PostgrestBuilder =
+      exports.PostgrestTransformBuilder =
+      exports.PostgrestFilterBuilder =
+      exports.PostgrestQueryBuilder =
+      exports.PostgrestClient =
+        void 0;
+    var PostgrestClient1 = ImportDefault(requirePostgrestClient());
+    exports.PostgrestClient = PostgrestClient1.default;
+    var PostgrestQueryBuilder1 = ImportDefault(requirePostgrestQueryBuilder());
+    exports.PostgrestQueryBuilder = PostgrestQueryBuilder1.default;
+    var PostgrestFilterBuilder1 = ImportDefault(
+      requirePostgrestFilterBuilder(),
+    );
+    exports.PostgrestFilterBuilder = PostgrestFilterBuilder1.default;
+    var PostgrestTransformBuilder1 = ImportDefault(
+      requirePostgrestTransformBuilder(),
+    );
+    exports.PostgrestTransformBuilder = PostgrestTransformBuilder1.default;
+    var PostgrestBuilder1 = ImportDefault(requirePostgrestBuilder());
+    exports.PostgrestBuilder = PostgrestBuilder1.default;
+    var PostgrestError1 = ImportDefault(requirePostgrestError());
+    exports.PostgrestError = PostgrestError1.default;
     exports.default = {
-      PostgrestClient: PostgrestClient_1.default,
-      PostgrestQueryBuilder: PostgrestQueryBuilder_1.default,
-      PostgrestFilterBuilder: PostgrestFilterBuilder_1.default,
-      PostgrestTransformBuilder: PostgrestTransformBuilder_1.default,
-      PostgrestBuilder: PostgrestBuilder_1.default,
-      PostgrestError: PostgrestError_1.default
+      PostgrestClient: PostgrestClient1.default,
+      PostgrestQueryBuilder: PostgrestQueryBuilder1.default,
+      PostgrestFilterBuilder: PostgrestFilterBuilder1.default,
+      PostgrestTransformBuilder: PostgrestTransformBuilder1.default,
+      PostgrestBuilder: PostgrestBuilder1.default,
+      PostgrestError: PostgrestError1.default,
     };
-  }
+  },
 });
 
 // .wrangler/tmp/bundle-ZWIRFQ/middleware-loader.entry.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // .wrangler/tmp/bundle-ZWIRFQ/middleware-insertion-facade.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // src/index.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/hono/dist/index.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/hono/dist/hono.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/hono/dist/hono-base.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/hono/dist/compose.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var compose = /* @__PURE__ */ __name((middleware, onError, onNotFound) => {
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var compose = /* @__PURE__ */ Name((middleware, onError, onNotFound) => {
   return (context, next) => {
     let index2 = -1;
     return dispatch(0);
@@ -1457,7 +1613,7 @@ var compose = /* @__PURE__ */ __name((middleware, onError, onNotFound) => {
         handler = middleware[i][0][0];
         context.req.routeIndex = i;
       } else {
-        handler = i === middleware.length && next || void 0;
+        handler = (i === middleware.length && next) || void 0;
       }
       if (handler) {
         try {
@@ -1481,39 +1637,46 @@ var compose = /* @__PURE__ */ __name((middleware, onError, onNotFound) => {
       }
       return context;
     }
-    __name(dispatch, "dispatch");
+    Name(dispatch, "dispatch");
   };
 }, "compose");
 
 // node_modules/hono/dist/context.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/hono/dist/request.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/hono/dist/request/constants.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var GET_MATCH_RESULT = Symbol();
 
 // node_modules/hono/dist/utils/body.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var parseBody = /* @__PURE__ */ __name(async (request, options = /* @__PURE__ */ Object.create(null)) => {
-  const { all = false, dot = false } = options;
-  const headers = request instanceof HonoRequest ? request.raw.headers : request.headers;
-  const contentType = headers.get("Content-Type");
-  if (contentType?.startsWith("multipart/form-data") || contentType?.startsWith("application/x-www-form-urlencoded")) {
-    return parseFormData(request, { all, dot });
-  }
-  return {};
-}, "parseBody");
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var parseBody = /* @__PURE__ */ Name(
+  async (request, options = /* @__PURE__ */ Object.create(null)) => {
+    const { all = false, dot = false } = options;
+    const headers =
+      request instanceof HonoRequest ? request.raw.headers : request.headers;
+    const contentType = headers.get("Content-Type");
+    if (
+      contentType?.startsWith("multipart/form-data") ||
+      contentType?.startsWith("application/x-www-form-urlencoded")
+    ) {
+      return parseFormData(request, { all, dot });
+    }
+    return {};
+  },
+  "parseBody",
+);
 async function parseFormData(request, options) {
   const formData = await request.formData();
   if (formData) {
@@ -1521,7 +1684,7 @@ async function parseFormData(request, options) {
   }
   return {};
 }
-__name(parseFormData, "parseFormData");
+Name(parseFormData, "parseFormData");
 function convertFormDataToBodyData(formData, options) {
   const form = /* @__PURE__ */ Object.create(null);
   formData.forEach((value, key) => {
@@ -1543,11 +1706,10 @@ function convertFormDataToBodyData(formData, options) {
   }
   return form;
 }
-__name(convertFormDataToBodyData, "convertFormDataToBodyData");
-var handleParsingAllValues = /* @__PURE__ */ __name((form, key, value) => {
+Name(convertFormDataToBodyData, "convertFormDataToBodyData");
+var handleParsingAllValues = /* @__PURE__ */ Name((form, key, value) => {
   if (form[key] !== void 0) {
     if (Array.isArray(form[key])) {
-      ;
       form[key].push(value);
     } else {
       form[key] = [form[key], value];
@@ -1560,14 +1722,19 @@ var handleParsingAllValues = /* @__PURE__ */ __name((form, key, value) => {
     }
   }
 }, "handleParsingAllValues");
-var handleParsingNestedValues = /* @__PURE__ */ __name((form, key, value) => {
+var handleParsingNestedValues = /* @__PURE__ */ Name((form, key, value) => {
   let nestedForm = form;
   const keys = key.split(".");
   keys.forEach((key2, index2) => {
     if (index2 === keys.length - 1) {
       nestedForm[key2] = value;
     } else {
-      if (!nestedForm[key2] || typeof nestedForm[key2] !== "object" || Array.isArray(nestedForm[key2]) || nestedForm[key2] instanceof File) {
+      if (
+        !nestedForm[key2] ||
+        typeof nestedForm[key2] !== "object" ||
+        Array.isArray(nestedForm[key2]) ||
+        nestedForm[key2] instanceof File
+      ) {
         nestedForm[key2] = /* @__PURE__ */ Object.create(null);
       }
       nestedForm = nestedForm[key2];
@@ -1576,22 +1743,22 @@ var handleParsingNestedValues = /* @__PURE__ */ __name((form, key, value) => {
 }, "handleParsingNestedValues");
 
 // node_modules/hono/dist/utils/url.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var splitPath = /* @__PURE__ */ __name((path) => {
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var splitPath = /* @__PURE__ */ Name((path) => {
   const paths = path.split("/");
   if (paths[0] === "") {
     paths.shift();
   }
   return paths;
 }, "splitPath");
-var splitRoutingPath = /* @__PURE__ */ __name((routePath) => {
+var splitRoutingPath = /* @__PURE__ */ Name((routePath) => {
   const { groups, path } = extractGroupsFromPath(routePath);
   const paths = splitPath(path);
   return replaceGroupMarks(paths, groups);
 }, "splitRoutingPath");
-var extractGroupsFromPath = /* @__PURE__ */ __name((path) => {
+var extractGroupsFromPath = /* @__PURE__ */ Name((path) => {
   const groups = [];
   path = path.replace(/\{[^}]+\}/g, (match, index2) => {
     const mark = `@${index2}`;
@@ -1600,7 +1767,7 @@ var extractGroupsFromPath = /* @__PURE__ */ __name((path) => {
   });
   return { groups, path };
 }, "extractGroupsFromPath");
-var replaceGroupMarks = /* @__PURE__ */ __name((paths, groups) => {
+var replaceGroupMarks = /* @__PURE__ */ Name((paths, groups) => {
   for (let i = groups.length - 1; i >= 0; i--) {
     const [mark] = groups[i];
     for (let j = paths.length - 1; j >= 0; j--) {
@@ -1613,16 +1780,19 @@ var replaceGroupMarks = /* @__PURE__ */ __name((paths, groups) => {
   return paths;
 }, "replaceGroupMarks");
 var patternCache = {};
-var getPattern = /* @__PURE__ */ __name((label, next) => {
+var getPattern = /* @__PURE__ */ Name((label, next) => {
   if (label === "*") {
     return "*";
   }
-  const match = label.match(/^\:([^\{\}]+)(?:\{(.+)\})?$/);
+  const match = label.match(/^:([^{}]+)(?:\{(.+)\})?$/);
   if (match) {
     const cacheKey = `${label}#${next}`;
     if (!patternCache[cacheKey]) {
       if (match[2]) {
-        patternCache[cacheKey] = next && next[0] !== ":" && next[0] !== "*" ? [cacheKey, match[1], new RegExp(`^${match[2]}(?=/${next})`)] : [label, match[1], new RegExp(`^${match[2]}$`)];
+        patternCache[cacheKey] =
+          next && next[0] !== ":" && next[0] !== "*"
+            ? [cacheKey, match[1], new RegExp(`^${match[2]}(?=/${next})`)]
+            : [label, match[1], new RegExp(`^${match[2]}$`)];
       } else {
         patternCache[cacheKey] = [label, match[1], true];
       }
@@ -1631,7 +1801,7 @@ var getPattern = /* @__PURE__ */ __name((label, next) => {
   }
   return null;
 }, "getPattern");
-var tryDecode = /* @__PURE__ */ __name((str, decoder) => {
+var tryDecode = /* @__PURE__ */ Name((str, decoder) => {
   try {
     return decoder(str);
   } catch {
@@ -1644,37 +1814,41 @@ var tryDecode = /* @__PURE__ */ __name((str, decoder) => {
     });
   }
 }, "tryDecode");
-var tryDecodeURI = /* @__PURE__ */ __name((str) => tryDecode(str, decodeURI), "tryDecodeURI");
-var getPath = /* @__PURE__ */ __name((request) => {
+var tryDecodeURI = /* @__PURE__ */ Name(
+  (str) => tryDecode(str, decodeURI),
+  "tryDecodeURI",
+);
+var getPath = /* @__PURE__ */ Name((request) => {
   const url = request.url;
-  const start = url.indexOf(
-    "/",
-    url.charCodeAt(9) === 58 ? 13 : 8
-  );
+  const start = url.indexOf("/", url.charCodeAt(9) === 58 ? 13 : 8);
   let i = start;
   for (; i < url.length; i++) {
     const charCode = url.charCodeAt(i);
     if (charCode === 37) {
       const queryIndex = url.indexOf("?", i);
       const path = url.slice(start, queryIndex === -1 ? void 0 : queryIndex);
-      return tryDecodeURI(path.includes("%25") ? path.replace(/%25/g, "%2525") : path);
+      return tryDecodeURI(
+        path.includes("%25") ? path.replace(/%25/g, "%2525") : path,
+      );
     } else if (charCode === 63) {
       break;
     }
   }
   return url.slice(start, i);
 }, "getPath");
-var getPathNoStrict = /* @__PURE__ */ __name((request) => {
+var getPathNoStrict = /* @__PURE__ */ Name((request) => {
   const result = getPath(request);
-  return result.length > 1 && result.at(-1) === "/" ? result.slice(0, -1) : result;
+  return result.length > 1 && result.at(-1) === "/"
+    ? result.slice(0, -1)
+    : result;
 }, "getPathNoStrict");
-var mergePath = /* @__PURE__ */ __name((base, sub, ...rest) => {
+var mergePath = /* @__PURE__ */ Name((base, sub, ...rest) => {
   if (rest.length) {
     sub = mergePath(sub, ...rest);
   }
   return `${base?.[0] === "/" ? "" : "/"}${base}${sub === "/" ? "" : `${base?.at(-1) === "/" ? "" : "/"}${sub?.[0] === "/" ? sub.slice(1) : sub}`}`;
 }, "mergePath");
-var checkOptionalParameter = /* @__PURE__ */ __name((path) => {
+var checkOptionalParameter = /* @__PURE__ */ Name((path) => {
   if (path.charCodeAt(path.length - 1) !== 63 || !path.includes(":")) {
     return null;
   }
@@ -1682,9 +1856,9 @@ var checkOptionalParameter = /* @__PURE__ */ __name((path) => {
   const results = [];
   let basePath = "";
   segments.forEach((segment) => {
-    if (segment !== "" && !/\:/.test(segment)) {
+    if (segment !== "" && !/:/.test(segment)) {
       basePath += "/" + segment;
-    } else if (/\:/.test(segment)) {
+    } else if (/:/.test(segment)) {
       if (/\?/.test(segment)) {
         if (results.length === 0 && basePath === "") {
           results.push("/");
@@ -1701,16 +1875,18 @@ var checkOptionalParameter = /* @__PURE__ */ __name((path) => {
   });
   return results.filter((v, i, a) => a.indexOf(v) === i);
 }, "checkOptionalParameter");
-var _decodeURI = /* @__PURE__ */ __name((value) => {
+var DecodeUri = /* @__PURE__ */ Name((value) => {
   if (!/[%+]/.test(value)) {
     return value;
   }
   if (value.indexOf("+") !== -1) {
     value = value.replace(/\+/g, " ");
   }
-  return value.indexOf("%") !== -1 ? tryDecode(value, decodeURIComponent_) : value;
+  return value.indexOf("%") !== -1
+    ? tryDecode(value, decodeUriComponent)
+    : value;
 }, "_decodeURI");
-var _getQueryParam = /* @__PURE__ */ __name((url, key, multiple) => {
+var GetQueryParam = /* @__PURE__ */ Name((url, key, multiple) => {
   let encoded;
   if (!multiple && key && !/[%+]/.test(key)) {
     let keyIndex2 = url.indexOf(`?${key}`, 8);
@@ -1722,7 +1898,9 @@ var _getQueryParam = /* @__PURE__ */ __name((url, key, multiple) => {
       if (trailingKeyCode === 61) {
         const valueIndex = keyIndex2 + key.length + 2;
         const endIndex = url.indexOf("&", valueIndex);
-        return _decodeURI(url.slice(valueIndex, endIndex === -1 ? void 0 : endIndex));
+        return DecodeUri(
+          url.slice(valueIndex, endIndex === -1 ? void 0 : endIndex),
+        );
       } else if (trailingKeyCode == 38 || isNaN(trailingKeyCode)) {
         return "";
       }
@@ -1744,10 +1922,14 @@ var _getQueryParam = /* @__PURE__ */ __name((url, key, multiple) => {
     }
     let name = url.slice(
       keyIndex + 1,
-      valueIndex === -1 ? nextKeyIndex === -1 ? void 0 : nextKeyIndex : valueIndex
+      valueIndex === -1
+        ? nextKeyIndex === -1
+          ? void 0
+          : nextKeyIndex
+        : valueIndex,
     );
     if (encoded) {
-      name = _decodeURI(name);
+      name = DecodeUri(name);
     }
     keyIndex = nextKeyIndex;
     if (name === "") {
@@ -1757,16 +1939,18 @@ var _getQueryParam = /* @__PURE__ */ __name((url, key, multiple) => {
     if (valueIndex === -1) {
       value = "";
     } else {
-      value = url.slice(valueIndex + 1, nextKeyIndex === -1 ? void 0 : nextKeyIndex);
+      value = url.slice(
+        valueIndex + 1,
+        nextKeyIndex === -1 ? void 0 : nextKeyIndex,
+      );
       if (encoded) {
-        value = _decodeURI(value);
+        value = DecodeUri(value);
       }
     }
     if (multiple) {
       if (!(results[name] && Array.isArray(results[name]))) {
         results[name] = [];
       }
-      ;
       results[name].push(value);
     } else {
       results[name] ??= value;
@@ -1774,363 +1958,422 @@ var _getQueryParam = /* @__PURE__ */ __name((url, key, multiple) => {
   }
   return key ? results[key] : results;
 }, "_getQueryParam");
-var getQueryParam = _getQueryParam;
-var getQueryParams = /* @__PURE__ */ __name((url, key) => {
-  return _getQueryParam(url, key, true);
+var getQueryParam = GetQueryParam;
+var getQueryParams = /* @__PURE__ */ Name((url, key) => {
+  return GetQueryParam(url, key, true);
 }, "getQueryParams");
-var decodeURIComponent_ = decodeURIComponent;
+var decodeUriComponent = decodeURIComponent;
 
 // node_modules/hono/dist/request.js
-var tryDecodeURIComponent = /* @__PURE__ */ __name((str) => tryDecode(str, decodeURIComponent_), "tryDecodeURIComponent");
-var HonoRequest = /* @__PURE__ */ __name(class {
-  raw;
-  #validatedData;
-  #matchResult;
-  routeIndex = 0;
-  path;
-  bodyCache = {};
-  constructor(request, path = "/", matchResult = [[]]) {
-    this.raw = request;
-    this.path = path;
-    this.#matchResult = matchResult;
-    this.#validatedData = {};
-  }
-  param(key) {
-    return key ? this.#getDecodedParam(key) : this.#getAllDecodedParams();
-  }
-  #getDecodedParam(key) {
-    const paramKey = this.#matchResult[0][this.routeIndex][1][key];
-    const param = this.#getParamValue(paramKey);
-    return param ? /\%/.test(param) ? tryDecodeURIComponent(param) : param : void 0;
-  }
-  #getAllDecodedParams() {
-    const decoded = {};
-    const keys = Object.keys(this.#matchResult[0][this.routeIndex][1]);
-    for (const key of keys) {
-      const value = this.#getParamValue(this.#matchResult[0][this.routeIndex][1][key]);
-      if (value && typeof value === "string") {
-        decoded[key] = /\%/.test(value) ? tryDecodeURIComponent(value) : value;
-      }
+var tryDecodeURIComponent = /* @__PURE__ */ Name(
+  (str) => tryDecode(str, decodeUriComponent),
+  "tryDecodeURIComponent",
+);
+var HonoRequest = /* @__PURE__ */ Name(
+  class {
+    raw;
+    #validatedData;
+    #matchResult;
+    routeIndex = 0;
+    path;
+    bodyCache = {};
+    constructor(request, path = "/", matchResult = [[]]) {
+      this.raw = request;
+      this.path = path;
+      this.#matchResult = matchResult;
+      this.#validatedData = {};
     }
-    return decoded;
-  }
-  #getParamValue(paramKey) {
-    return this.#matchResult[1] ? this.#matchResult[1][paramKey] : paramKey;
-  }
-  query(key) {
-    return getQueryParam(this.url, key);
-  }
-  queries(key) {
-    return getQueryParams(this.url, key);
-  }
-  header(name) {
-    if (name) {
-      return this.raw.headers.get(name) ?? void 0;
+    param(key) {
+      return key ? this.#getDecodedParam(key) : this.#getAllDecodedParams();
     }
-    const headerData = {};
-    this.raw.headers.forEach((value, key) => {
-      headerData[key] = value;
-    });
-    return headerData;
-  }
-  async parseBody(options) {
-    return this.bodyCache.parsedBody ??= await parseBody(this, options);
-  }
-  #cachedBody = (key) => {
-    const { bodyCache, raw: raw2 } = this;
-    const cachedBody = bodyCache[key];
-    if (cachedBody) {
-      return cachedBody;
+    #getDecodedParam(key) {
+      const paramKey = this.#matchResult[0][this.routeIndex][1][key];
+      const param = this.#getParamValue(paramKey);
+      return param
+        ? /%/.test(param)
+          ? tryDecodeURIComponent(param)
+          : param
+        : void 0;
     }
-    const anyCachedKey = Object.keys(bodyCache)[0];
-    if (anyCachedKey) {
-      return bodyCache[anyCachedKey].then((body) => {
-        if (anyCachedKey === "json") {
-          body = JSON.stringify(body);
+    #getAllDecodedParams() {
+      const decoded = {};
+      const keys = Object.keys(this.#matchResult[0][this.routeIndex][1]);
+      for (const key of keys) {
+        const value = this.#getParamValue(
+          this.#matchResult[0][this.routeIndex][1][key],
+        );
+        if (value && typeof value === "string") {
+          decoded[key] = /%/.test(value) ? tryDecodeURIComponent(value) : value;
         }
-        return new Response(body)[key]();
-      });
+      }
+      return decoded;
     }
-    return bodyCache[key] = raw2[key]();
-  };
-  json() {
-    return this.#cachedBody("text").then((text) => JSON.parse(text));
-  }
-  text() {
-    return this.#cachedBody("text");
-  }
-  arrayBuffer() {
-    return this.#cachedBody("arrayBuffer");
-  }
-  blob() {
-    return this.#cachedBody("blob");
-  }
-  formData() {
-    return this.#cachedBody("formData");
-  }
-  addValidatedData(target, data) {
-    this.#validatedData[target] = data;
-  }
-  valid(target) {
-    return this.#validatedData[target];
-  }
-  get url() {
-    return this.raw.url;
-  }
-  get method() {
-    return this.raw.method;
-  }
-  get [GET_MATCH_RESULT]() {
-    return this.#matchResult;
-  }
-  get matchedRoutes() {
-    return this.#matchResult[0].map(([[, route]]) => route);
-  }
-  get routePath() {
-    return this.#matchResult[0].map(([[, route]]) => route)[this.routeIndex].path;
-  }
-}, "HonoRequest");
+    #getParamValue(paramKey) {
+      return this.#matchResult[1] ? this.#matchResult[1][paramKey] : paramKey;
+    }
+    query(key) {
+      return getQueryParam(this.url, key);
+    }
+    queries(key) {
+      return getQueryParams(this.url, key);
+    }
+    header(name) {
+      if (name) {
+        return this.raw.headers.get(name) ?? void 0;
+      }
+      const headerData = {};
+      this.raw.headers.forEach((value, key) => {
+        headerData[key] = value;
+      });
+      return headerData;
+    }
+    async parseBody(options) {
+      return (this.bodyCache.parsedBody ??= await parseBody(this, options));
+    }
+    #cachedBody = (key) => {
+      const { bodyCache, raw: raw2 } = this;
+      const cachedBody = bodyCache[key];
+      if (cachedBody) {
+        return cachedBody;
+      }
+      const anyCachedKey = Object.keys(bodyCache)[0];
+      if (anyCachedKey) {
+        return bodyCache[anyCachedKey].then((body) => {
+          if (anyCachedKey === "json") {
+            body = JSON.stringify(body);
+          }
+          return new Response(body)[key]();
+        });
+      }
+      return (bodyCache[key] = raw2[key]());
+    };
+    json() {
+      return this.#cachedBody("text").then((text) => JSON.parse(text));
+    }
+    text() {
+      return this.#cachedBody("text");
+    }
+    arrayBuffer() {
+      return this.#cachedBody("arrayBuffer");
+    }
+    blob() {
+      return this.#cachedBody("blob");
+    }
+    formData() {
+      return this.#cachedBody("formData");
+    }
+    addValidatedData(target, data) {
+      this.#validatedData[target] = data;
+    }
+    valid(target) {
+      return this.#validatedData[target];
+    }
+    get url() {
+      return this.raw.url;
+    }
+    get method() {
+      return this.raw.method;
+    }
+    get [GET_MATCH_RESULT]() {
+      return this.#matchResult;
+    }
+    get matchedRoutes() {
+      return this.#matchResult[0].map(([[, route]]) => route);
+    }
+    get routePath() {
+      return this.#matchResult[0].map(([[, route]]) => route)[this.routeIndex]
+        .path;
+    }
+  },
+  "HonoRequest",
+);
 
 // node_modules/hono/dist/utils/html.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var HtmlEscapedCallbackPhase = {
   Stringify: 1,
   BeforeStream: 2,
-  Stream: 3
+  Stream: 3,
 };
-var raw = /* @__PURE__ */ __name((value, callbacks) => {
+var raw = /* @__PURE__ */ Name((value, callbacks) => {
   const escapedString = new String(value);
   escapedString.isEscaped = true;
   escapedString.callbacks = callbacks;
   return escapedString;
 }, "raw");
-var resolveCallback = /* @__PURE__ */ __name(async (str, phase, preserveCallbacks, context, buffer) => {
-  if (typeof str === "object" && !(str instanceof String)) {
-    if (!(str instanceof Promise)) {
-      str = str.toString();
+var resolveCallback = /* @__PURE__ */ Name(
+  async (str, phase, preserveCallbacks, context, buffer) => {
+    if (typeof str === "object" && !(str instanceof String)) {
+      if (!(str instanceof Promise)) {
+        str = str.toString();
+      }
+      if (str instanceof Promise) {
+        str = await str;
+      }
     }
-    if (str instanceof Promise) {
-      str = await str;
+    const callbacks = str.callbacks;
+    if (!callbacks?.length) {
+      return Promise.resolve(str);
     }
-  }
-  const callbacks = str.callbacks;
-  if (!callbacks?.length) {
-    return Promise.resolve(str);
-  }
-  if (buffer) {
-    buffer[0] += str;
-  } else {
-    buffer = [str];
-  }
-  const resStr = Promise.all(callbacks.map((c2) => c2({ phase, buffer, context }))).then(
-    (res) => Promise.all(
-      res.filter(Boolean).map((str2) => resolveCallback(str2, phase, false, context, buffer))
-    ).then(() => buffer[0])
-  );
-  if (preserveCallbacks) {
-    return raw(await resStr, callbacks);
-  } else {
-    return resStr;
-  }
-}, "resolveCallback");
+    if (buffer) {
+      buffer[0] += str;
+    } else {
+      buffer = [str];
+    }
+    const resStr = Promise.all(
+      callbacks.map((c2) => c2({ phase, buffer, context })),
+    ).then((res) =>
+      Promise.all(
+        res
+          .filter(Boolean)
+          .map((str2) => resolveCallback(str2, phase, false, context, buffer)),
+      ).then(() => buffer[0]),
+    );
+    if (preserveCallbacks) {
+      return raw(await resStr, callbacks);
+    } else {
+      return resStr;
+    }
+  },
+  "resolveCallback",
+);
 
 // node_modules/hono/dist/context.js
 var TEXT_PLAIN = "text/plain; charset=UTF-8";
-var setDefaultContentType = /* @__PURE__ */ __name((contentType, headers) => {
+var setDefaultContentType = /* @__PURE__ */ Name((contentType, headers) => {
   return {
     "Content-Type": contentType,
-    ...headers
+    ...headers,
   };
 }, "setDefaultContentType");
-var Context = /* @__PURE__ */ __name(class {
-  #rawRequest;
-  #req;
-  env = {};
-  #var;
-  finalized = false;
-  error;
-  #status;
-  #executionCtx;
-  #res;
-  #layout;
-  #renderer;
-  #notFoundHandler;
-  #preparedHeaders;
-  #matchResult;
-  #path;
-  constructor(req, options) {
-    this.#rawRequest = req;
-    if (options) {
-      this.#executionCtx = options.executionCtx;
-      this.env = options.env;
-      this.#notFoundHandler = options.notFoundHandler;
-      this.#path = options.path;
-      this.#matchResult = options.matchResult;
+var Context = /* @__PURE__ */ Name(
+  class {
+    #rawRequest;
+    #req;
+    env = {};
+    #var;
+    finalized = false;
+    error;
+    #status;
+    #executionCtx;
+    #res;
+    #layout;
+    #renderer;
+    #notFoundHandler;
+    #preparedHeaders;
+    #matchResult;
+    #path;
+    constructor(req, options) {
+      this.#rawRequest = req;
+      if (options) {
+        this.#executionCtx = options.executionCtx;
+        this.env = options.env;
+        this.#notFoundHandler = options.notFoundHandler;
+        this.#path = options.path;
+        this.#matchResult = options.matchResult;
+      }
     }
-  }
-  get req() {
-    this.#req ??= new HonoRequest(this.#rawRequest, this.#path, this.#matchResult);
-    return this.#req;
-  }
-  get event() {
-    if (this.#executionCtx && "respondWith" in this.#executionCtx) {
-      return this.#executionCtx;
-    } else {
-      throw Error("This context has no FetchEvent");
+    get req() {
+      this.#req ??= new HonoRequest(
+        this.#rawRequest,
+        this.#path,
+        this.#matchResult,
+      );
+      return this.#req;
     }
-  }
-  get executionCtx() {
-    if (this.#executionCtx) {
-      return this.#executionCtx;
-    } else {
-      throw Error("This context has no ExecutionContext");
+    get event() {
+      if (this.#executionCtx && "respondWith" in this.#executionCtx) {
+        return this.#executionCtx;
+      } else {
+        throw Error("This context has no FetchEvent");
+      }
     }
-  }
-  get res() {
-    return this.#res ||= new Response(null, {
-      headers: this.#preparedHeaders ??= new Headers()
-    });
-  }
-  set res(_res) {
-    if (this.#res && _res) {
-      _res = new Response(_res.body, _res);
-      for (const [k, v] of this.#res.headers.entries()) {
-        if (k === "content-type") {
-          continue;
-        }
-        if (k === "set-cookie") {
-          const cookies = this.#res.headers.getSetCookie();
-          _res.headers.delete("set-cookie");
-          for (const cookie of cookies) {
-            _res.headers.append("set-cookie", cookie);
+    get executionCtx() {
+      if (this.#executionCtx) {
+        return this.#executionCtx;
+      } else {
+        throw Error("This context has no ExecutionContext");
+      }
+    }
+    get res() {
+      return (this.#res ||= new Response(null, {
+        headers: (this.#preparedHeaders ??= new Headers()),
+      }));
+    }
+    set res(_res) {
+      if (this.#res && _res) {
+        _res = new Response(_res.body, _res);
+        for (const [k, v] of this.#res.headers.entries()) {
+          if (k === "content-type") {
+            continue;
           }
-        } else {
-          _res.headers.set(k, v);
-        }
-      }
-    }
-    this.#res = _res;
-    this.finalized = true;
-  }
-  render = (...args) => {
-    this.#renderer ??= (content) => this.html(content);
-    return this.#renderer(...args);
-  };
-  setLayout = (layout) => this.#layout = layout;
-  getLayout = () => this.#layout;
-  setRenderer = (renderer) => {
-    this.#renderer = renderer;
-  };
-  header = (name, value, options) => {
-    if (this.finalized) {
-      this.#res = new Response(this.#res.body, this.#res);
-    }
-    const headers = this.#res ? this.#res.headers : this.#preparedHeaders ??= new Headers();
-    if (value === void 0) {
-      headers.delete(name);
-    } else if (options?.append) {
-      headers.append(name, value);
-    } else {
-      headers.set(name, value);
-    }
-  };
-  status = (status) => {
-    this.#status = status;
-  };
-  set = (key, value) => {
-    this.#var ??= /* @__PURE__ */ new Map();
-    this.#var.set(key, value);
-  };
-  get = (key) => {
-    return this.#var ? this.#var.get(key) : void 0;
-  };
-  get var() {
-    if (!this.#var) {
-      return {};
-    }
-    return Object.fromEntries(this.#var);
-  }
-  #newResponse(data, arg, headers) {
-    const responseHeaders = this.#res ? new Headers(this.#res.headers) : this.#preparedHeaders ?? new Headers();
-    if (typeof arg === "object" && "headers" in arg) {
-      const argHeaders = arg.headers instanceof Headers ? arg.headers : new Headers(arg.headers);
-      for (const [key, value] of argHeaders) {
-        if (key.toLowerCase() === "set-cookie") {
-          responseHeaders.append(key, value);
-        } else {
-          responseHeaders.set(key, value);
-        }
-      }
-    }
-    if (headers) {
-      for (const [k, v] of Object.entries(headers)) {
-        if (typeof v === "string") {
-          responseHeaders.set(k, v);
-        } else {
-          responseHeaders.delete(k);
-          for (const v2 of v) {
-            responseHeaders.append(k, v2);
+          if (k === "set-cookie") {
+            const cookies = this.#res.headers.getSetCookie();
+            _res.headers.delete("set-cookie");
+            for (const cookie of cookies) {
+              _res.headers.append("set-cookie", cookie);
+            }
+          } else {
+            _res.headers.set(k, v);
           }
         }
       }
+      this.#res = _res;
+      this.finalized = true;
     }
-    const status = typeof arg === "number" ? arg : arg?.status ?? this.#status;
-    return new Response(data, { status, headers: responseHeaders });
-  }
-  newResponse = (...args) => this.#newResponse(...args);
-  body = (data, arg, headers) => this.#newResponse(data, arg, headers);
-  text = (text, arg, headers) => {
-    return !this.#preparedHeaders && !this.#status && !arg && !headers && !this.finalized ? new Response(text) : this.#newResponse(
-      text,
-      arg,
-      setDefaultContentType(TEXT_PLAIN, headers)
-    );
-  };
-  json = (object, arg, headers) => {
-    return this.#newResponse(
-      JSON.stringify(object),
-      arg,
-      setDefaultContentType("application/json", headers)
-    );
-  };
-  html = (html, arg, headers) => {
-    const res = /* @__PURE__ */ __name((html2) => this.#newResponse(html2, arg, setDefaultContentType("text/html; charset=UTF-8", headers)), "res");
-    return typeof html === "object" ? resolveCallback(html, HtmlEscapedCallbackPhase.Stringify, false, {}).then(res) : res(html);
-  };
-  redirect = (location, status) => {
-    this.header("Location", String(location));
-    return this.newResponse(null, status ?? 302);
-  };
-  notFound = () => {
-    this.#notFoundHandler ??= () => new Response();
-    return this.#notFoundHandler(this);
-  };
-}, "Context");
+    render = (...args) => {
+      this.#renderer ??= (content) => this.html(content);
+      return this.#renderer(...args);
+    };
+    setLayout = (layout) => (this.#layout = layout);
+    getLayout = () => this.#layout;
+    setRenderer = (renderer) => {
+      this.#renderer = renderer;
+    };
+    header = (name, value, options) => {
+      if (this.finalized) {
+        this.#res = new Response(this.#res.body, this.#res);
+      }
+      const headers = this.#res
+        ? this.#res.headers
+        : (this.#preparedHeaders ??= new Headers());
+      if (value === void 0) {
+        headers.delete(name);
+      } else if (options?.append) {
+        headers.append(name, value);
+      } else {
+        headers.set(name, value);
+      }
+    };
+    status = (status) => {
+      this.#status = status;
+    };
+    set = (key, value) => {
+      this.#var ??= /* @__PURE__ */ new Map();
+      this.#var.set(key, value);
+    };
+    get = (key) => {
+      return this.#var ? this.#var.get(key) : void 0;
+    };
+    get var() {
+      if (!this.#var) {
+        return {};
+      }
+      return Object.fromEntries(this.#var);
+    }
+    #newResponse(data, arg, headers) {
+      const responseHeaders = this.#res
+        ? new Headers(this.#res.headers)
+        : (this.#preparedHeaders ?? new Headers());
+      if (typeof arg === "object" && "headers" in arg) {
+        const argHeaders =
+          arg.headers instanceof Headers
+            ? arg.headers
+            : new Headers(arg.headers);
+        for (const [key, value] of argHeaders) {
+          if (key.toLowerCase() === "set-cookie") {
+            responseHeaders.append(key, value);
+          } else {
+            responseHeaders.set(key, value);
+          }
+        }
+      }
+      if (headers) {
+        for (const [k, v] of Object.entries(headers)) {
+          if (typeof v === "string") {
+            responseHeaders.set(k, v);
+          } else {
+            responseHeaders.delete(k);
+            for (const v2 of v) {
+              responseHeaders.append(k, v2);
+            }
+          }
+        }
+      }
+      const status =
+        typeof arg === "number" ? arg : (arg?.status ?? this.#status);
+      return new Response(data, { status, headers: responseHeaders });
+    }
+    newResponse = (...args) => this.#newResponse(...args);
+    body = (data, arg, headers) => this.#newResponse(data, arg, headers);
+    text = (text, arg, headers) => {
+      return !this.#preparedHeaders &&
+        !this.#status &&
+        !arg &&
+        !headers &&
+        !this.finalized
+        ? new Response(text)
+        : this.#newResponse(
+            text,
+            arg,
+            setDefaultContentType(TEXT_PLAIN, headers),
+          );
+    };
+    json = (object, arg, headers) => {
+      return this.#newResponse(
+        JSON.stringify(object),
+        arg,
+        setDefaultContentType("application/json", headers),
+      );
+    };
+    html = (html, arg, headers) => {
+      const res = /* @__PURE__ */ Name(
+        (html2) =>
+          this.#newResponse(
+            html2,
+            arg,
+            setDefaultContentType("text/html; charset=UTF-8", headers),
+          ),
+        "res",
+      );
+      return typeof html === "object"
+        ? resolveCallback(
+            html,
+            HtmlEscapedCallbackPhase.Stringify,
+            false,
+            {},
+          ).then(res)
+        : res(html);
+    };
+    redirect = (location, status) => {
+      this.header("Location", String(location));
+      return this.newResponse(null, status ?? 302);
+    };
+    notFound = () => {
+      this.#notFoundHandler ??= () => new Response();
+      return this.#notFoundHandler(this);
+    };
+  },
+  "Context",
+);
 
 // node_modules/hono/dist/router.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var METHOD_NAME_ALL = "ALL";
 var METHOD_NAME_ALL_LOWERCASE = "all";
 var METHODS = ["get", "post", "put", "delete", "options", "patch"];
-var MESSAGE_MATCHER_IS_ALREADY_BUILT = "Can not add a route since the matcher is already built.";
-var UnsupportedPathError = /* @__PURE__ */ __name(class extends Error {
-}, "UnsupportedPathError");
+var MESSAGE_MATCHER_IS_ALREADY_BUILT =
+  "Can not add a route since the matcher is already built.";
+var UnsupportedPathError = /* @__PURE__ */ Name(
+  class extends Error {},
+  "UnsupportedPathError",
+);
 
 // node_modules/hono/dist/utils/constants.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var COMPOSED_HANDLER = "__COMPOSED_HANDLER";
 
 // node_modules/hono/dist/hono-base.js
-var notFoundHandler = /* @__PURE__ */ __name((c2) => {
+var notFoundHandler = /* @__PURE__ */ Name((c2) => {
   return c2.text("404 Not Found", 404);
 }, "notFoundHandler");
-var errorHandler = /* @__PURE__ */ __name((err, c2) => {
+var errorHandler = /* @__PURE__ */ Name((err, c2) => {
   if ("getResponse" in err) {
     const res = err.getResponse();
     return c2.newResponse(res.body, res);
@@ -2138,239 +2381,280 @@ var errorHandler = /* @__PURE__ */ __name((err, c2) => {
   console.error(err);
   return c2.text("Internal Server Error", 500);
 }, "errorHandler");
-var Hono = /* @__PURE__ */ __name(class {
-  get;
-  post;
-  put;
-  delete;
-  options;
-  patch;
-  all;
-  on;
-  use;
-  router;
-  getPath;
-  _basePath = "/";
-  #path = "/";
-  routes = [];
-  constructor(options = {}) {
-    const allMethods = [...METHODS, METHOD_NAME_ALL_LOWERCASE];
-    allMethods.forEach((method) => {
-      this[method] = (args1, ...args) => {
-        if (typeof args1 === "string") {
-          this.#path = args1;
-        } else {
-          this.#addRoute(method, this.#path, args1);
+var Hono = /* @__PURE__ */ Name(
+  class {
+    get;
+    post;
+    put;
+    delete;
+    options;
+    patch;
+    all;
+    on;
+    use;
+    router;
+    getPath;
+    _basePath = "/";
+    #path = "/";
+    routes = [];
+    constructor(options = {}) {
+      const allMethods = [...METHODS, METHOD_NAME_ALL_LOWERCASE];
+      allMethods.forEach((method) => {
+        this[method] = (args1, ...args) => {
+          if (typeof args1 === "string") {
+            this.#path = args1;
+          } else {
+            this.#addRoute(method, this.#path, args1);
+          }
+          args.forEach((handler) => {
+            this.#addRoute(method, this.#path, handler);
+          });
+          return this;
+        };
+      });
+      this.on = (method, path, ...handlers) => {
+        for (const p of [path].flat()) {
+          this.#path = p;
+          for (const m of [method].flat()) {
+            handlers.map((handler) => {
+              this.#addRoute(m.toUpperCase(), this.#path, handler);
+            });
+          }
         }
-        args.forEach((handler) => {
-          this.#addRoute(method, this.#path, handler);
+        return this;
+      };
+      this.use = (arg1, ...handlers) => {
+        if (typeof arg1 === "string") {
+          this.#path = arg1;
+        } else {
+          this.#path = "*";
+          handlers.unshift(arg1);
+        }
+        handlers.forEach((handler) => {
+          this.#addRoute(METHOD_NAME_ALL, this.#path, handler);
         });
         return this;
       };
-    });
-    this.on = (method, path, ...handlers) => {
-      for (const p of [path].flat()) {
-        this.#path = p;
-        for (const m of [method].flat()) {
-          handlers.map((handler) => {
-            this.#addRoute(m.toUpperCase(), this.#path, handler);
-          });
+      const { strict, ...optionsWithoutStrict } = options;
+      Object.assign(this, optionsWithoutStrict);
+      this.getPath =
+        (strict ?? true) ? (options.getPath ?? getPath) : getPathNoStrict;
+    }
+    #clone() {
+      const clone = new Hono({
+        router: this.router,
+        getPath: this.getPath,
+      });
+      clone.errorHandler = this.errorHandler;
+      clone.#notFoundHandler = this.#notFoundHandler;
+      clone.routes = this.routes;
+      return clone;
+    }
+    #notFoundHandler = notFoundHandler;
+    errorHandler = errorHandler;
+    route(path, app2) {
+      const subApp = this.basePath(path);
+      app2.routes.map((r) => {
+        let handler;
+        if (app2.errorHandler === errorHandler) {
+          handler = r.handler;
+        } else {
+          handler = /* @__PURE__ */ Name(
+            async (c2, next) =>
+              (
+                await compose([], app2.errorHandler)(c2, () =>
+                  r.handler(c2, next),
+                )
+              ).res,
+            "handler",
+          );
+          handler[COMPOSED_HANDLER] = r.handler;
         }
-      }
-      return this;
-    };
-    this.use = (arg1, ...handlers) => {
-      if (typeof arg1 === "string") {
-        this.#path = arg1;
-      } else {
-        this.#path = "*";
-        handlers.unshift(arg1);
-      }
-      handlers.forEach((handler) => {
-        this.#addRoute(METHOD_NAME_ALL, this.#path, handler);
+        subApp.#addRoute(r.method, r.path, handler);
       });
       return this;
+    }
+    basePath(path) {
+      const subApp = this.#clone();
+      subApp._basePath = mergePath(this._basePath, path);
+      return subApp;
+    }
+    onError = (handler) => {
+      this.errorHandler = handler;
+      return this;
     };
-    const { strict, ...optionsWithoutStrict } = options;
-    Object.assign(this, optionsWithoutStrict);
-    this.getPath = strict ?? true ? options.getPath ?? getPath : getPathNoStrict;
-  }
-  #clone() {
-    const clone = new Hono({
-      router: this.router,
-      getPath: this.getPath
-    });
-    clone.errorHandler = this.errorHandler;
-    clone.#notFoundHandler = this.#notFoundHandler;
-    clone.routes = this.routes;
-    return clone;
-  }
-  #notFoundHandler = notFoundHandler;
-  errorHandler = errorHandler;
-  route(path, app2) {
-    const subApp = this.basePath(path);
-    app2.routes.map((r) => {
-      let handler;
-      if (app2.errorHandler === errorHandler) {
-        handler = r.handler;
-      } else {
-        handler = /* @__PURE__ */ __name(async (c2, next) => (await compose([], app2.errorHandler)(c2, () => r.handler(c2, next))).res, "handler");
-        handler[COMPOSED_HANDLER] = r.handler;
-      }
-      subApp.#addRoute(r.method, r.path, handler);
-    });
-    return this;
-  }
-  basePath(path) {
-    const subApp = this.#clone();
-    subApp._basePath = mergePath(this._basePath, path);
-    return subApp;
-  }
-  onError = (handler) => {
-    this.errorHandler = handler;
-    return this;
-  };
-  notFound = (handler) => {
-    this.#notFoundHandler = handler;
-    return this;
-  };
-  mount(path, applicationHandler, options) {
-    let replaceRequest;
-    let optionHandler;
-    if (options) {
-      if (typeof options === "function") {
-        optionHandler = options;
-      } else {
-        optionHandler = options.optionHandler;
-        if (options.replaceRequest === false) {
-          replaceRequest = /* @__PURE__ */ __name((request) => request, "replaceRequest");
+    notFound = (handler) => {
+      this.#notFoundHandler = handler;
+      return this;
+    };
+    mount(path, applicationHandler, options) {
+      let replaceRequest;
+      let optionHandler;
+      if (options) {
+        if (typeof options === "function") {
+          optionHandler = options;
         } else {
-          replaceRequest = options.replaceRequest;
+          optionHandler = options.optionHandler;
+          if (options.replaceRequest === false) {
+            replaceRequest = /* @__PURE__ */ Name(
+              (request) => request,
+              "replaceRequest",
+            );
+          } else {
+            replaceRequest = options.replaceRequest;
+          }
         }
       }
+      const getOptions = optionHandler
+        ? (c2) => {
+            const options2 = optionHandler(c2);
+            return Array.isArray(options2) ? options2 : [options2];
+          }
+        : (c2) => {
+            let executionContext = void 0;
+            try {
+              executionContext = c2.executionCtx;
+            } catch {}
+            return [c2.env, executionContext];
+          };
+      replaceRequest ||= (() => {
+        const mergedPath = mergePath(this._basePath, path);
+        const pathPrefixLength = mergedPath === "/" ? 0 : mergedPath.length;
+        return (request) => {
+          const url = new URL(request.url);
+          url.pathname = url.pathname.slice(pathPrefixLength) || "/";
+          return new Request(url, request);
+        };
+      })();
+      const handler = /* @__PURE__ */ Name(async (c2, next) => {
+        const res = await applicationHandler(
+          replaceRequest(c2.req.raw),
+          ...getOptions(c2),
+        );
+        if (res) {
+          return res;
+        }
+        await next();
+      }, "handler");
+      this.#addRoute(METHOD_NAME_ALL, mergePath(path, "*"), handler);
+      return this;
     }
-    const getOptions = optionHandler ? (c2) => {
-      const options2 = optionHandler(c2);
-      return Array.isArray(options2) ? options2 : [options2];
-    } : (c2) => {
-      let executionContext = void 0;
-      try {
-        executionContext = c2.executionCtx;
-      } catch {
+    #addRoute(method, path, handler) {
+      method = method.toUpperCase();
+      path = mergePath(this._basePath, path);
+      const r = { basePath: this._basePath, path, method, handler };
+      this.router.add(method, path, [handler, r]);
+      this.routes.push(r);
+    }
+    #handleError(err, c2) {
+      if (err instanceof Error) {
+        return this.errorHandler(err, c2);
       }
-      return [c2.env, executionContext];
+      throw err;
+    }
+    #dispatch(request, executionCtx, env, method) {
+      if (method === "HEAD") {
+        return (async () =>
+          new Response(
+            null,
+            await this.#dispatch(request, executionCtx, env, "GET"),
+          ))();
+      }
+      const path = this.getPath(request, { env });
+      const matchResult = this.router.match(method, path);
+      const c2 = new Context(request, {
+        path,
+        matchResult,
+        env,
+        executionCtx,
+        notFoundHandler: this.#notFoundHandler,
+      });
+      if (matchResult[0].length === 1) {
+        let res;
+        try {
+          res = matchResult[0][0][0][0](c2, async () => {
+            c2.res = await this.#notFoundHandler(c2);
+          });
+        } catch (err) {
+          return this.#handleError(err, c2);
+        }
+        return res instanceof Promise
+          ? res
+              .then(
+                (resolved) =>
+                  resolved ||
+                  (c2.finalized ? c2.res : this.#notFoundHandler(c2)),
+              )
+              .catch((err) => this.#handleError(err, c2))
+          : (res ?? this.#notFoundHandler(c2));
+      }
+      const composed = compose(
+        matchResult[0],
+        this.errorHandler,
+        this.#notFoundHandler,
+      );
+      return (async () => {
+        try {
+          const context = await composed(c2);
+          if (!context.finalized) {
+            throw new Error(
+              "Context is not finalized. Did you forget to return a Response object or `await next()`?",
+            );
+          }
+          return context.res;
+        } catch (err) {
+          return this.#handleError(err, c2);
+        }
+      })();
+    }
+    fetch = (request, ...rest) => {
+      return this.#dispatch(request, rest[1], rest[0], request.method);
     };
-    replaceRequest ||= (() => {
-      const mergedPath = mergePath(this._basePath, path);
-      const pathPrefixLength = mergedPath === "/" ? 0 : mergedPath.length;
-      return (request) => {
-        const url = new URL(request.url);
-        url.pathname = url.pathname.slice(pathPrefixLength) || "/";
-        return new Request(url, request);
-      };
-    })();
-    const handler = /* @__PURE__ */ __name(async (c2, next) => {
-      const res = await applicationHandler(replaceRequest(c2.req.raw), ...getOptions(c2));
-      if (res) {
-        return res;
+    request = (input, requestInit, Env, executionCtx) => {
+      if (input instanceof Request) {
+        return this.fetch(
+          requestInit ? new Request(input, requestInit) : input,
+          Env,
+          executionCtx,
+        );
       }
-      await next();
-    }, "handler");
-    this.#addRoute(METHOD_NAME_ALL, mergePath(path, "*"), handler);
-    return this;
-  }
-  #addRoute(method, path, handler) {
-    method = method.toUpperCase();
-    path = mergePath(this._basePath, path);
-    const r = { basePath: this._basePath, path, method, handler };
-    this.router.add(method, path, [handler, r]);
-    this.routes.push(r);
-  }
-  #handleError(err, c2) {
-    if (err instanceof Error) {
-      return this.errorHandler(err, c2);
-    }
-    throw err;
-  }
-  #dispatch(request, executionCtx, env, method) {
-    if (method === "HEAD") {
-      return (async () => new Response(null, await this.#dispatch(request, executionCtx, env, "GET")))();
-    }
-    const path = this.getPath(request, { env });
-    const matchResult = this.router.match(method, path);
-    const c2 = new Context(request, {
-      path,
-      matchResult,
-      env,
-      executionCtx,
-      notFoundHandler: this.#notFoundHandler
-    });
-    if (matchResult[0].length === 1) {
-      let res;
-      try {
-        res = matchResult[0][0][0][0](c2, async () => {
-          c2.res = await this.#notFoundHandler(c2);
-        });
-      } catch (err) {
-        return this.#handleError(err, c2);
-      }
-      return res instanceof Promise ? res.then(
-        (resolved) => resolved || (c2.finalized ? c2.res : this.#notFoundHandler(c2))
-      ).catch((err) => this.#handleError(err, c2)) : res ?? this.#notFoundHandler(c2);
-    }
-    const composed = compose(matchResult[0], this.errorHandler, this.#notFoundHandler);
-    return (async () => {
-      try {
-        const context = await composed(c2);
-        if (!context.finalized) {
-          throw new Error(
-            "Context is not finalized. Did you forget to return a Response object or `await next()`?"
-          );
-        }
-        return context.res;
-      } catch (err) {
-        return this.#handleError(err, c2);
-      }
-    })();
-  }
-  fetch = (request, ...rest) => {
-    return this.#dispatch(request, rest[1], rest[0], request.method);
-  };
-  request = (input, requestInit, Env, executionCtx) => {
-    if (input instanceof Request) {
-      return this.fetch(requestInit ? new Request(input, requestInit) : input, Env, executionCtx);
-    }
-    input = input.toString();
-    return this.fetch(
-      new Request(
-        /^https?:\/\//.test(input) ? input : `http://localhost${mergePath("/", input)}`,
-        requestInit
-      ),
-      Env,
-      executionCtx
-    );
-  };
-  fire = () => {
-    addEventListener("fetch", (event) => {
-      event.respondWith(this.#dispatch(event.request, event, void 0, event.request.method));
-    });
-  };
-}, "Hono");
+      input = input.toString();
+      return this.fetch(
+        new Request(
+          /^https?:\/\//.test(input)
+            ? input
+            : `http://localhost${mergePath("/", input)}`,
+          requestInit,
+        ),
+        Env,
+        executionCtx,
+      );
+    };
+    fire = () => {
+      addEventListener("fetch", (event) => {
+        event.respondWith(
+          this.#dispatch(event.request, event, void 0, event.request.method),
+        );
+      });
+    };
+  },
+  "Hono",
+);
 
 // node_modules/hono/dist/router/reg-exp-router/index.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/hono/dist/router/reg-exp-router/router.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/hono/dist/router/reg-exp-router/node.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var LABEL_REG_EXP_STR = "[^/]+";
 var ONLY_WILDCARD_REG_EXP_STR = ".*";
 var TAIL_WILDCARD_REG_EXP_STR = "(?:|/.*)";
@@ -2378,14 +2662,17 @@ var PATH_ERROR = Symbol();
 var regExpMetaChars = new Set(".\\+*[^]$()");
 function compareKey(a, b) {
   if (a.length === 1) {
-    return b.length === 1 ? a < b ? -1 : 1 : -1;
+    return b.length === 1 ? (a < b ? -1 : 1) : -1;
   }
   if (b.length === 1) {
     return 1;
   }
   if (a === ONLY_WILDCARD_REG_EXP_STR || a === TAIL_WILDCARD_REG_EXP_STR) {
     return 1;
-  } else if (b === ONLY_WILDCARD_REG_EXP_STR || b === TAIL_WILDCARD_REG_EXP_STR) {
+  } else if (
+    b === ONLY_WILDCARD_REG_EXP_STR ||
+    b === TAIL_WILDCARD_REG_EXP_STR
+  ) {
     return -1;
   }
   if (a === LABEL_REG_EXP_STR) {
@@ -2393,181 +2680,226 @@ function compareKey(a, b) {
   } else if (b === LABEL_REG_EXP_STR) {
     return -1;
   }
-  return a.length === b.length ? a < b ? -1 : 1 : b.length - a.length;
+  return a.length === b.length ? (a < b ? -1 : 1) : b.length - a.length;
 }
-__name(compareKey, "compareKey");
-var Node = /* @__PURE__ */ __name(class {
-  #index;
-  #varIndex;
-  #children = /* @__PURE__ */ Object.create(null);
-  insert(tokens, index2, paramMap, context, pathErrorCheckOnly) {
-    if (tokens.length === 0) {
-      if (this.#index !== void 0) {
-        throw PATH_ERROR;
-      }
-      if (pathErrorCheckOnly) {
+Name(compareKey, "compareKey");
+var Node = /* @__PURE__ */ Name(
+  class {
+    #index;
+    #varIndex;
+    #children = /* @__PURE__ */ Object.create(null);
+    insert(tokens, index2, paramMap, context, pathErrorCheckOnly) {
+      if (tokens.length === 0) {
+        if (this.#index !== void 0) {
+          throw PATH_ERROR;
+        }
+        if (pathErrorCheckOnly) {
+          return;
+        }
+        this.#index = index2;
         return;
       }
-      this.#index = index2;
-      return;
-    }
-    const [token, ...restTokens] = tokens;
-    const pattern = token === "*" ? restTokens.length === 0 ? ["", "", ONLY_WILDCARD_REG_EXP_STR] : ["", "", LABEL_REG_EXP_STR] : token === "/*" ? ["", "", TAIL_WILDCARD_REG_EXP_STR] : token.match(/^\:([^\{\}]+)(?:\{(.+)\})?$/);
-    let node;
-    if (pattern) {
-      const name = pattern[1];
-      let regexpStr = pattern[2] || LABEL_REG_EXP_STR;
-      if (name && pattern[2]) {
-        regexpStr = regexpStr.replace(/^\((?!\?:)(?=[^)]+\)$)/, "(?:");
-        if (/\((?!\?:)/.test(regexpStr)) {
-          throw PATH_ERROR;
+      const [token, ...restTokens] = tokens;
+      const pattern =
+        token === "*"
+          ? restTokens.length === 0
+            ? ["", "", ONLY_WILDCARD_REG_EXP_STR]
+            : ["", "", LABEL_REG_EXP_STR]
+          : token === "/*"
+            ? ["", "", TAIL_WILDCARD_REG_EXP_STR]
+            : token.match(/^:([^{}]+)(?:\{(.+)\})?$/);
+      let node;
+      if (pattern) {
+        const name = pattern[1];
+        let regexpStr = pattern[2] || LABEL_REG_EXP_STR;
+        if (name && pattern[2]) {
+          regexpStr = regexpStr.replace(/^\((?!\?:)(?=[^)]+\)$)/, "(?:");
+          if (/\((?!\?:)/.test(regexpStr)) {
+            throw PATH_ERROR;
+          }
+        }
+        node = this.#children[regexpStr];
+        if (!node) {
+          if (
+            Object.keys(this.#children).some(
+              (k) =>
+                k !== ONLY_WILDCARD_REG_EXP_STR &&
+                k !== TAIL_WILDCARD_REG_EXP_STR,
+            )
+          ) {
+            throw PATH_ERROR;
+          }
+          if (pathErrorCheckOnly) {
+            return;
+          }
+          node = this.#children[regexpStr] = new Node();
+          if (name !== "") {
+            node.#varIndex = context.varIndex++;
+          }
+        }
+        if (!pathErrorCheckOnly && name !== "") {
+          paramMap.push([name, node.#varIndex]);
+        }
+      } else {
+        node = this.#children[token];
+        if (!node) {
+          if (
+            Object.keys(this.#children).some(
+              (k) =>
+                k.length > 1 &&
+                k !== ONLY_WILDCARD_REG_EXP_STR &&
+                k !== TAIL_WILDCARD_REG_EXP_STR,
+            )
+          ) {
+            throw PATH_ERROR;
+          }
+          if (pathErrorCheckOnly) {
+            return;
+          }
+          node = this.#children[token] = new Node();
         }
       }
-      node = this.#children[regexpStr];
-      if (!node) {
-        if (Object.keys(this.#children).some(
-          (k) => k !== ONLY_WILDCARD_REG_EXP_STR && k !== TAIL_WILDCARD_REG_EXP_STR
-        )) {
-          throw PATH_ERROR;
-        }
-        if (pathErrorCheckOnly) {
-          return;
-        }
-        node = this.#children[regexpStr] = new Node();
-        if (name !== "") {
-          node.#varIndex = context.varIndex++;
-        }
+      node.insert(restTokens, index2, paramMap, context, pathErrorCheckOnly);
+    }
+    buildRegExpStr() {
+      const childKeys = Object.keys(this.#children).sort(compareKey);
+      const strList = childKeys.map((k) => {
+        const c2 = this.#children[k];
+        return (
+          (typeof c2.#varIndex === "number"
+            ? `(${k})@${c2.#varIndex}`
+            : regExpMetaChars.has(k)
+              ? `\\${k}`
+              : k) + c2.buildRegExpStr()
+        );
+      });
+      if (typeof this.#index === "number") {
+        strList.unshift(`#${this.#index}`);
       }
-      if (!pathErrorCheckOnly && name !== "") {
-        paramMap.push([name, node.#varIndex]);
+      if (strList.length === 0) {
+        return "";
       }
-    } else {
-      node = this.#children[token];
-      if (!node) {
-        if (Object.keys(this.#children).some(
-          (k) => k.length > 1 && k !== ONLY_WILDCARD_REG_EXP_STR && k !== TAIL_WILDCARD_REG_EXP_STR
-        )) {
-          throw PATH_ERROR;
-        }
-        if (pathErrorCheckOnly) {
-          return;
-        }
-        node = this.#children[token] = new Node();
+      if (strList.length === 1) {
+        return strList[0];
       }
+      return "(?:" + strList.join("|") + ")";
     }
-    node.insert(restTokens, index2, paramMap, context, pathErrorCheckOnly);
-  }
-  buildRegExpStr() {
-    const childKeys = Object.keys(this.#children).sort(compareKey);
-    const strList = childKeys.map((k) => {
-      const c2 = this.#children[k];
-      return (typeof c2.#varIndex === "number" ? `(${k})@${c2.#varIndex}` : regExpMetaChars.has(k) ? `\\${k}` : k) + c2.buildRegExpStr();
-    });
-    if (typeof this.#index === "number") {
-      strList.unshift(`#${this.#index}`);
-    }
-    if (strList.length === 0) {
-      return "";
-    }
-    if (strList.length === 1) {
-      return strList[0];
-    }
-    return "(?:" + strList.join("|") + ")";
-  }
-}, "Node");
+  },
+  "Node",
+);
 
 // node_modules/hono/dist/router/reg-exp-router/trie.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var Trie = /* @__PURE__ */ __name(class {
-  #context = { varIndex: 0 };
-  #root = new Node();
-  insert(path, index2, pathErrorCheckOnly) {
-    const paramAssoc = [];
-    const groups = [];
-    for (let i = 0; ; ) {
-      let replaced = false;
-      path = path.replace(/\{[^}]+\}/g, (m) => {
-        const mark = `@\\${i}`;
-        groups[i] = [mark, m];
-        i++;
-        replaced = true;
-        return mark;
-      });
-      if (!replaced) {
-        break;
-      }
-    }
-    const tokens = path.match(/(?::[^\/]+)|(?:\/\*$)|./g) || [];
-    for (let i = groups.length - 1; i >= 0; i--) {
-      const [mark] = groups[i];
-      for (let j = tokens.length - 1; j >= 0; j--) {
-        if (tokens[j].indexOf(mark) !== -1) {
-          tokens[j] = tokens[j].replace(mark, groups[i][1]);
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var Trie = /* @__PURE__ */ Name(
+  class {
+    #context = { varIndex: 0 };
+    #root = new Node();
+    insert(path, index2, pathErrorCheckOnly) {
+      const paramAssoc = [];
+      const groups = [];
+      for (let i = 0; ; ) {
+        let replaced = false;
+        path = path.replace(/\{[^}]+\}/g, (m) => {
+          const mark = `@\\${i}`;
+          groups[i] = [mark, m];
+          i++;
+          replaced = true;
+          return mark;
+        });
+        if (!replaced) {
           break;
         }
       }
-    }
-    this.#root.insert(tokens, index2, paramAssoc, this.#context, pathErrorCheckOnly);
-    return paramAssoc;
-  }
-  buildRegExp() {
-    let regexp = this.#root.buildRegExpStr();
-    if (regexp === "") {
-      return [/^$/, [], []];
-    }
-    let captureIndex = 0;
-    const indexReplacementMap = [];
-    const paramReplacementMap = [];
-    regexp = regexp.replace(/#(\d+)|@(\d+)|\.\*\$/g, (_, handlerIndex, paramIndex) => {
-      if (handlerIndex !== void 0) {
-        indexReplacementMap[++captureIndex] = Number(handlerIndex);
-        return "$()";
+      const tokens = path.match(/(?::[^/]+)|(?:\/\*$)|./g) || [];
+      for (let i = groups.length - 1; i >= 0; i--) {
+        const [mark] = groups[i];
+        for (let j = tokens.length - 1; j >= 0; j--) {
+          if (tokens[j].indexOf(mark) !== -1) {
+            tokens[j] = tokens[j].replace(mark, groups[i][1]);
+            break;
+          }
+        }
       }
-      if (paramIndex !== void 0) {
-        paramReplacementMap[Number(paramIndex)] = ++captureIndex;
-        return "";
+      this.#root.insert(
+        tokens,
+        index2,
+        paramAssoc,
+        this.#context,
+        pathErrorCheckOnly,
+      );
+      return paramAssoc;
+    }
+    buildRegExp() {
+      let regexp = this.#root.buildRegExpStr();
+      if (regexp === "") {
+        return [/^$/, [], []];
       }
-      return "";
-    });
-    return [new RegExp(`^${regexp}`), indexReplacementMap, paramReplacementMap];
-  }
-}, "Trie");
+      let captureIndex = 0;
+      const indexReplacementMap = [];
+      const paramReplacementMap = [];
+      regexp = regexp.replace(
+        /#(\d+)|@(\d+)|\.\*\$/g,
+        (_, handlerIndex, paramIndex) => {
+          if (handlerIndex !== void 0) {
+            indexReplacementMap[++captureIndex] = Number(handlerIndex);
+            return "$()";
+          }
+          if (paramIndex !== void 0) {
+            paramReplacementMap[Number(paramIndex)] = ++captureIndex;
+            return "";
+          }
+          return "";
+        },
+      );
+      return [
+        new RegExp(`^${regexp}`),
+        indexReplacementMap,
+        paramReplacementMap,
+      ];
+    }
+  },
+  "Trie",
+);
 
 // node_modules/hono/dist/router/reg-exp-router/router.js
 var emptyParam = [];
 var nullMatcher = [/^$/, [], /* @__PURE__ */ Object.create(null)];
 var wildcardRegExpCache = /* @__PURE__ */ Object.create(null);
 function buildWildcardRegExp(path) {
-  return wildcardRegExpCache[path] ??= new RegExp(
-    path === "*" ? "" : `^${path.replace(
-      /\/\*$|([.\\+*[^\]$()])/g,
-      (_, metaChar) => metaChar ? `\\${metaChar}` : "(?:|/.*)"
-    )}$`
-  );
+  return (wildcardRegExpCache[path] ??= new RegExp(
+    path === "*"
+      ? ""
+      : `^${path.replace(/\/\*$|([.\\+*[^\]$()])/g, (_, metaChar) =>
+          metaChar ? `\\${metaChar}` : "(?:|/.*)",
+        )}$`,
+  ));
 }
-__name(buildWildcardRegExp, "buildWildcardRegExp");
+Name(buildWildcardRegExp, "buildWildcardRegExp");
 function clearWildcardRegExpCache() {
   wildcardRegExpCache = /* @__PURE__ */ Object.create(null);
 }
-__name(clearWildcardRegExpCache, "clearWildcardRegExpCache");
+Name(clearWildcardRegExpCache, "clearWildcardRegExpCache");
 function buildMatcherFromPreprocessedRoutes(routes) {
   const trie = new Trie();
   const handlerData = [];
   if (routes.length === 0) {
     return nullMatcher;
   }
-  const routesWithStaticPathFlag = routes.map(
-    (route) => [!/\*|\/:/.test(route[0]), ...route]
-  ).sort(
-    ([isStaticA, pathA], [isStaticB, pathB]) => isStaticA ? 1 : isStaticB ? -1 : pathA.length - pathB.length
-  );
+  const routesWithStaticPathFlag = routes
+    .map((route) => [!/\*|\/:/.test(route[0]), ...route])
+    .sort(([isStaticA, pathA], [isStaticB, pathB]) =>
+      isStaticA ? 1 : isStaticB ? -1 : pathA.length - pathB.length,
+    );
   const staticMap = /* @__PURE__ */ Object.create(null);
   for (let i = 0, j = -1, len = routesWithStaticPathFlag.length; i < len; i++) {
     const [pathErrorCheckOnly, path, handlers] = routesWithStaticPathFlag[i];
     if (pathErrorCheckOnly) {
-      staticMap[path] = [handlers.map(([h]) => [h, /* @__PURE__ */ Object.create(null)]), emptyParam];
+      staticMap[path] = [
+        handlers.map(([h]) => [h, /* @__PURE__ */ Object.create(null)]),
+        emptyParam,
+      ];
     } else {
       j++;
     }
@@ -2609,7 +2941,7 @@ function buildMatcherFromPreprocessedRoutes(routes) {
   }
   return [regexp, handlerMap, staticMap];
 }
-__name(buildMatcherFromPreprocessedRoutes, "buildMatcherFromPreprocessedRoutes");
+Name(buildMatcherFromPreprocessedRoutes, "buildMatcherFromPreprocessedRoutes");
 function findMiddleware(middleware, path) {
   if (!middleware) {
     return void 0;
@@ -2621,412 +2953,472 @@ function findMiddleware(middleware, path) {
   }
   return void 0;
 }
-__name(findMiddleware, "findMiddleware");
-var RegExpRouter = /* @__PURE__ */ __name(class {
-  name = "RegExpRouter";
-  #middleware;
-  #routes;
-  constructor() {
-    this.#middleware = { [METHOD_NAME_ALL]: /* @__PURE__ */ Object.create(null) };
-    this.#routes = { [METHOD_NAME_ALL]: /* @__PURE__ */ Object.create(null) };
-  }
-  add(method, path, handler) {
-    const middleware = this.#middleware;
-    const routes = this.#routes;
-    if (!middleware || !routes) {
-      throw new Error(MESSAGE_MATCHER_IS_ALREADY_BUILT);
+Name(findMiddleware, "findMiddleware");
+var RegExpRouter = /* @__PURE__ */ Name(
+  class {
+    name = "RegExpRouter";
+    #middleware;
+    #routes;
+    constructor() {
+      this.#middleware = {
+        [METHOD_NAME_ALL]: /* @__PURE__ */ Object.create(null),
+      };
+      this.#routes = { [METHOD_NAME_ALL]: /* @__PURE__ */ Object.create(null) };
     }
-    if (!middleware[method]) {
-      ;
-      [middleware, routes].forEach((handlerMap) => {
-        handlerMap[method] = /* @__PURE__ */ Object.create(null);
-        Object.keys(handlerMap[METHOD_NAME_ALL]).forEach((p) => {
-          handlerMap[method][p] = [...handlerMap[METHOD_NAME_ALL][p]];
-        });
-      });
-    }
-    if (path === "/*") {
-      path = "*";
-    }
-    const paramCount = (path.match(/\/:/g) || []).length;
-    if (/\*$/.test(path)) {
-      const re = buildWildcardRegExp(path);
-      if (method === METHOD_NAME_ALL) {
-        Object.keys(middleware).forEach((m) => {
-          middleware[m][path] ||= findMiddleware(middleware[m], path) || findMiddleware(middleware[METHOD_NAME_ALL], path) || [];
-        });
-      } else {
-        middleware[method][path] ||= findMiddleware(middleware[method], path) || findMiddleware(middleware[METHOD_NAME_ALL], path) || [];
+    add(method, path, handler) {
+      const middleware = this.#middleware;
+      const routes = this.#routes;
+      if (!middleware || !routes) {
+        throw new Error(MESSAGE_MATCHER_IS_ALREADY_BUILT);
       }
-      Object.keys(middleware).forEach((m) => {
-        if (method === METHOD_NAME_ALL || method === m) {
-          Object.keys(middleware[m]).forEach((p) => {
-            re.test(p) && middleware[m][p].push([handler, paramCount]);
+      if (!middleware[method]) {
+        [middleware, routes].forEach((handlerMap) => {
+          handlerMap[method] = /* @__PURE__ */ Object.create(null);
+          Object.keys(handlerMap[METHOD_NAME_ALL]).forEach((p) => {
+            handlerMap[method][p] = [...handlerMap[METHOD_NAME_ALL][p]];
           });
+        });
+      }
+      if (path === "/*") {
+        path = "*";
+      }
+      const paramCount = (path.match(/\/:/g) || []).length;
+      if (/\*$/.test(path)) {
+        const re = buildWildcardRegExp(path);
+        if (method === METHOD_NAME_ALL) {
+          Object.keys(middleware).forEach((m) => {
+            middleware[m][path] ||=
+              findMiddleware(middleware[m], path) ||
+              findMiddleware(middleware[METHOD_NAME_ALL], path) ||
+              [];
+          });
+        } else {
+          middleware[method][path] ||=
+            findMiddleware(middleware[method], path) ||
+            findMiddleware(middleware[METHOD_NAME_ALL], path) ||
+            [];
         }
-      });
-      Object.keys(routes).forEach((m) => {
-        if (method === METHOD_NAME_ALL || method === m) {
-          Object.keys(routes[m]).forEach(
-            (p) => re.test(p) && routes[m][p].push([handler, paramCount])
+        Object.keys(middleware).forEach((m) => {
+          if (method === METHOD_NAME_ALL || method === m) {
+            Object.keys(middleware[m]).forEach((p) => {
+              re.test(p) && middleware[m][p].push([handler, paramCount]);
+            });
+          }
+        });
+        Object.keys(routes).forEach((m) => {
+          if (method === METHOD_NAME_ALL || method === m) {
+            Object.keys(routes[m]).forEach(
+              (p) => re.test(p) && routes[m][p].push([handler, paramCount]),
+            );
+          }
+        });
+        return;
+      }
+      const paths = checkOptionalParameter(path) || [path];
+      for (let i = 0, len = paths.length; i < len; i++) {
+        const path2 = paths[i];
+        Object.keys(routes).forEach((m) => {
+          if (method === METHOD_NAME_ALL || method === m) {
+            routes[m][path2] ||= [
+              ...(findMiddleware(middleware[m], path2) ||
+                findMiddleware(middleware[METHOD_NAME_ALL], path2) ||
+                []),
+            ];
+            routes[m][path2].push([handler, paramCount - len + i + 1]);
+          }
+        });
+      }
+    }
+    match(method, path) {
+      clearWildcardRegExpCache();
+      const matchers = this.#buildAllMatchers();
+      this.match = (method2, path2) => {
+        const matcher = matchers[method2] || matchers[METHOD_NAME_ALL];
+        const staticMatch = matcher[2][path2];
+        if (staticMatch) {
+          return staticMatch;
+        }
+        const match = path2.match(matcher[0]);
+        if (!match) {
+          return [[], emptyParam];
+        }
+        const index2 = match.indexOf("", 1);
+        return [matcher[1][index2], match];
+      };
+      return this.match(method, path);
+    }
+    #buildAllMatchers() {
+      const matchers = /* @__PURE__ */ Object.create(null);
+      Object.keys(this.#routes)
+        .concat(Object.keys(this.#middleware))
+        .forEach((method) => {
+          matchers[method] ||= this.#buildMatcher(method);
+        });
+      this.#middleware = this.#routes = void 0;
+      return matchers;
+    }
+    #buildMatcher(method) {
+      const routes = [];
+      let hasOwnRoute = method === METHOD_NAME_ALL;
+      [this.#middleware, this.#routes].forEach((r) => {
+        const ownRoute = r[method]
+          ? Object.keys(r[method]).map((path) => [path, r[method][path]])
+          : [];
+        if (ownRoute.length !== 0) {
+          hasOwnRoute ||= true;
+          routes.push(...ownRoute);
+        } else if (method !== METHOD_NAME_ALL) {
+          routes.push(
+            ...Object.keys(r[METHOD_NAME_ALL]).map((path) => [
+              path,
+              r[METHOD_NAME_ALL][path],
+            ]),
           );
         }
       });
-      return;
-    }
-    const paths = checkOptionalParameter(path) || [path];
-    for (let i = 0, len = paths.length; i < len; i++) {
-      const path2 = paths[i];
-      Object.keys(routes).forEach((m) => {
-        if (method === METHOD_NAME_ALL || method === m) {
-          routes[m][path2] ||= [
-            ...findMiddleware(middleware[m], path2) || findMiddleware(middleware[METHOD_NAME_ALL], path2) || []
-          ];
-          routes[m][path2].push([handler, paramCount - len + i + 1]);
-        }
-      });
-    }
-  }
-  match(method, path) {
-    clearWildcardRegExpCache();
-    const matchers = this.#buildAllMatchers();
-    this.match = (method2, path2) => {
-      const matcher = matchers[method2] || matchers[METHOD_NAME_ALL];
-      const staticMatch = matcher[2][path2];
-      if (staticMatch) {
-        return staticMatch;
+      if (!hasOwnRoute) {
+        return null;
+      } else {
+        return buildMatcherFromPreprocessedRoutes(routes);
       }
-      const match = path2.match(matcher[0]);
-      if (!match) {
-        return [[], emptyParam];
-      }
-      const index2 = match.indexOf("", 1);
-      return [matcher[1][index2], match];
-    };
-    return this.match(method, path);
-  }
-  #buildAllMatchers() {
-    const matchers = /* @__PURE__ */ Object.create(null);
-    Object.keys(this.#routes).concat(Object.keys(this.#middleware)).forEach((method) => {
-      matchers[method] ||= this.#buildMatcher(method);
-    });
-    this.#middleware = this.#routes = void 0;
-    return matchers;
-  }
-  #buildMatcher(method) {
-    const routes = [];
-    let hasOwnRoute = method === METHOD_NAME_ALL;
-    [this.#middleware, this.#routes].forEach((r) => {
-      const ownRoute = r[method] ? Object.keys(r[method]).map((path) => [path, r[method][path]]) : [];
-      if (ownRoute.length !== 0) {
-        hasOwnRoute ||= true;
-        routes.push(...ownRoute);
-      } else if (method !== METHOD_NAME_ALL) {
-        routes.push(
-          ...Object.keys(r[METHOD_NAME_ALL]).map((path) => [path, r[METHOD_NAME_ALL][path]])
-        );
-      }
-    });
-    if (!hasOwnRoute) {
-      return null;
-    } else {
-      return buildMatcherFromPreprocessedRoutes(routes);
     }
-  }
-}, "RegExpRouter");
+  },
+  "RegExpRouter",
+);
 
 // node_modules/hono/dist/router/smart-router/index.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/hono/dist/router/smart-router/router.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var SmartRouter = /* @__PURE__ */ __name(class {
-  name = "SmartRouter";
-  #routers = [];
-  #routes = [];
-  constructor(init) {
-    this.#routers = init.routers;
-  }
-  add(method, path, handler) {
-    if (!this.#routes) {
-      throw new Error(MESSAGE_MATCHER_IS_ALREADY_BUILT);
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var SmartRouter = /* @__PURE__ */ Name(
+  class {
+    name = "SmartRouter";
+    #routers = [];
+    #routes = [];
+    constructor(init) {
+      this.#routers = init.routers;
     }
-    this.#routes.push([method, path, handler]);
-  }
-  match(method, path) {
-    if (!this.#routes) {
-      throw new Error("Fatal error");
-    }
-    const routers = this.#routers;
-    const routes = this.#routes;
-    const len = routers.length;
-    let i = 0;
-    let res;
-    for (; i < len; i++) {
-      const router = routers[i];
-      try {
-        for (let i2 = 0, len2 = routes.length; i2 < len2; i2++) {
-          router.add(...routes[i2]);
-        }
-        res = router.match(method, path);
-      } catch (e) {
-        if (e instanceof UnsupportedPathError) {
-          continue;
-        }
-        throw e;
+    add(method, path, handler) {
+      if (!this.#routes) {
+        throw new Error(MESSAGE_MATCHER_IS_ALREADY_BUILT);
       }
-      this.match = router.match.bind(router);
-      this.#routers = [router];
-      this.#routes = void 0;
-      break;
+      this.#routes.push([method, path, handler]);
     }
-    if (i === len) {
-      throw new Error("Fatal error");
+    match(method, path) {
+      if (!this.#routes) {
+        throw new Error("Fatal error");
+      }
+      const routers = this.#routers;
+      const routes = this.#routes;
+      const len = routers.length;
+      let i = 0;
+      let res;
+      for (; i < len; i++) {
+        const router = routers[i];
+        try {
+          for (let i2 = 0, len2 = routes.length; i2 < len2; i2++) {
+            router.add(...routes[i2]);
+          }
+          res = router.match(method, path);
+        } catch (e) {
+          if (e instanceof UnsupportedPathError) {
+            continue;
+          }
+          throw e;
+        }
+        this.match = router.match.bind(router);
+        this.#routers = [router];
+        this.#routes = void 0;
+        break;
+      }
+      if (i === len) {
+        throw new Error("Fatal error");
+      }
+      this.name = `SmartRouter + ${this.activeRouter.name}`;
+      return res;
     }
-    this.name = `SmartRouter + ${this.activeRouter.name}`;
-    return res;
-  }
-  get activeRouter() {
-    if (this.#routes || this.#routers.length !== 1) {
-      throw new Error("No active router has been determined yet.");
+    get activeRouter() {
+      if (this.#routes || this.#routers.length !== 1) {
+        throw new Error("No active router has been determined yet.");
+      }
+      return this.#routers[0];
     }
-    return this.#routers[0];
-  }
-}, "SmartRouter");
+  },
+  "SmartRouter",
+);
 
 // node_modules/hono/dist/router/trie-router/index.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/hono/dist/router/trie-router/router.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/hono/dist/router/trie-router/node.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var emptyParams = /* @__PURE__ */ Object.create(null);
-var Node2 = /* @__PURE__ */ __name(class {
-  #methods;
-  #children;
-  #patterns;
-  #order = 0;
-  #params = emptyParams;
-  constructor(method, handler, children) {
-    this.#children = children || /* @__PURE__ */ Object.create(null);
-    this.#methods = [];
-    if (method && handler) {
-      const m = /* @__PURE__ */ Object.create(null);
-      m[method] = { handler, possibleKeys: [], score: 0 };
-      this.#methods = [m];
+var Node2 = /* @__PURE__ */ Name(
+  class {
+    #methods;
+    #children;
+    #patterns;
+    #order = 0;
+    #params = emptyParams;
+    constructor(method, handler, children) {
+      this.#children = children || /* @__PURE__ */ Object.create(null);
+      this.#methods = [];
+      if (method && handler) {
+        const m = /* @__PURE__ */ Object.create(null);
+        m[method] = { handler, possibleKeys: [], score: 0 };
+        this.#methods = [m];
+      }
+      this.#patterns = [];
     }
-    this.#patterns = [];
-  }
-  insert(method, path, handler) {
-    this.#order = ++this.#order;
-    let curNode = this;
-    const parts = splitRoutingPath(path);
-    const possibleKeys = [];
-    for (let i = 0, len = parts.length; i < len; i++) {
-      const p = parts[i];
-      const nextP = parts[i + 1];
-      const pattern = getPattern(p, nextP);
-      const key = Array.isArray(pattern) ? pattern[0] : p;
-      if (key in curNode.#children) {
-        curNode = curNode.#children[key];
+    insert(method, path, handler) {
+      this.#order = ++this.#order;
+      let curNode = this;
+      const parts = splitRoutingPath(path);
+      const possibleKeys = [];
+      for (let i = 0, len = parts.length; i < len; i++) {
+        const p = parts[i];
+        const nextP = parts[i + 1];
+        const pattern = getPattern(p, nextP);
+        const key = Array.isArray(pattern) ? pattern[0] : p;
+        if (key in curNode.#children) {
+          curNode = curNode.#children[key];
+          if (pattern) {
+            possibleKeys.push(pattern[1]);
+          }
+          continue;
+        }
+        curNode.#children[key] = new Node2();
         if (pattern) {
+          curNode.#patterns.push(pattern);
           possibleKeys.push(pattern[1]);
         }
-        continue;
+        curNode = curNode.#children[key];
       }
-      curNode.#children[key] = new Node2();
-      if (pattern) {
-        curNode.#patterns.push(pattern);
-        possibleKeys.push(pattern[1]);
-      }
-      curNode = curNode.#children[key];
+      curNode.#methods.push({
+        [method]: {
+          handler,
+          possibleKeys: possibleKeys.filter((v, i, a) => a.indexOf(v) === i),
+          score: this.#order,
+        },
+      });
+      return curNode;
     }
-    curNode.#methods.push({
-      [method]: {
-        handler,
-        possibleKeys: possibleKeys.filter((v, i, a) => a.indexOf(v) === i),
-        score: this.#order
-      }
-    });
-    return curNode;
-  }
-  #getHandlerSets(node, method, nodeParams, params) {
-    const handlerSets = [];
-    for (let i = 0, len = node.#methods.length; i < len; i++) {
-      const m = node.#methods[i];
-      const handlerSet = m[method] || m[METHOD_NAME_ALL];
-      const processedSet = {};
-      if (handlerSet !== void 0) {
-        handlerSet.params = /* @__PURE__ */ Object.create(null);
-        handlerSets.push(handlerSet);
-        if (nodeParams !== emptyParams || params && params !== emptyParams) {
-          for (let i2 = 0, len2 = handlerSet.possibleKeys.length; i2 < len2; i2++) {
-            const key = handlerSet.possibleKeys[i2];
-            const processed = processedSet[handlerSet.score];
-            handlerSet.params[key] = params?.[key] && !processed ? params[key] : nodeParams[key] ?? params?.[key];
-            processedSet[handlerSet.score] = true;
+    #getHandlerSets(node, method, nodeParams, params) {
+      const handlerSets = [];
+      for (let i = 0, len = node.#methods.length; i < len; i++) {
+        const m = node.#methods[i];
+        const handlerSet = m[method] || m[METHOD_NAME_ALL];
+        const processedSet = {};
+        if (handlerSet !== void 0) {
+          handlerSet.params = /* @__PURE__ */ Object.create(null);
+          handlerSets.push(handlerSet);
+          if (
+            nodeParams !== emptyParams ||
+            (params && params !== emptyParams)
+          ) {
+            for (
+              let i2 = 0, len2 = handlerSet.possibleKeys.length;
+              i2 < len2;
+              i2++
+            ) {
+              const key = handlerSet.possibleKeys[i2];
+              const processed = processedSet[handlerSet.score];
+              handlerSet.params[key] =
+                params?.[key] && !processed
+                  ? params[key]
+                  : (nodeParams[key] ?? params?.[key]);
+              processedSet[handlerSet.score] = true;
+            }
           }
         }
       }
+      return handlerSets;
     }
-    return handlerSets;
-  }
-  search(method, path) {
-    const handlerSets = [];
-    this.#params = emptyParams;
-    const curNode = this;
-    let curNodes = [curNode];
-    const parts = splitPath(path);
-    const curNodesQueue = [];
-    for (let i = 0, len = parts.length; i < len; i++) {
-      const part = parts[i];
-      const isLast = i === len - 1;
-      const tempNodes = [];
-      for (let j = 0, len2 = curNodes.length; j < len2; j++) {
-        const node = curNodes[j];
-        const nextNode = node.#children[part];
-        if (nextNode) {
-          nextNode.#params = node.#params;
-          if (isLast) {
-            if (nextNode.#children["*"]) {
+    search(method, path) {
+      const handlerSets = [];
+      this.#params = emptyParams;
+      let curNodes = [this];
+      const parts = splitPath(path);
+      const curNodesQueue = [];
+      for (let i = 0, len = parts.length; i < len; i++) {
+        const part = parts[i];
+        const isLast = i === len - 1;
+        const tempNodes = [];
+        for (let j = 0, len2 = curNodes.length; j < len2; j++) {
+          const node = curNodes[j];
+          const nextNode = node.#children[part];
+          if (nextNode) {
+            nextNode.#params = node.#params;
+            if (isLast) {
+              if (nextNode.#children["*"]) {
+                handlerSets.push(
+                  ...this.#getHandlerSets(
+                    nextNode.#children["*"],
+                    method,
+                    node.#params,
+                  ),
+                );
+              }
               handlerSets.push(
-                ...this.#getHandlerSets(nextNode.#children["*"], method, node.#params)
+                ...this.#getHandlerSets(nextNode, method, node.#params),
               );
+            } else {
+              tempNodes.push(nextNode);
             }
-            handlerSets.push(...this.#getHandlerSets(nextNode, method, node.#params));
-          } else {
-            tempNodes.push(nextNode);
           }
-        }
-        for (let k = 0, len3 = node.#patterns.length; k < len3; k++) {
-          const pattern = node.#patterns[k];
-          const params = node.#params === emptyParams ? {} : { ...node.#params };
-          if (pattern === "*") {
-            const astNode = node.#children["*"];
-            if (astNode) {
-              handlerSets.push(...this.#getHandlerSets(astNode, method, node.#params));
-              astNode.#params = params;
-              tempNodes.push(astNode);
-            }
-            continue;
-          }
-          if (!part) {
-            continue;
-          }
-          const [key, name, matcher] = pattern;
-          const child = node.#children[key];
-          const restPathString = parts.slice(i).join("/");
-          if (matcher instanceof RegExp) {
-            const m = matcher.exec(restPathString);
-            if (m) {
-              params[name] = m[0];
-              handlerSets.push(...this.#getHandlerSets(child, method, node.#params, params));
-              if (Object.keys(child.#children).length) {
-                child.#params = params;
-                const componentCount = m[0].match(/\//)?.length ?? 0;
-                const targetCurNodes = curNodesQueue[componentCount] ||= [];
-                targetCurNodes.push(child);
+          for (let k = 0, len3 = node.#patterns.length; k < len3; k++) {
+            const pattern = node.#patterns[k];
+            const params =
+              node.#params === emptyParams ? {} : { ...node.#params };
+            if (pattern === "*") {
+              const astNode = node.#children["*"];
+              if (astNode) {
+                handlerSets.push(
+                  ...this.#getHandlerSets(astNode, method, node.#params),
+                );
+                astNode.#params = params;
+                tempNodes.push(astNode);
               }
               continue;
             }
-          }
-          if (matcher === true || matcher.test(part)) {
-            params[name] = part;
-            if (isLast) {
-              handlerSets.push(...this.#getHandlerSets(child, method, params, node.#params));
-              if (child.#children["*"]) {
+            if (!part) {
+              continue;
+            }
+            const [key, name, matcher] = pattern;
+            const child = node.#children[key];
+            const restPathString = parts.slice(i).join("/");
+            if (matcher instanceof RegExp) {
+              const m = matcher.exec(restPathString);
+              if (m) {
+                params[name] = m[0];
                 handlerSets.push(
-                  ...this.#getHandlerSets(child.#children["*"], method, params, node.#params)
+                  ...this.#getHandlerSets(child, method, node.#params, params),
                 );
+                if (Object.keys(child.#children).length) {
+                  child.#params = params;
+                  const componentCount = m[0].match(/\//)?.length ?? 0;
+                  const targetCurNodes = (curNodesQueue[componentCount] ||= []);
+                  targetCurNodes.push(child);
+                }
+                continue;
               }
-            } else {
-              child.#params = params;
-              tempNodes.push(child);
+            }
+            if (matcher === true || matcher.test(part)) {
+              params[name] = part;
+              if (isLast) {
+                handlerSets.push(
+                  ...this.#getHandlerSets(child, method, params, node.#params),
+                );
+                if (child.#children["*"]) {
+                  handlerSets.push(
+                    ...this.#getHandlerSets(
+                      child.#children["*"],
+                      method,
+                      params,
+                      node.#params,
+                    ),
+                  );
+                }
+              } else {
+                child.#params = params;
+                tempNodes.push(child);
+              }
             }
           }
         }
+        curNodes = tempNodes.concat(curNodesQueue.shift() ?? []);
       }
-      curNodes = tempNodes.concat(curNodesQueue.shift() ?? []);
+      if (handlerSets.length > 1) {
+        handlerSets.sort((a, b) => {
+          return a.score - b.score;
+        });
+      }
+      return [handlerSets.map(({ handler, params }) => [handler, params])];
     }
-    if (handlerSets.length > 1) {
-      handlerSets.sort((a, b) => {
-        return a.score - b.score;
-      });
-    }
-    return [handlerSets.map(({ handler, params }) => [handler, params])];
-  }
-}, "Node");
+  },
+  "Node",
+);
 
 // node_modules/hono/dist/router/trie-router/router.js
-var TrieRouter = /* @__PURE__ */ __name(class {
-  name = "TrieRouter";
-  #node;
-  constructor() {
-    this.#node = new Node2();
-  }
-  add(method, path, handler) {
-    const results = checkOptionalParameter(path);
-    if (results) {
-      for (let i = 0, len = results.length; i < len; i++) {
-        this.#node.insert(method, results[i], handler);
-      }
-      return;
+var TrieRouter = /* @__PURE__ */ Name(
+  class {
+    name = "TrieRouter";
+    #node;
+    constructor() {
+      this.#node = new Node2();
     }
-    this.#node.insert(method, path, handler);
-  }
-  match(method, path) {
-    return this.#node.search(method, path);
-  }
-}, "TrieRouter");
+    add(method, path, handler) {
+      const results = checkOptionalParameter(path);
+      if (results) {
+        for (let i = 0, len = results.length; i < len; i++) {
+          this.#node.insert(method, results[i], handler);
+        }
+        return;
+      }
+      this.#node.insert(method, path, handler);
+    }
+    match(method, path) {
+      return this.#node.search(method, path);
+    }
+  },
+  "TrieRouter",
+);
 
 // node_modules/hono/dist/hono.js
-var Hono2 = /* @__PURE__ */ __name(class extends Hono {
-  constructor(options = {}) {
-    super(options);
-    this.router = options.router ?? new SmartRouter({
-      routers: [new RegExpRouter(), new TrieRouter()]
-    });
-  }
-}, "Hono");
+var Hono2 = /* @__PURE__ */ Name(
+  class extends Hono {
+    constructor(options = {}) {
+      super(options);
+      this.router =
+        options.router ??
+        new SmartRouter({
+          routers: [new RegExpRouter(), new TrieRouter()],
+        });
+    }
+  },
+  "Hono",
+);
 
 // node_modules/hono/dist/middleware/cors/index.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var cors = /* @__PURE__ */ __name((options) => {
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var cors = /* @__PURE__ */ Name((options) => {
   const defaults = {
     origin: "*",
     allowMethods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
     allowHeaders: [],
-    exposeHeaders: []
+    exposeHeaders: [],
   };
   const opts = {
     ...defaults,
-    ...options
+    ...options,
   };
   const findAllowOrigin = ((optsOrigin) => {
     if (typeof optsOrigin === "string") {
       if (optsOrigin === "*") {
         return () => optsOrigin;
       } else {
-        return (origin) => optsOrigin === origin ? origin : null;
+        return (origin) => (optsOrigin === origin ? origin : null);
       }
     } else if (typeof optsOrigin === "function") {
       return optsOrigin;
     } else {
-      return (origin) => optsOrigin.includes(origin) ? origin : null;
+      return (origin) => (optsOrigin.includes(origin) ? origin : null);
     }
   })(opts.origin);
   const findAllowMethods = ((optsAllowMethods) => {
@@ -3038,11 +3430,11 @@ var cors = /* @__PURE__ */ __name((options) => {
       return () => [];
     }
   })(opts.allowMethods);
-  return /* @__PURE__ */ __name(async function cors2(c2, next) {
+  return /* @__PURE__ */ Name(async function cors2(c2, next) {
     function set(key, value) {
       c2.res.headers.set(key, value);
     }
-    __name(set, "set");
+    Name(set, "set");
     const allowOrigin = findAllowOrigin(c2.req.header("origin") || "", c2);
     if (allowOrigin) {
       set("Access-Control-Allow-Origin", allowOrigin);
@@ -3085,7 +3477,7 @@ var cors = /* @__PURE__ */ __name((options) => {
       return new Response(null, {
         headers: c2.res.headers,
         status: 204,
-        statusText: "No Content"
+        statusText: "No Content",
       });
     }
     await next();
@@ -3093,48 +3485,58 @@ var cors = /* @__PURE__ */ __name((options) => {
 }, "cors");
 
 // node_modules/hono/dist/middleware/logger/index.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/hono/dist/utils/color.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 function getColorEnabled() {
   const { process, Deno: Deno2 } = globalThis;
-  const isNoColor = typeof Deno2?.noColor === "boolean" ? Deno2.noColor : process !== void 0 ? "NO_COLOR" in process?.env : false;
+  const isNoColor =
+    typeof Deno2?.noColor === "boolean"
+      ? Deno2.noColor
+      : process !== void 0
+        ? "NO_COLOR" in process?.env
+        : false;
   return !isNoColor;
 }
-__name(getColorEnabled, "getColorEnabled");
+Name(getColorEnabled, "getColorEnabled");
 async function getColorEnabledAsync() {
   const { navigator: navigator2 } = globalThis;
   const cfWorkers = "cloudflare:workers";
-  const isNoColor = navigator2 !== void 0 && navigator2.userAgent === "Cloudflare-Workers" ? await (async () => {
-    try {
-      return "NO_COLOR" in ((await import(cfWorkers)).env ?? {});
-    } catch {
-      return false;
-    }
-  })() : !getColorEnabled();
+  const isNoColor =
+    navigator2 !== void 0 && navigator2.userAgent === "Cloudflare-Workers"
+      ? await (async () => {
+          try {
+            return "NO_COLOR" in ((await import(cfWorkers)).env ?? {});
+          } catch {
+            return false;
+          }
+        })()
+      : !getColorEnabled();
   return !isNoColor;
 }
-__name(getColorEnabledAsync, "getColorEnabledAsync");
+Name(getColorEnabledAsync, "getColorEnabledAsync");
 
 // node_modules/hono/dist/middleware/logger/index.js
-var humanize = /* @__PURE__ */ __name((times) => {
+var humanize = /* @__PURE__ */ Name((times) => {
   const [delimiter, separator] = [",", "."];
-  const orderTimes = times.map((v) => v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter));
+  const orderTimes = times.map((v) =>
+    v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter),
+  );
   return orderTimes.join(separator);
 }, "humanize");
-var time = /* @__PURE__ */ __name((start) => {
+var time = /* @__PURE__ */ Name((start) => {
   const delta = Date.now() - start;
   return humanize([delta < 1e3 ? delta + "ms" : Math.round(delta / 1e3) + "s"]);
 }, "time");
-var colorStatus = /* @__PURE__ */ __name(async (status) => {
+var colorStatus = /* @__PURE__ */ Name(async (status) => {
   const colorEnabled = await getColorEnabledAsync();
   if (colorEnabled) {
-    switch (status / 100 | 0) {
+    switch ((status / 100) | 0) {
       case 5:
         return `\x1B[31m${status}\x1B[0m`;
       case 4:
@@ -3148,12 +3550,15 @@ var colorStatus = /* @__PURE__ */ __name(async (status) => {
   return `${status}`;
 }, "colorStatus");
 async function log(fn, prefix, method, path, status = 0, elapsed) {
-  const out = prefix === "<--" ? `${prefix} ${method} ${path}` : `${prefix} ${method} ${path} ${await colorStatus(status)} ${elapsed}`;
+  const out =
+    prefix === "<--"
+      ? `${prefix} ${method} ${path}`
+      : `${prefix} ${method} ${path} ${await colorStatus(status)} ${elapsed}`;
   fn(out);
 }
-__name(log, "log");
-var logger = /* @__PURE__ */ __name((fn = console.log) => {
-  return /* @__PURE__ */ __name(async function logger2(c2, next) {
+Name(log, "log");
+var logger = /* @__PURE__ */ Name((fn = console.log) => {
+  return /* @__PURE__ */ Name(async function logger2(c2, next) {
     const { method, url } = c2.req;
     const path = url.slice(url.indexOf("/", 8));
     await log(fn, "<--", method, path);
@@ -3164,71 +3569,84 @@ var logger = /* @__PURE__ */ __name((fn = console.log) => {
 }, "logger");
 
 // node_modules/hono/dist/middleware/pretty-json/index.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var prettyJSON = /* @__PURE__ */ __name((options) => {
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var prettyJSON = /* @__PURE__ */ Name((options) => {
   const targetQuery = options?.query ?? "pretty";
-  return /* @__PURE__ */ __name(async function prettyJSON2(c2, next) {
-    const pretty = c2.req.query(targetQuery) || c2.req.query(targetQuery) === "";
+  return /* @__PURE__ */ Name(async function prettyJSON2(c2, next) {
+    const pretty =
+      c2.req.query(targetQuery) || c2.req.query(targetQuery) === "";
     await next();
-    if (pretty && c2.res.headers.get("Content-Type")?.startsWith("application/json")) {
+    if (
+      pretty &&
+      c2.res.headers.get("Content-Type")?.startsWith("application/json")
+    ) {
       const obj = await c2.res.json();
-      c2.res = new Response(JSON.stringify(obj, null, options?.space ?? 2), c2.res);
+      c2.res = new Response(
+        JSON.stringify(obj, null, options?.space ?? 2),
+        c2.res,
+      );
     }
   }, "prettyJSON2");
 }, "prettyJSON");
 
 // src/middleware/auth.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // src/lib/supabase.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/supabase-js/dist/module/index.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/supabase-js/dist/module/SupabaseClient.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/functions-js/dist/module/index.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/functions-js/dist/module/FunctionsClient.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/functions-js/dist/module/helper.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var resolveFetch = /* @__PURE__ */ __name((customFetch) => {
-  let _fetch;
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var resolveFetch = /* @__PURE__ */ Name((customFetch) => {
+  let Fetch;
   if (customFetch) {
-    _fetch = customFetch;
+    Fetch = customFetch;
   } else if (typeof fetch === "undefined") {
-    _fetch = /* @__PURE__ */ __name((...args) => Promise.resolve().then(() => (init_browser(), browser_exports)).then(({ default: fetch3 }) => fetch3(...args)), "_fetch");
+    Fetch = /* @__PURE__ */ Name(
+      (...args) =>
+        Promise.resolve()
+          .then(() => (initBrowser(), browserExports))
+          .then(({ default: fetch3 }) => fetch3(...args)),
+      "_fetch",
+    );
   } else {
-    _fetch = fetch;
+    Fetch = fetch;
   }
-  return (...args) => _fetch(...args);
+  return (...args) => Fetch(...args);
 }, "resolveFetch");
 
 // node_modules/@supabase/functions-js/dist/module/types.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var FunctionsError = class extends Error {
   constructor(message, name = "FunctionsError", context) {
     super(message);
@@ -3236,27 +3654,39 @@ var FunctionsError = class extends Error {
     this.context = context;
   }
 };
-__name(FunctionsError, "FunctionsError");
+Name(FunctionsError, "FunctionsError");
 var FunctionsFetchError = class extends FunctionsError {
   constructor(context) {
-    super("Failed to send a request to the Edge Function", "FunctionsFetchError", context);
+    super(
+      "Failed to send a request to the Edge Function",
+      "FunctionsFetchError",
+      context,
+    );
   }
 };
-__name(FunctionsFetchError, "FunctionsFetchError");
+Name(FunctionsFetchError, "FunctionsFetchError");
 var FunctionsRelayError = class extends FunctionsError {
   constructor(context) {
-    super("Relay Error invoking the Edge Function", "FunctionsRelayError", context);
+    super(
+      "Relay Error invoking the Edge Function",
+      "FunctionsRelayError",
+      context,
+    );
   }
 };
-__name(FunctionsRelayError, "FunctionsRelayError");
+Name(FunctionsRelayError, "FunctionsRelayError");
 var FunctionsHttpError = class extends FunctionsError {
   constructor(context) {
-    super("Edge Function returned a non-2xx status code", "FunctionsHttpError", context);
+    super(
+      "Edge Function returned a non-2xx status code",
+      "FunctionsHttpError",
+      context,
+    );
   }
 };
-__name(FunctionsHttpError, "FunctionsHttpError");
+Name(FunctionsHttpError, "FunctionsHttpError");
 var FunctionRegion;
-(function(FunctionRegion2) {
+((FunctionRegion2) => {
   FunctionRegion2["Any"] = "any";
   FunctionRegion2["ApNortheast1"] = "ap-northeast-1";
   FunctionRegion2["ApNortheast2"] = "ap-northeast-2";
@@ -3275,14 +3705,16 @@ var FunctionRegion;
 })(FunctionRegion || (FunctionRegion = {}));
 
 // node_modules/@supabase/functions-js/dist/module/FunctionsClient.js
-var __awaiter = function(thisArg, _arguments, P, generator) {
+var Awaiter = (thisArg, _arguments, P, generator) => {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve) {
-      resolve(value);
-    });
+    return value instanceof P
+      ? value
+      : new P((resolve) => {
+          resolve(value);
+        });
   }
-  __name(adopt, "adopt");
-  return new (P || (P = Promise))(function(resolve, reject) {
+  Name(adopt, "adopt");
+  return new (P || (P = Promise))((resolve, reject) => {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -3290,7 +3722,7 @@ var __awaiter = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(fulfilled, "fulfilled");
+    Name(fulfilled, "fulfilled");
     function rejected(value) {
       try {
         step(generator["throw"](value));
@@ -3298,16 +3730,21 @@ var __awaiter = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(rejected, "rejected");
+    Name(rejected, "rejected");
     function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done
+        ? resolve(result.value)
+        : adopt(result.value).then(fulfilled, rejected);
     }
-    __name(step, "step");
+    Name(step, "step");
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
 };
 var FunctionsClient = class {
-  constructor(url, { headers = {}, customFetch, region = FunctionRegion.Any } = {}) {
+  constructor(
+    url,
+    { headers = {}, customFetch, region = FunctionRegion.Any } = {},
+  ) {
     this.url = url;
     this.headers = headers;
     this.region = region;
@@ -3326,32 +3763,41 @@ var FunctionsClient = class {
    * @param options - Options for invoking the Function.
    */
   invoke(functionName, options = {}) {
-    var _a;
-    return __awaiter(this, void 0, void 0, function* () {
+    var A;
+    return Awaiter(this, void 0, void 0, function* () {
       try {
         const { headers, method, body: functionArgs } = options;
-        let _headers = {};
+        const Headers = {};
         let { region } = options;
         if (!region) {
           region = this.region;
         }
         const url = new URL(`${this.url}/${functionName}`);
         if (region && region !== "any") {
-          _headers["x-region"] = region;
+          Headers["x-region"] = region;
           url.searchParams.set("forceFunctionRegion", region);
         }
         let body;
-        if (functionArgs && (headers && !Object.prototype.hasOwnProperty.call(headers, "Content-Type") || !headers)) {
-          if (typeof Blob !== "undefined" && functionArgs instanceof Blob || functionArgs instanceof ArrayBuffer) {
-            _headers["Content-Type"] = "application/octet-stream";
+        if (
+          functionArgs &&
+          ((headers && !Object.hasOwn(headers, "Content-Type")) || !headers)
+        ) {
+          if (
+            (typeof Blob !== "undefined" && functionArgs instanceof Blob) ||
+            functionArgs instanceof ArrayBuffer
+          ) {
+            Headers["Content-Type"] = "application/octet-stream";
             body = functionArgs;
           } else if (typeof functionArgs === "string") {
-            _headers["Content-Type"] = "text/plain";
+            Headers["Content-Type"] = "text/plain";
             body = functionArgs;
-          } else if (typeof FormData !== "undefined" && functionArgs instanceof FormData) {
+          } else if (
+            typeof FormData !== "undefined" &&
+            functionArgs instanceof FormData
+          ) {
             body = functionArgs;
           } else {
-            _headers["Content-Type"] = "application/json";
+            Headers["Content-Type"] = "application/json";
             body = JSON.stringify(functionArgs);
           }
         }
@@ -3361,8 +3807,11 @@ var FunctionsClient = class {
           // 1. invoke-level headers
           // 2. client-level headers
           // 3. default Content-Type header
-          headers: Object.assign(Object.assign(Object.assign({}, _headers), this.headers), headers),
-          body
+          headers: Object.assign(
+            Object.assign(Object.assign({}, Headers), this.headers),
+            headers,
+          ),
+          body,
         }).catch((fetchError) => {
           throw new FunctionsFetchError(fetchError);
         });
@@ -3373,7 +3822,13 @@ var FunctionsClient = class {
         if (!response.ok) {
           throw new FunctionsHttpError(response);
         }
-        let responseType = ((_a = response.headers.get("Content-Type")) !== null && _a !== void 0 ? _a : "text/plain").split(";")[0].trim();
+        const responseType = (
+          (A = response.headers.get("Content-Type")) !== null && A !== void 0
+            ? A
+            : "text/plain"
+        )
+          .split(";")[0]
+          .trim();
         let data;
         if (responseType === "application/json") {
           data = yield response.json();
@@ -3391,72 +3846,72 @@ var FunctionsClient = class {
         return {
           data: null,
           error,
-          response: error instanceof FunctionsHttpError || error instanceof FunctionsRelayError ? error.context : void 0
+          response:
+            error instanceof FunctionsHttpError ||
+            error instanceof FunctionsRelayError
+              ? error.context
+              : void 0,
         };
       }
     });
   }
 };
-__name(FunctionsClient, "FunctionsClient");
+Name(FunctionsClient, "FunctionsClient");
 
 // node_modules/@supabase/postgrest-js/dist/esm/wrapper.mjs
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var import_cjs = __toESM(require_cjs(), 1);
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var importCjs = ToEsm(requireCjs(), 1);
 var {
   PostgrestClient,
   PostgrestQueryBuilder,
   PostgrestFilterBuilder,
   PostgrestTransformBuilder,
   PostgrestBuilder,
-  PostgrestError
-} = import_cjs.default;
+  PostgrestError,
+} = importCjs.default;
 
 // node_modules/@supabase/realtime-js/dist/module/index.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/realtime-js/dist/module/RealtimeClient.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/isows/_esm/native.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/isows/_esm/utils.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 function getNativeWebSocket() {
-  if (typeof WebSocket !== "undefined")
-    return WebSocket;
-  if (typeof global.WebSocket !== "undefined")
-    return global.WebSocket;
-  if (typeof window.WebSocket !== "undefined")
-    return window.WebSocket;
-  if (typeof self.WebSocket !== "undefined")
-    return self.WebSocket;
+  if (typeof WebSocket !== "undefined") return WebSocket;
+  if (typeof global.WebSocket !== "undefined") return global.WebSocket;
+  if (typeof window.WebSocket !== "undefined") return window.WebSocket;
+  if (typeof self.WebSocket !== "undefined") return self.WebSocket;
   throw new Error("`WebSocket` is not supported in this environment");
 }
-__name(getNativeWebSocket, "getNativeWebSocket");
+Name(getNativeWebSocket, "getNativeWebSocket");
 
 // node_modules/isows/_esm/native.js
 var WebSocket2 = getNativeWebSocket();
 
 // node_modules/@supabase/realtime-js/dist/module/lib/constants.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/realtime-js/dist/module/lib/version.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var version = "2.11.15";
 
 // node_modules/@supabase/realtime-js/dist/module/lib/constants.js
@@ -3465,45 +3920,45 @@ var VSN = "1.0.0";
 var DEFAULT_TIMEOUT = 1e4;
 var WS_CLOSE_NORMAL = 1e3;
 var SOCKET_STATES;
-(function(SOCKET_STATES2) {
-  SOCKET_STATES2[SOCKET_STATES2["connecting"] = 0] = "connecting";
-  SOCKET_STATES2[SOCKET_STATES2["open"] = 1] = "open";
-  SOCKET_STATES2[SOCKET_STATES2["closing"] = 2] = "closing";
-  SOCKET_STATES2[SOCKET_STATES2["closed"] = 3] = "closed";
+((SocketStates2) => {
+  SocketStates2[(SocketStates2["connecting"] = 0)] = "connecting";
+  SocketStates2[(SocketStates2["open"] = 1)] = "open";
+  SocketStates2[(SocketStates2["closing"] = 2)] = "closing";
+  SocketStates2[(SocketStates2["closed"] = 3)] = "closed";
 })(SOCKET_STATES || (SOCKET_STATES = {}));
 var CHANNEL_STATES;
-(function(CHANNEL_STATES2) {
-  CHANNEL_STATES2["closed"] = "closed";
-  CHANNEL_STATES2["errored"] = "errored";
-  CHANNEL_STATES2["joined"] = "joined";
-  CHANNEL_STATES2["joining"] = "joining";
-  CHANNEL_STATES2["leaving"] = "leaving";
+((ChannelStates2) => {
+  ChannelStates2["closed"] = "closed";
+  ChannelStates2["errored"] = "errored";
+  ChannelStates2["joined"] = "joined";
+  ChannelStates2["joining"] = "joining";
+  ChannelStates2["leaving"] = "leaving";
 })(CHANNEL_STATES || (CHANNEL_STATES = {}));
 var CHANNEL_EVENTS;
-(function(CHANNEL_EVENTS2) {
-  CHANNEL_EVENTS2["close"] = "phx_close";
-  CHANNEL_EVENTS2["error"] = "phx_error";
-  CHANNEL_EVENTS2["join"] = "phx_join";
-  CHANNEL_EVENTS2["reply"] = "phx_reply";
-  CHANNEL_EVENTS2["leave"] = "phx_leave";
-  CHANNEL_EVENTS2["access_token"] = "access_token";
+((ChannelEvents2) => {
+  ChannelEvents2["close"] = "phx_close";
+  ChannelEvents2["error"] = "phx_error";
+  ChannelEvents2["join"] = "phx_join";
+  ChannelEvents2["reply"] = "phx_reply";
+  ChannelEvents2["leave"] = "phx_leave";
+  ChannelEvents2["access_token"] = "access_token";
 })(CHANNEL_EVENTS || (CHANNEL_EVENTS = {}));
 var TRANSPORTS;
-(function(TRANSPORTS2) {
-  TRANSPORTS2["websocket"] = "websocket";
+((Transports2) => {
+  Transports2["websocket"] = "websocket";
 })(TRANSPORTS || (TRANSPORTS = {}));
 var CONNECTION_STATE;
-(function(CONNECTION_STATE2) {
-  CONNECTION_STATE2["Connecting"] = "connecting";
-  CONNECTION_STATE2["Open"] = "open";
-  CONNECTION_STATE2["Closing"] = "closing";
-  CONNECTION_STATE2["Closed"] = "closed";
+((ConnectionState2) => {
+  ConnectionState2["Connecting"] = "connecting";
+  ConnectionState2["Open"] = "open";
+  ConnectionState2["Closing"] = "closing";
+  ConnectionState2["Closed"] = "closed";
 })(CONNECTION_STATE || (CONNECTION_STATE = {}));
 
 // node_modules/@supabase/realtime-js/dist/module/lib/serializer.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var Serializer = class {
   constructor() {
     this.HEADER_LENGTH = 1;
@@ -3530,16 +3985,18 @@ var Serializer = class {
     offset = offset + topicSize;
     const event = decoder.decode(buffer.slice(offset, offset + eventSize));
     offset = offset + eventSize;
-    const data = JSON.parse(decoder.decode(buffer.slice(offset, buffer.byteLength)));
+    const data = JSON.parse(
+      decoder.decode(buffer.slice(offset, buffer.byteLength)),
+    );
     return { ref: null, topic, event, payload: data };
   }
 };
-__name(Serializer, "Serializer");
+Name(Serializer, "Serializer");
 
 // node_modules/@supabase/realtime-js/dist/module/lib/timer.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var Timer = class {
   constructor(callback, timerCalc) {
     this.callback = callback;
@@ -3556,20 +4013,23 @@ var Timer = class {
   // Cancels any previous scheduleTimeout and schedules callback
   scheduleTimeout() {
     clearTimeout(this.timer);
-    this.timer = setTimeout(() => {
-      this.tries = this.tries + 1;
-      this.callback();
-    }, this.timerCalc(this.tries + 1));
+    this.timer = setTimeout(
+      () => {
+        this.tries = this.tries + 1;
+        this.callback();
+      },
+      this.timerCalc(this.tries + 1),
+    );
   }
 };
-__name(Timer, "Timer");
+Name(Timer, "Timer");
 
 // node_modules/@supabase/realtime-js/dist/module/lib/transformers.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var PostgresTypes;
-(function(PostgresTypes2) {
+((PostgresTypes2) => {
   PostgresTypes2["abstime"] = "abstime";
   PostgresTypes2["bool"] = "bool";
   PostgresTypes2["date"] = "date";
@@ -3595,24 +4055,30 @@ var PostgresTypes;
   PostgresTypes2["tsrange"] = "tsrange";
   PostgresTypes2["tstzrange"] = "tstzrange";
 })(PostgresTypes || (PostgresTypes = {}));
-var convertChangeData = /* @__PURE__ */ __name((columns, record, options = {}) => {
-  var _a;
-  const skipTypes = (_a = options.skipTypes) !== null && _a !== void 0 ? _a : [];
-  return Object.keys(record).reduce((acc, rec_key) => {
-    acc[rec_key] = convertColumn(rec_key, columns, record, skipTypes);
-    return acc;
-  }, {});
-}, "convertChangeData");
-var convertColumn = /* @__PURE__ */ __name((columnName, columns, record, skipTypes) => {
-  const column = columns.find((x) => x.name === columnName);
-  const colType = column === null || column === void 0 ? void 0 : column.type;
-  const value = record[columnName];
-  if (colType && !skipTypes.includes(colType)) {
-    return convertCell(colType, value);
-  }
-  return noop(value);
-}, "convertColumn");
-var convertCell = /* @__PURE__ */ __name((type, value) => {
+var convertChangeData = /* @__PURE__ */ Name(
+  (columns, record, options = {}) => {
+    var A;
+    const skipTypes = (A = options.skipTypes) !== null && A !== void 0 ? A : [];
+    return Object.keys(record).reduce((acc, recKey) => {
+      acc[recKey] = convertColumn(recKey, columns, record, skipTypes);
+      return acc;
+    }, {});
+  },
+  "convertChangeData",
+);
+var convertColumn = /* @__PURE__ */ Name(
+  (columnName, columns, record, skipTypes) => {
+    const column = columns.find((x) => x.name === columnName);
+    const colType = column === null || column === void 0 ? void 0 : column.type;
+    const value = record[columnName];
+    if (colType && !skipTypes.includes(colType)) {
+      return convertCell(colType, value);
+    }
+    return noop(value);
+  },
+  "convertColumn",
+);
+var convertCell = /* @__PURE__ */ Name((type, value) => {
   if (type.charAt(0) === "_") {
     const dataType = type.slice(1, type.length);
     return toArray(value, dataType);
@@ -3651,10 +4117,10 @@ var convertCell = /* @__PURE__ */ __name((type, value) => {
       return noop(value);
   }
 }, "convertCell");
-var noop = /* @__PURE__ */ __name((value) => {
+var noop = /* @__PURE__ */ Name((value) => {
   return value;
 }, "noop");
-var toBoolean = /* @__PURE__ */ __name((value) => {
+var toBoolean = /* @__PURE__ */ Name((value) => {
   switch (value) {
     case "t":
       return true;
@@ -3664,7 +4130,7 @@ var toBoolean = /* @__PURE__ */ __name((value) => {
       return value;
   }
 }, "toBoolean");
-var toNumber = /* @__PURE__ */ __name((value) => {
+var toNumber = /* @__PURE__ */ Name((value) => {
   if (typeof value === "string") {
     const parsedValue = parseFloat(value);
     if (!Number.isNaN(parsedValue)) {
@@ -3673,7 +4139,7 @@ var toNumber = /* @__PURE__ */ __name((value) => {
   }
   return value;
 }, "toNumber");
-var toJson = /* @__PURE__ */ __name((value) => {
+var toJson = /* @__PURE__ */ Name((value) => {
   if (typeof value === "string") {
     try {
       return JSON.parse(value);
@@ -3684,7 +4150,7 @@ var toJson = /* @__PURE__ */ __name((value) => {
   }
   return value;
 }, "toJson");
-var toArray = /* @__PURE__ */ __name((value, type) => {
+var toArray = /* @__PURE__ */ Name((value, type) => {
   if (typeof value !== "string") {
     return value;
   }
@@ -3703,13 +4169,13 @@ var toArray = /* @__PURE__ */ __name((value, type) => {
   }
   return value;
 }, "toArray");
-var toTimestampString = /* @__PURE__ */ __name((value) => {
+var toTimestampString = /* @__PURE__ */ Name((value) => {
   if (typeof value === "string") {
     return value.replace(" ", "T");
   }
   return value;
 }, "toTimestampString");
-var httpEndpointURL = /* @__PURE__ */ __name((socketUrl) => {
+var httpEndpointURL = /* @__PURE__ */ Name((socketUrl) => {
   let url = socketUrl;
   url = url.replace(/^ws/i, "http");
   url = url.replace(/(\/socket\/websocket|\/socket|\/websocket)\/?$/i, "");
@@ -3717,14 +4183,14 @@ var httpEndpointURL = /* @__PURE__ */ __name((socketUrl) => {
 }, "httpEndpointURL");
 
 // node_modules/@supabase/realtime-js/dist/module/RealtimeChannel.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/realtime-js/dist/module/lib/push.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var Push = class {
   /**
    * Initializes the Push
@@ -3766,16 +4232,18 @@ var Push = class {
       event: this.event,
       payload: this.payload,
       ref: this.ref,
-      join_ref: this.channel._joinRef()
+      join_ref: this.channel._joinRef(),
     });
   }
   updatePayload(payload) {
     this.payload = Object.assign(Object.assign({}, this.payload), payload);
   }
   receive(status, callback) {
-    var _a;
+    var A;
     if (this._hasReceived(status)) {
-      callback((_a = this.receivedResp) === null || _a === void 0 ? void 0 : _a.response);
+      callback(
+        (A = this.receivedResp) === null || A === void 0 ? void 0 : A.response,
+      );
     }
     this.recHooks.push({ status, callback });
     return this;
@@ -3786,7 +4254,7 @@ var Push = class {
     }
     this.ref = this.channel.socket._makeRef();
     this.refEvent = this.channel._replyEventName(this.ref);
-    const callback = /* @__PURE__ */ __name((payload) => {
+    const callback = /* @__PURE__ */ Name((payload) => {
       this._cancelRefEvent();
       this._cancelTimeout();
       this.receivedResp = payload;
@@ -3816,23 +4284,25 @@ var Push = class {
     this.timeoutTimer = void 0;
   }
   _matchReceive({ status, response }) {
-    this.recHooks.filter((h) => h.status === status).forEach((h) => h.callback(response));
+    this.recHooks
+      .filter((h) => h.status === status)
+      .forEach((h) => h.callback(response));
   }
   _hasReceived(status) {
     return this.receivedResp && this.receivedResp.status === status;
   }
 };
-__name(Push, "Push");
+Name(Push, "Push");
 
 // node_modules/@supabase/realtime-js/dist/module/RealtimePresence.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var REALTIME_PRESENCE_LISTEN_EVENTS;
-(function(REALTIME_PRESENCE_LISTEN_EVENTS2) {
-  REALTIME_PRESENCE_LISTEN_EVENTS2["SYNC"] = "sync";
-  REALTIME_PRESENCE_LISTEN_EVENTS2["JOIN"] = "join";
-  REALTIME_PRESENCE_LISTEN_EVENTS2["LEAVE"] = "leave";
+((RealtimePresenceListenEvents2) => {
+  RealtimePresenceListenEvents2["SYNC"] = "sync";
+  RealtimePresenceListenEvents2["JOIN"] = "join";
+  RealtimePresenceListenEvents2["LEAVE"] = "leave";
 })(REALTIME_PRESENCE_LISTEN_EVENTS || (REALTIME_PRESENCE_LISTEN_EVENTS = {}));
 var RealtimePresence = class {
   /**
@@ -3848,23 +4318,32 @@ var RealtimePresence = class {
     this.pendingDiffs = [];
     this.joinRef = null;
     this.caller = {
-      onJoin: () => {
-      },
-      onLeave: () => {
-      },
-      onSync: () => {
-      }
+      onJoin: () => {},
+      onLeave: () => {},
+      onSync: () => {},
     };
-    const events = (opts === null || opts === void 0 ? void 0 : opts.events) || {
+    const events = (opts === null || opts === void 0
+      ? void 0
+      : opts.events) || {
       state: "presence_state",
-      diff: "presence_diff"
+      diff: "presence_diff",
     };
     this.channel._on(events.state, {}, (newState) => {
       const { onJoin, onLeave, onSync } = this.caller;
       this.joinRef = this.channel._joinRef();
-      this.state = RealtimePresence.syncState(this.state, newState, onJoin, onLeave);
+      this.state = RealtimePresence.syncState(
+        this.state,
+        newState,
+        onJoin,
+        onLeave,
+      );
       this.pendingDiffs.forEach((diff) => {
-        this.state = RealtimePresence.syncDiff(this.state, diff, onJoin, onLeave);
+        this.state = RealtimePresence.syncDiff(
+          this.state,
+          diff,
+          onJoin,
+          onLeave,
+        );
       });
       this.pendingDiffs = [];
       onSync();
@@ -3874,7 +4353,12 @@ var RealtimePresence = class {
       if (this.inPendingSyncState()) {
         this.pendingDiffs.push(diff);
       } else {
-        this.state = RealtimePresence.syncDiff(this.state, diff, onJoin, onLeave);
+        this.state = RealtimePresence.syncDiff(
+          this.state,
+          diff,
+          onJoin,
+          onLeave,
+        );
         onSync();
       }
     });
@@ -3883,7 +4367,7 @@ var RealtimePresence = class {
         event: "join",
         key,
         currentPresences,
-        newPresences
+        newPresences,
       });
     });
     this.onLeave((key, currentPresences, leftPresences) => {
@@ -3891,7 +4375,7 @@ var RealtimePresence = class {
         event: "leave",
         key,
         currentPresences,
-        leftPresences
+        leftPresences,
       });
     });
     this.onSync(() => {
@@ -3923,8 +4407,12 @@ var RealtimePresence = class {
       if (currentPresences) {
         const newPresenceRefs = newPresences.map((m) => m.presence_ref);
         const curPresenceRefs = currentPresences.map((m) => m.presence_ref);
-        const joinedPresences = newPresences.filter((m) => curPresenceRefs.indexOf(m.presence_ref) < 0);
-        const leftPresences = currentPresences.filter((m) => newPresenceRefs.indexOf(m.presence_ref) < 0);
+        const joinedPresences = newPresences.filter(
+          (m) => curPresenceRefs.indexOf(m.presence_ref) < 0,
+        );
+        const leftPresences = currentPresences.filter(
+          (m) => newPresenceRefs.indexOf(m.presence_ref) < 0,
+        );
         if (joinedPresences.length > 0) {
           joins[key] = joinedPresences;
         }
@@ -3950,37 +4438,38 @@ var RealtimePresence = class {
   static syncDiff(state, diff, onJoin, onLeave) {
     const { joins, leaves } = {
       joins: this.transformState(diff.joins),
-      leaves: this.transformState(diff.leaves)
+      leaves: this.transformState(diff.leaves),
     };
     if (!onJoin) {
-      onJoin = /* @__PURE__ */ __name(() => {
-      }, "onJoin");
+      onJoin = /* @__PURE__ */ Name(() => {}, "onJoin");
     }
     if (!onLeave) {
-      onLeave = /* @__PURE__ */ __name(() => {
-      }, "onLeave");
+      onLeave = /* @__PURE__ */ Name(() => {}, "onLeave");
     }
     this.map(joins, (key, newPresences) => {
-      var _a;
-      const currentPresences = (_a = state[key]) !== null && _a !== void 0 ? _a : [];
+      var A;
+      const currentPresences =
+        (A = state[key]) !== null && A !== void 0 ? A : [];
       state[key] = this.cloneDeep(newPresences);
       if (currentPresences.length > 0) {
         const joinedPresenceRefs = state[key].map((m) => m.presence_ref);
-        const curPresences = currentPresences.filter((m) => joinedPresenceRefs.indexOf(m.presence_ref) < 0);
+        const curPresences = currentPresences.filter(
+          (m) => joinedPresenceRefs.indexOf(m.presence_ref) < 0,
+        );
         state[key].unshift(...curPresences);
       }
       onJoin(key, currentPresences, newPresences);
     });
     this.map(leaves, (key, leftPresences) => {
       let currentPresences = state[key];
-      if (!currentPresences)
-        return;
+      if (!currentPresences) return;
       const presenceRefsToRemove = leftPresences.map((m) => m.presence_ref);
-      currentPresences = currentPresences.filter((m) => presenceRefsToRemove.indexOf(m.presence_ref) < 0);
+      currentPresences = currentPresences.filter(
+        (m) => presenceRefsToRemove.indexOf(m.presence_ref) < 0,
+      );
       state[key] = currentPresences;
       onLeave(key, currentPresences, leftPresences);
-      if (currentPresences.length === 0)
-        delete state[key];
+      if (currentPresences.length === 0) delete state[key];
     });
     return state;
   }
@@ -4049,29 +4538,32 @@ var RealtimePresence = class {
     return !this.joinRef || this.joinRef !== this.channel._joinRef();
   }
 };
-__name(RealtimePresence, "RealtimePresence");
+Name(RealtimePresence, "RealtimePresence");
 
 // node_modules/@supabase/realtime-js/dist/module/RealtimeChannel.js
 var REALTIME_POSTGRES_CHANGES_LISTEN_EVENT;
-(function(REALTIME_POSTGRES_CHANGES_LISTEN_EVENT2) {
-  REALTIME_POSTGRES_CHANGES_LISTEN_EVENT2["ALL"] = "*";
-  REALTIME_POSTGRES_CHANGES_LISTEN_EVENT2["INSERT"] = "INSERT";
-  REALTIME_POSTGRES_CHANGES_LISTEN_EVENT2["UPDATE"] = "UPDATE";
-  REALTIME_POSTGRES_CHANGES_LISTEN_EVENT2["DELETE"] = "DELETE";
-})(REALTIME_POSTGRES_CHANGES_LISTEN_EVENT || (REALTIME_POSTGRES_CHANGES_LISTEN_EVENT = {}));
+((RealtimePostgresChangesListenEvent2) => {
+  RealtimePostgresChangesListenEvent2["ALL"] = "*";
+  RealtimePostgresChangesListenEvent2["INSERT"] = "INSERT";
+  RealtimePostgresChangesListenEvent2["UPDATE"] = "UPDATE";
+  RealtimePostgresChangesListenEvent2["DELETE"] = "DELETE";
+})(
+  REALTIME_POSTGRES_CHANGES_LISTEN_EVENT ||
+    (REALTIME_POSTGRES_CHANGES_LISTEN_EVENT = {}),
+);
 var REALTIME_LISTEN_TYPES;
-(function(REALTIME_LISTEN_TYPES2) {
-  REALTIME_LISTEN_TYPES2["BROADCAST"] = "broadcast";
-  REALTIME_LISTEN_TYPES2["PRESENCE"] = "presence";
-  REALTIME_LISTEN_TYPES2["POSTGRES_CHANGES"] = "postgres_changes";
-  REALTIME_LISTEN_TYPES2["SYSTEM"] = "system";
+((RealtimeListenTypes2) => {
+  RealtimeListenTypes2["BROADCAST"] = "broadcast";
+  RealtimeListenTypes2["PRESENCE"] = "presence";
+  RealtimeListenTypes2["POSTGRES_CHANGES"] = "postgres_changes";
+  RealtimeListenTypes2["SYSTEM"] = "system";
 })(REALTIME_LISTEN_TYPES || (REALTIME_LISTEN_TYPES = {}));
 var REALTIME_SUBSCRIBE_STATES;
-(function(REALTIME_SUBSCRIBE_STATES2) {
-  REALTIME_SUBSCRIBE_STATES2["SUBSCRIBED"] = "SUBSCRIBED";
-  REALTIME_SUBSCRIBE_STATES2["TIMED_OUT"] = "TIMED_OUT";
-  REALTIME_SUBSCRIBE_STATES2["CLOSED"] = "CLOSED";
-  REALTIME_SUBSCRIBE_STATES2["CHANNEL_ERROR"] = "CHANNEL_ERROR";
+((RealtimeSubscribeStates2) => {
+  RealtimeSubscribeStates2["SUBSCRIBED"] = "SUBSCRIBED";
+  RealtimeSubscribeStates2["TIMED_OUT"] = "TIMED_OUT";
+  RealtimeSubscribeStates2["CLOSED"] = "CLOSED";
+  RealtimeSubscribeStates2["CHANNEL_ERROR"] = "CHANNEL_ERROR";
 })(REALTIME_SUBSCRIBE_STATES || (REALTIME_SUBSCRIBE_STATES = {}));
 var RealtimeChannel = class {
   constructor(topic, params = { config: {} }, socket) {
@@ -4083,14 +4575,25 @@ var RealtimeChannel = class {
     this.joinedOnce = false;
     this.pushBuffer = [];
     this.subTopic = topic.replace(/^realtime:/i, "");
-    this.params.config = Object.assign({
-      broadcast: { ack: false, self: false },
-      presence: { key: "" },
-      private: false
-    }, params.config);
+    this.params.config = Object.assign(
+      {
+        broadcast: { ack: false, self: false },
+        presence: { key: "" },
+        private: false,
+      },
+      params.config,
+    );
     this.timeout = this.socket.timeout;
-    this.joinPush = new Push(this, CHANNEL_EVENTS.join, this.params, this.timeout);
-    this.rejoinTimer = new Timer(() => this._rejoinUntilConnected(), this.socket.reconnectAfterMs);
+    this.joinPush = new Push(
+      this,
+      CHANNEL_EVENTS.join,
+      this.params,
+      this.timeout,
+    );
+    this.rejoinTimer = new Timer(
+      () => this._rejoinUntilConnected(),
+      this.socket.reconnectAfterMs,
+    );
     this.joinPush.receive("ok", () => {
       this.state = CHANNEL_STATES.joined;
       this.rejoinTimer.reset();
@@ -4115,7 +4618,11 @@ var RealtimeChannel = class {
       if (!this._isJoining()) {
         return;
       }
-      this.socket.log("channel", `timeout ${this.topic}`, this.joinPush.timeout);
+      this.socket.log(
+        "channel",
+        `timeout ${this.topic}`,
+        this.joinPush.timeout,
+      );
       this.state = CHANNEL_STATES.errored;
       this.rejoinTimer.scheduleTimeout();
     });
@@ -4123,25 +4630,42 @@ var RealtimeChannel = class {
       this._trigger(this._replyEventName(ref), payload);
     });
     this.presence = new RealtimePresence(this);
-    this.broadcastEndpointURL = httpEndpointURL(this.socket.endPoint) + "/api/broadcast";
+    this.broadcastEndpointURL =
+      httpEndpointURL(this.socket.endPoint) + "/api/broadcast";
     this.private = this.params.config.private || false;
   }
   /** Subscribe registers your client with the server */
   subscribe(callback, timeout = this.timeout) {
-    var _a, _b;
+    var A, B;
     if (!this.socket.isConnected()) {
       this.socket.connect();
     }
     if (this.state == CHANNEL_STATES.closed) {
-      const { config: { broadcast, presence, private: isPrivate } } = this.params;
-      this._onError((e) => callback === null || callback === void 0 ? void 0 : callback(REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR, e));
-      this._onClose(() => callback === null || callback === void 0 ? void 0 : callback(REALTIME_SUBSCRIBE_STATES.CLOSED));
+      const {
+        config: { broadcast, presence, private: isPrivate },
+      } = this.params;
+      this._onError((e) =>
+        callback === null || callback === void 0
+          ? void 0
+          : callback(REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR, e),
+      );
+      this._onClose(() =>
+        callback === null || callback === void 0
+          ? void 0
+          : callback(REALTIME_SUBSCRIBE_STATES.CLOSED),
+      );
       const accessTokenPayload = {};
       const config = {
         broadcast,
         presence,
-        postgres_changes: (_b = (_a = this.bindings.postgres_changes) === null || _a === void 0 ? void 0 : _a.map((r) => r.filter)) !== null && _b !== void 0 ? _b : [],
-        private: isPrivate
+        postgres_changes:
+          (B =
+            (A = this.bindings.postgres_changes) === null || A === void 0
+              ? void 0
+              : A.map((r) => r.filter)) !== null && B !== void 0
+            ? B
+            : [],
+        private: isPrivate,
       };
       if (this.socket.accessTokenValue) {
         accessTokenPayload.access_token = this.socket.accessTokenValue;
@@ -4149,41 +4673,82 @@ var RealtimeChannel = class {
       this.updateJoinPayload(Object.assign({ config }, accessTokenPayload));
       this.joinedOnce = true;
       this._rejoin(timeout);
-      this.joinPush.receive("ok", async ({ postgres_changes }) => {
-        var _a2;
-        this.socket.setAuth();
-        if (postgres_changes === void 0) {
-          callback === null || callback === void 0 ? void 0 : callback(REALTIME_SUBSCRIBE_STATES.SUBSCRIBED);
-          return;
-        } else {
-          const clientPostgresBindings = this.bindings.postgres_changes;
-          const bindingsLen = (_a2 = clientPostgresBindings === null || clientPostgresBindings === void 0 ? void 0 : clientPostgresBindings.length) !== null && _a2 !== void 0 ? _a2 : 0;
-          const newPostgresBindings = [];
-          for (let i = 0; i < bindingsLen; i++) {
-            const clientPostgresBinding = clientPostgresBindings[i];
-            const { filter: { event, schema, table, filter } } = clientPostgresBinding;
-            const serverPostgresFilter = postgres_changes && postgres_changes[i];
-            if (serverPostgresFilter && serverPostgresFilter.event === event && serverPostgresFilter.schema === schema && serverPostgresFilter.table === table && serverPostgresFilter.filter === filter) {
-              newPostgresBindings.push(Object.assign(Object.assign({}, clientPostgresBinding), { id: serverPostgresFilter.id }));
-            } else {
-              this.unsubscribe();
-              this.state = CHANNEL_STATES.errored;
-              callback === null || callback === void 0 ? void 0 : callback(REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR, new Error("mismatch between server and client bindings for postgres changes"));
-              return;
+      this.joinPush
+        .receive("ok", async ({ postgres_changes }) => {
+          var A2;
+          this.socket.setAuth();
+          if (postgres_changes === void 0) {
+            callback === null || callback === void 0
+              ? void 0
+              : callback(REALTIME_SUBSCRIBE_STATES.SUBSCRIBED);
+            return;
+          } else {
+            const clientPostgresBindings = this.bindings.postgres_changes;
+            const bindingsLen =
+              (A2 =
+                clientPostgresBindings === null ||
+                clientPostgresBindings === void 0
+                  ? void 0
+                  : clientPostgresBindings.length) !== null && A2 !== void 0
+                ? A2
+                : 0;
+            const newPostgresBindings = [];
+            for (let i = 0; i < bindingsLen; i++) {
+              const clientPostgresBinding = clientPostgresBindings[i];
+              const {
+                filter: { event, schema, table, filter },
+              } = clientPostgresBinding;
+              const serverPostgresFilter =
+                postgres_changes && postgres_changes[i];
+              if (
+                serverPostgresFilter &&
+                serverPostgresFilter.event === event &&
+                serverPostgresFilter.schema === schema &&
+                serverPostgresFilter.table === table &&
+                serverPostgresFilter.filter === filter
+              ) {
+                newPostgresBindings.push(
+                  Object.assign(Object.assign({}, clientPostgresBinding), {
+                    id: serverPostgresFilter.id,
+                  }),
+                );
+              } else {
+                this.unsubscribe();
+                this.state = CHANNEL_STATES.errored;
+                callback === null || callback === void 0
+                  ? void 0
+                  : callback(
+                      REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR,
+                      new Error(
+                        "mismatch between server and client bindings for postgres changes",
+                      ),
+                    );
+                return;
+              }
             }
+            this.bindings.postgres_changes = newPostgresBindings;
+            callback && callback(REALTIME_SUBSCRIBE_STATES.SUBSCRIBED);
+            return;
           }
-          this.bindings.postgres_changes = newPostgresBindings;
-          callback && callback(REALTIME_SUBSCRIBE_STATES.SUBSCRIBED);
+        })
+        .receive("error", (error) => {
+          this.state = CHANNEL_STATES.errored;
+          callback === null || callback === void 0
+            ? void 0
+            : callback(
+                REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR,
+                new Error(
+                  JSON.stringify(Object.values(error).join(", ") || "error"),
+                ),
+              );
           return;
-        }
-      }).receive("error", (error) => {
-        this.state = CHANNEL_STATES.errored;
-        callback === null || callback === void 0 ? void 0 : callback(REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR, new Error(JSON.stringify(Object.values(error).join(", ") || "error")));
-        return;
-      }).receive("timeout", () => {
-        callback === null || callback === void 0 ? void 0 : callback(REALTIME_SUBSCRIBE_STATES.TIMED_OUT);
-        return;
-      });
+        })
+        .receive("timeout", () => {
+          callback === null || callback === void 0
+            ? void 0
+            : callback(REALTIME_SUBSCRIBE_STATES.TIMED_OUT);
+          return;
+        });
     }
     return this;
   }
@@ -4191,17 +4756,23 @@ var RealtimeChannel = class {
     return this.presence.state;
   }
   async track(payload, opts = {}) {
-    return await this.send({
-      type: "presence",
-      event: "track",
-      payload
-    }, opts.timeout || this.timeout);
+    return await this.send(
+      {
+        type: "presence",
+        event: "track",
+        payload,
+      },
+      opts.timeout || this.timeout,
+    );
   }
   async untrack(opts = {}) {
-    return await this.send({
-      type: "presence",
-      event: "untrack"
-    }, opts);
+    return await this.send(
+      {
+        type: "presence",
+        event: "untrack",
+      },
+      opts,
+    );
   }
   on(type, filter, callback) {
     return this._on(type, filter, callback);
@@ -4216,31 +4787,39 @@ var RealtimeChannel = class {
    * @param opts Options to be used during the send process
    */
   async send(args, opts = {}) {
-    var _a, _b;
+    var A, B;
     if (!this._canPush() && args.type === "broadcast") {
-      const { event, payload: endpoint_payload } = args;
-      const authorization = this.socket.accessTokenValue ? `Bearer ${this.socket.accessTokenValue}` : "";
+      const { event, payload: endpointPayload } = args;
+      const authorization = this.socket.accessTokenValue
+        ? `Bearer ${this.socket.accessTokenValue}`
+        : "";
       const options = {
         method: "POST",
         headers: {
           Authorization: authorization,
           apikey: this.socket.apiKey ? this.socket.apiKey : "",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           messages: [
             {
               topic: this.subTopic,
               event,
-              payload: endpoint_payload,
-              private: this.private
-            }
-          ]
-        })
+              payload: endpointPayload,
+              private: this.private,
+            },
+          ],
+        }),
       };
       try {
-        const response = await this._fetchWithTimeout(this.broadcastEndpointURL, options, (_a = opts.timeout) !== null && _a !== void 0 ? _a : this.timeout);
-        await ((_b = response.body) === null || _b === void 0 ? void 0 : _b.cancel());
+        const response = await this._fetchWithTimeout(
+          this.broadcastEndpointURL,
+          options,
+          (A = opts.timeout) !== null && A !== void 0 ? A : this.timeout,
+        );
+        await ((B = response.body) === null || B === void 0
+          ? void 0
+          : B.cancel());
         return response.ok ? "ok" : "error";
       } catch (error) {
         if (error.name === "AbortError") {
@@ -4251,9 +4830,20 @@ var RealtimeChannel = class {
       }
     } else {
       return new Promise((resolve) => {
-        var _a2, _b2, _c;
+        var A2, B2, C;
         const push = this._push(args.type, args, opts.timeout || this.timeout);
-        if (args.type === "broadcast" && !((_c = (_b2 = (_a2 = this.params) === null || _a2 === void 0 ? void 0 : _a2.config) === null || _b2 === void 0 ? void 0 : _b2.broadcast) === null || _c === void 0 ? void 0 : _c.ack)) {
+        if (
+          args.type === "broadcast" &&
+          !((C =
+            (B2 =
+              (A2 = this.params) === null || A2 === void 0
+                ? void 0
+                : A2.config) === null || B2 === void 0
+              ? void 0
+              : B2.broadcast) === null || C === void 0
+            ? void 0
+            : C.ack)
+        ) {
           resolve("ok");
         }
         push.receive("ok", () => resolve("ok"));
@@ -4276,7 +4866,7 @@ var RealtimeChannel = class {
    */
   unsubscribe(timeout = this.timeout) {
     this.state = CHANNEL_STATES.leaving;
-    const onClose = /* @__PURE__ */ __name(() => {
+    const onClose = /* @__PURE__ */ Name(() => {
       this.socket.log("channel", `leave ${this.topic}`);
       this._trigger(CHANNEL_EVENTS.close, "leave", this._joinRef());
     }, "onClose");
@@ -4284,15 +4874,18 @@ var RealtimeChannel = class {
     let leavePush = null;
     return new Promise((resolve) => {
       leavePush = new Push(this, CHANNEL_EVENTS.leave, {}, timeout);
-      leavePush.receive("ok", () => {
-        onClose();
-        resolve("ok");
-      }).receive("timeout", () => {
-        onClose();
-        resolve("timed out");
-      }).receive("error", () => {
-        resolve("error");
-      });
+      leavePush
+        .receive("ok", () => {
+          onClose();
+          resolve("ok");
+        })
+        .receive("timeout", () => {
+          onClose();
+          resolve("timed out");
+        })
+        .receive("error", () => {
+          resolve("error");
+        });
       leavePush.send();
       if (!this._canPush()) {
         leavePush.trigger("ok", {});
@@ -4315,7 +4908,10 @@ var RealtimeChannel = class {
   async _fetchWithTimeout(url, options, timeout) {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
-    const response = await this.socket.fetch(url, Object.assign(Object.assign({}, options), { signal: controller.signal }));
+    const response = await this.socket.fetch(
+      url,
+      Object.assign(Object.assign({}, options), { signal: controller.signal }),
+    );
     clearTimeout(id);
     return response;
   }
@@ -4324,7 +4920,7 @@ var RealtimeChannel = class {
     if (!this.joinedOnce) {
       throw `tried to push '${event}' to '${this.topic}' before joining. Use channel.subscribe() before pushing events`;
     }
-    let pushEvent = new Push(this, event, payload, timeout);
+    const pushEvent = new Push(this, event, payload, timeout);
     if (this._canPush()) {
       pushEvent.send();
     } else {
@@ -4354,7 +4950,7 @@ var RealtimeChannel = class {
   }
   /** @internal */
   _trigger(type, payload, ref) {
-    var _a, _b;
+    var A, B;
     const typeLower = type.toLocaleLowerCase();
     const { close, error, leave, join } = CHANNEL_EVENTS;
     const events = [close, error, leave, join];
@@ -4366,42 +4962,100 @@ var RealtimeChannel = class {
       throw "channel onMessage callbacks must return the payload, modified or unmodified";
     }
     if (["insert", "update", "delete"].includes(typeLower)) {
-      (_a = this.bindings.postgres_changes) === null || _a === void 0 ? void 0 : _a.filter((bind) => {
-        var _a2, _b2, _c;
-        return ((_a2 = bind.filter) === null || _a2 === void 0 ? void 0 : _a2.event) === "*" || ((_c = (_b2 = bind.filter) === null || _b2 === void 0 ? void 0 : _b2.event) === null || _c === void 0 ? void 0 : _c.toLocaleLowerCase()) === typeLower;
-      }).map((bind) => bind.callback(handledPayload, ref));
+      (A = this.bindings.postgres_changes) === null || A === void 0
+        ? void 0
+        : A.filter((bind) => {
+            var A2, B2, C;
+            return (
+              ((A2 = bind.filter) === null || A2 === void 0
+                ? void 0
+                : A2.event) === "*" ||
+              ((C =
+                (B2 = bind.filter) === null || B2 === void 0
+                  ? void 0
+                  : B2.event) === null || C === void 0
+                ? void 0
+                : C.toLocaleLowerCase()) === typeLower
+            );
+          }).map((bind) => bind.callback(handledPayload, ref));
     } else {
-      (_b = this.bindings[typeLower]) === null || _b === void 0 ? void 0 : _b.filter((bind) => {
-        var _a2, _b2, _c, _d, _e, _f;
-        if (["broadcast", "presence", "postgres_changes"].includes(typeLower)) {
-          if ("id" in bind) {
-            const bindId = bind.id;
-            const bindEvent = (_a2 = bind.filter) === null || _a2 === void 0 ? void 0 : _a2.event;
-            return bindId && ((_b2 = payload.ids) === null || _b2 === void 0 ? void 0 : _b2.includes(bindId)) && (bindEvent === "*" || (bindEvent === null || bindEvent === void 0 ? void 0 : bindEvent.toLocaleLowerCase()) === ((_c = payload.data) === null || _c === void 0 ? void 0 : _c.type.toLocaleLowerCase()));
-          } else {
-            const bindEvent = (_e = (_d = bind === null || bind === void 0 ? void 0 : bind.filter) === null || _d === void 0 ? void 0 : _d.event) === null || _e === void 0 ? void 0 : _e.toLocaleLowerCase();
-            return bindEvent === "*" || bindEvent === ((_f = payload === null || payload === void 0 ? void 0 : payload.event) === null || _f === void 0 ? void 0 : _f.toLocaleLowerCase());
-          }
-        } else {
-          return bind.type.toLocaleLowerCase() === typeLower;
-        }
-      }).map((bind) => {
-        if (typeof handledPayload === "object" && "ids" in handledPayload) {
-          const postgresChanges = handledPayload.data;
-          const { schema, table, commit_timestamp, type: type2, errors } = postgresChanges;
-          const enrichedPayload = {
-            schema,
-            table,
-            commit_timestamp,
-            eventType: type2,
-            new: {},
-            old: {},
-            errors
-          };
-          handledPayload = Object.assign(Object.assign({}, enrichedPayload), this._getPayloadRecords(postgresChanges));
-        }
-        bind.callback(handledPayload, ref);
-      });
+      (B = this.bindings[typeLower]) === null || B === void 0
+        ? void 0
+        : B.filter((bind) => {
+            var A2, B2, C, D, E, F;
+            if (
+              ["broadcast", "presence", "postgres_changes"].includes(typeLower)
+            ) {
+              if ("id" in bind) {
+                const bindId = bind.id;
+                const bindEvent =
+                  (A2 = bind.filter) === null || A2 === void 0
+                    ? void 0
+                    : A2.event;
+                return (
+                  bindId &&
+                  ((B2 = payload.ids) === null || B2 === void 0
+                    ? void 0
+                    : B2.includes(bindId)) &&
+                  (bindEvent === "*" ||
+                    (bindEvent === null || bindEvent === void 0
+                      ? void 0
+                      : bindEvent.toLocaleLowerCase()) ===
+                      ((C = payload.data) === null || C === void 0
+                        ? void 0
+                        : C.type.toLocaleLowerCase()))
+                );
+              } else {
+                const bindEvent =
+                  (E =
+                    (D =
+                      bind === null || bind === void 0
+                        ? void 0
+                        : bind.filter) === null || D === void 0
+                      ? void 0
+                      : D.event) === null || E === void 0
+                    ? void 0
+                    : E.toLocaleLowerCase();
+                return (
+                  bindEvent === "*" ||
+                  bindEvent ===
+                    ((F =
+                      payload === null || payload === void 0
+                        ? void 0
+                        : payload.event) === null || F === void 0
+                      ? void 0
+                      : F.toLocaleLowerCase())
+                );
+              }
+            } else {
+              return bind.type.toLocaleLowerCase() === typeLower;
+            }
+          }).map((bind) => {
+            if (typeof handledPayload === "object" && "ids" in handledPayload) {
+              const postgresChanges = handledPayload.data;
+              const {
+                schema,
+                table,
+                commit_timestamp,
+                type: type2,
+                errors,
+              } = postgresChanges;
+              const enrichedPayload = {
+                schema,
+                table,
+                commit_timestamp,
+                eventType: type2,
+                new: {},
+                old: {},
+                errors,
+              };
+              handledPayload = Object.assign(
+                Object.assign({}, enrichedPayload),
+                this._getPayloadRecords(postgresChanges),
+              );
+            }
+            bind.callback(handledPayload, ref);
+          });
     }
   }
   /** @internal */
@@ -4430,7 +5084,7 @@ var RealtimeChannel = class {
     const binding = {
       type: typeLower,
       filter,
-      callback
+      callback,
     };
     if (this.bindings[typeLower]) {
       this.bindings[typeLower].push(binding);
@@ -4443,8 +5097,13 @@ var RealtimeChannel = class {
   _off(type, filter) {
     const typeLower = type.toLocaleLowerCase();
     this.bindings[typeLower] = this.bindings[typeLower].filter((bind) => {
-      var _a;
-      return !(((_a = bind.type) === null || _a === void 0 ? void 0 : _a.toLocaleLowerCase()) === typeLower && RealtimeChannel.isEqual(bind.filter, filter));
+      var A;
+      return !(
+        ((A = bind.type) === null || A === void 0
+          ? void 0
+          : A.toLocaleLowerCase()) === typeLower &&
+        RealtimeChannel.isEqual(bind.filter, filter)
+      );
     });
     return this;
   }
@@ -4504,7 +5163,7 @@ var RealtimeChannel = class {
   _getPayloadRecords(payload) {
     const records = {
       new: {},
-      old: {}
+      old: {},
     };
     if (payload.type === "INSERT" || payload.type === "UPDATE") {
       records.new = convertChangeData(payload.columns, payload.record);
@@ -4515,11 +5174,10 @@ var RealtimeChannel = class {
     return records;
   }
 };
-__name(RealtimeChannel, "RealtimeChannel");
+Name(RealtimeChannel, "RealtimeChannel");
 
 // node_modules/@supabase/realtime-js/dist/module/RealtimeClient.js
-var noop2 = /* @__PURE__ */ __name(() => {
-}, "noop");
+var noop2 = /* @__PURE__ */ Name(() => {}, "noop");
 var WORKER_SCRIPT = `
   addEventListener("message", (e) => {
     if (e.data.event === "start") {
@@ -4546,10 +5204,10 @@ var RealtimeClient = class {
    * @param options.workerUrl The URL of the worker script. Defaults to https://realtime.supabase.com/worker.js that includes a heartbeat event call to keep the connection alive.
    */
   constructor(endPoint, options) {
-    var _a;
+    var A;
     this.accessTokenValue = null;
     this.apiKey = null;
-    this.channels = new Array();
+    this.channels = [];
     this.endPoint = "";
     this.httpEndpoint = "";
     this.headers = {};
@@ -4568,19 +5226,25 @@ var RealtimeClient = class {
       open: [],
       close: [],
       error: [],
-      message: []
+      message: [],
     };
     this.accessToken = null;
     this._resolveFetch = (customFetch) => {
-      let _fetch;
+      let Fetch;
       if (customFetch) {
-        _fetch = customFetch;
+        Fetch = customFetch;
       } else if (typeof fetch === "undefined") {
-        _fetch = /* @__PURE__ */ __name((...args) => Promise.resolve().then(() => (init_browser(), browser_exports)).then(({ default: fetch3 }) => fetch3(...args)), "_fetch");
+        Fetch = /* @__PURE__ */ Name(
+          (...args) =>
+            Promise.resolve()
+              .then(() => (initBrowser(), browserExports))
+              .then(({ default: fetch3 }) => fetch3(...args)),
+          "_fetch",
+        );
       } else {
-        _fetch = fetch;
+        Fetch = fetch;
       }
-      return (...args) => _fetch(...args);
+      return (...args) => Fetch(...args);
     };
     this.endPoint = `${endPoint}/${TRANSPORTS.websocket}`;
     this.httpEndpoint = httpEndpointURL(endPoint);
@@ -4595,37 +5259,75 @@ var RealtimeClient = class {
       this.timeout = options.timeout;
     if (options === null || options === void 0 ? void 0 : options.logger)
       this.logger = options.logger;
-    if ((options === null || options === void 0 ? void 0 : options.logLevel) || (options === null || options === void 0 ? void 0 : options.log_level)) {
+    if (
+      (options === null || options === void 0 ? void 0 : options.logLevel) ||
+      (options === null || options === void 0 ? void 0 : options.log_level)
+    ) {
       this.logLevel = options.logLevel || options.log_level;
-      this.params = Object.assign(Object.assign({}, this.params), { log_level: this.logLevel });
+      this.params = Object.assign(Object.assign({}, this.params), {
+        log_level: this.logLevel,
+      });
     }
-    if (options === null || options === void 0 ? void 0 : options.heartbeatIntervalMs)
+    if (
+      options === null || options === void 0
+        ? void 0
+        : options.heartbeatIntervalMs
+    )
       this.heartbeatIntervalMs = options.heartbeatIntervalMs;
-    const accessTokenValue = (_a = options === null || options === void 0 ? void 0 : options.params) === null || _a === void 0 ? void 0 : _a.apikey;
+    const accessTokenValue =
+      (A = options === null || options === void 0 ? void 0 : options.params) ===
+        null || A === void 0
+        ? void 0
+        : A.apikey;
     if (accessTokenValue) {
       this.accessTokenValue = accessTokenValue;
       this.apiKey = accessTokenValue;
     }
-    this.reconnectAfterMs = (options === null || options === void 0 ? void 0 : options.reconnectAfterMs) ? options.reconnectAfterMs : (tries) => {
-      return [1e3, 2e3, 5e3, 1e4][tries - 1] || 1e4;
-    };
-    this.encode = (options === null || options === void 0 ? void 0 : options.encode) ? options.encode : (payload, callback) => {
-      return callback(JSON.stringify(payload));
-    };
-    this.decode = (options === null || options === void 0 ? void 0 : options.decode) ? options.decode : this.serializer.decode.bind(this.serializer);
+    this.reconnectAfterMs = (
+      options === null || options === void 0
+        ? void 0
+        : options.reconnectAfterMs
+    )
+      ? options.reconnectAfterMs
+      : (tries) => {
+          return [1e3, 2e3, 5e3, 1e4][tries - 1] || 1e4;
+        };
+    this.encode = (
+      options === null || options === void 0
+        ? void 0
+        : options.encode
+    )
+      ? options.encode
+      : (payload, callback) => {
+          return callback(JSON.stringify(payload));
+        };
+    this.decode = (
+      options === null || options === void 0
+        ? void 0
+        : options.decode
+    )
+      ? options.decode
+      : this.serializer.decode.bind(this.serializer);
     this.reconnectTimer = new Timer(async () => {
       this.disconnect();
       this.connect();
     }, this.reconnectAfterMs);
-    this.fetch = this._resolveFetch(options === null || options === void 0 ? void 0 : options.fetch);
+    this.fetch = this._resolveFetch(
+      options === null || options === void 0 ? void 0 : options.fetch,
+    );
     if (options === null || options === void 0 ? void 0 : options.worker) {
       if (typeof window !== "undefined" && !window.Worker) {
         throw new Error("Web Worker is not supported");
       }
-      this.worker = (options === null || options === void 0 ? void 0 : options.worker) || false;
-      this.workerUrl = options === null || options === void 0 ? void 0 : options.workerUrl;
+      this.worker =
+        (options === null || options === void 0 ? void 0 : options.worker) ||
+        false;
+      this.workerUrl =
+        options === null || options === void 0 ? void 0 : options.workerUrl;
     }
-    this.accessToken = (options === null || options === void 0 ? void 0 : options.accessToken) || null;
+    this.accessToken =
+      (options === null || options === void 0 ? void 0 : options.accessToken) ||
+      null;
   }
   /**
    * Connects the socket, unless already connected.
@@ -4648,7 +5350,10 @@ var RealtimeClient = class {
    * @returns string The URL of the websocket.
    */
   endpointURL() {
-    return this._appendParams(this.endPoint, Object.assign({}, this.params, { vsn: VSN }));
+    return this._appendParams(
+      this.endPoint,
+      Object.assign({}, this.params, { vsn: VSN }),
+    );
   }
   /**
    * Disconnects the socket.
@@ -4658,10 +5363,12 @@ var RealtimeClient = class {
    */
   disconnect(code, reason) {
     if (this.conn) {
-      this.conn.onclose = function() {
-      };
+      this.conn.onclose = () => {};
       if (code) {
-        this.conn.close(code, reason !== null && reason !== void 0 ? reason : "");
+        this.conn.close(
+          code,
+          reason !== null && reason !== void 0 ? reason : "",
+        );
       } else {
         this.conn.close();
       }
@@ -4692,10 +5399,12 @@ var RealtimeClient = class {
    * Unsubscribes and removes all channels
    */
   async removeAllChannels() {
-    const values_1 = await Promise.all(this.channels.map((channel) => channel.unsubscribe()));
+    const values1 = await Promise.all(
+      this.channels.map((channel) => channel.unsubscribe()),
+    );
     this.channels = [];
     this.disconnect();
-    return values_1;
+    return values1;
   }
   /**
    * Logs the message.
@@ -4744,10 +5453,10 @@ var RealtimeClient = class {
    */
   push(data) {
     const { topic, event, payload, ref } = data;
-    const callback = /* @__PURE__ */ __name(() => {
+    const callback = /* @__PURE__ */ Name(() => {
       this.encode(data, (result) => {
-        var _a;
-        (_a = this.conn) === null || _a === void 0 ? void 0 : _a.send(result);
+        var A;
+        (A = this.conn) === null || A === void 0 ? void 0 : A.send(result);
       });
     }, "callback");
     this.log("push", `${topic} ${event} (${ref})`, payload);
@@ -4767,18 +5476,21 @@ var RealtimeClient = class {
    * @param token A JWT string to override the token set on the client.
    */
   async setAuth(token = null) {
-    let tokenToSend = token || this.accessToken && await this.accessToken() || this.accessTokenValue;
+    const tokenToSend =
+      token ||
+      (this.accessToken && (await this.accessToken())) ||
+      this.accessTokenValue;
     if (this.accessTokenValue != tokenToSend) {
       this.accessTokenValue = tokenToSend;
       this.channels.forEach((channel) => {
         const payload = {
           access_token: tokenToSend,
-          version: DEFAULT_VERSION
+          version: DEFAULT_VERSION,
         };
         tokenToSend && channel.updateJoinPayload(payload);
         if (channel.joinedOnce && channel._isJoined()) {
           channel._push(CHANNEL_EVENTS.access_token, {
-            access_token: tokenToSend
+            access_token: tokenToSend,
           });
         }
       });
@@ -4788,16 +5500,21 @@ var RealtimeClient = class {
    * Sends a heartbeat message if the socket is connected.
    */
   async sendHeartbeat() {
-    var _a;
+    var A;
     if (!this.isConnected()) {
       this.heartbeatCallback("disconnected");
       return;
     }
     if (this.pendingHeartbeatRef) {
       this.pendingHeartbeatRef = null;
-      this.log("transport", "heartbeat timeout. Attempting to re-establish connection");
+      this.log(
+        "transport",
+        "heartbeat timeout. Attempting to re-establish connection",
+      );
       this.heartbeatCallback("timeout");
-      (_a = this.conn) === null || _a === void 0 ? void 0 : _a.close(WS_CLOSE_NORMAL, "hearbeat timeout");
+      (A = this.conn) === null || A === void 0
+        ? void 0
+        : A.close(WS_CLOSE_NORMAL, "hearbeat timeout");
       return;
     }
     this.pendingHeartbeatRef = this._makeRef();
@@ -4805,7 +5522,7 @@ var RealtimeClient = class {
       topic: "phoenix",
       event: "heartbeat",
       payload: {},
-      ref: this.pendingHeartbeatRef
+      ref: this.pendingHeartbeatRef,
     });
     this.heartbeatCallback("sent");
     await this.setAuth();
@@ -4828,7 +5545,7 @@ var RealtimeClient = class {
    * @internal
    */
   _makeRef() {
-    let newRef = this.ref + 1;
+    const newRef = this.ref + 1;
     if (newRef === this.ref) {
       this.ref = 0;
     } else {
@@ -4842,7 +5559,9 @@ var RealtimeClient = class {
    * @internal
    */
   _leaveOpenTopic(topic) {
-    let dupChannel = this.channels.find((c2) => c2.topic === topic && (c2._isJoined() || c2._isJoining()));
+    const dupChannel = this.channels.find(
+      (c2) => c2.topic === topic && (c2._isJoined() || c2._isJoining()),
+    );
     if (dupChannel) {
       this.log("transport", `leaving duplicate topic "${topic}"`);
       dupChannel.unsubscribe();
@@ -4875,15 +5594,21 @@ var RealtimeClient = class {
   /** @internal */
   _onConnMessage(rawMessage) {
     this.decode(rawMessage.data, (msg) => {
-      let { topic, event, payload, ref } = msg;
+      const { topic, event, payload, ref } = msg;
       if (topic === "phoenix" && event === "phx_reply") {
         this.heartbeatCallback(msg.payload.status == "ok" ? "ok" : "error");
       }
       if (ref && ref === this.pendingHeartbeatRef) {
         this.pendingHeartbeatRef = null;
       }
-      this.log("receive", `${payload.status || ""} ${topic} ${event} ${ref && "(" + ref + ")" || ""}`, payload);
-      Array.from(this.channels).filter((channel) => channel._isMember(topic)).forEach((channel) => channel._trigger(event, payload, ref));
+      this.log(
+        "receive",
+        `${payload.status || ""} ${topic} ${event} ${(ref && "(" + ref + ")") || ""}`,
+        payload,
+      );
+      Array.from(this.channels)
+        .filter((channel) => channel._isMember(topic))
+        .forEach((channel) => channel._trigger(event, payload, ref));
       this.stateChangeCallbacks.message.forEach((callback) => callback(msg));
     });
   }
@@ -4904,7 +5629,10 @@ var RealtimeClient = class {
   /** @internal */
   _startHeartbeat() {
     this.heartbeatTimer && clearInterval(this.heartbeatTimer);
-    this.heartbeatTimer = setInterval(() => this.sendHeartbeat(), this.heartbeatIntervalMs);
+    this.heartbeatTimer = setInterval(
+      () => this.sendHeartbeat(),
+      this.heartbeatIntervalMs,
+    );
   }
   /** @internal */
   _startWorkerHeartbeat() {
@@ -4926,7 +5654,7 @@ var RealtimeClient = class {
     };
     this.workerRef.postMessage({
       event: "start",
-      interval: this.heartbeatIntervalMs
+      interval: this.heartbeatIntervalMs,
     });
   }
   /** @internal */
@@ -4957,37 +5685,39 @@ var RealtimeClient = class {
     return `${url}${prefix}${query}`;
   }
   _workerObjectUrl(url) {
-    let result_url;
+    let resultUrl;
     if (url) {
-      result_url = url;
+      resultUrl = url;
     } else {
-      const blob = new Blob([WORKER_SCRIPT], { type: "application/javascript" });
-      result_url = URL.createObjectURL(blob);
+      const blob = new Blob([WORKER_SCRIPT], {
+        type: "application/javascript",
+      });
+      resultUrl = URL.createObjectURL(blob);
     }
-    return result_url;
+    return resultUrl;
   }
 };
-__name(RealtimeClient, "RealtimeClient");
+Name(RealtimeClient, "RealtimeClient");
 
 // node_modules/@supabase/storage-js/dist/module/index.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/storage-js/dist/module/StorageClient.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/storage-js/dist/module/packages/StorageFileApi.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/storage-js/dist/module/lib/errors.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var StorageError = class extends Error {
   constructor(message) {
     super(message);
@@ -4995,11 +5725,13 @@ var StorageError = class extends Error {
     this.name = "StorageError";
   }
 };
-__name(StorageError, "StorageError");
+Name(StorageError, "StorageError");
 function isStorageError(error) {
-  return typeof error === "object" && error !== null && "__isStorageError" in error;
+  return (
+    typeof error === "object" && error !== null && "__isStorageError" in error
+  );
 }
-__name(isStorageError, "isStorageError");
+Name(isStorageError, "isStorageError");
 var StorageApiError = class extends StorageError {
   constructor(message, status) {
     super(message);
@@ -5010,11 +5742,11 @@ var StorageApiError = class extends StorageError {
     return {
       name: this.name,
       message: this.message,
-      status: this.status
+      status: this.status,
     };
   }
 };
-__name(StorageApiError, "StorageApiError");
+Name(StorageApiError, "StorageApiError");
 var StorageUnknownError = class extends StorageError {
   constructor(message, originalError) {
     super(message);
@@ -5022,25 +5754,27 @@ var StorageUnknownError = class extends StorageError {
     this.originalError = originalError;
   }
 };
-__name(StorageUnknownError, "StorageUnknownError");
+Name(StorageUnknownError, "StorageUnknownError");
 
 // node_modules/@supabase/storage-js/dist/module/lib/fetch.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/storage-js/dist/module/lib/helpers.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var __awaiter2 = function(thisArg, _arguments, P, generator) {
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var Awaiter2 = (thisArg, _arguments, P, generator) => {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve) {
-      resolve(value);
-    });
+    return value instanceof P
+      ? value
+      : new P((resolve) => {
+          resolve(value);
+        });
   }
-  __name(adopt, "adopt");
-  return new (P || (P = Promise))(function(resolve, reject) {
+  Name(adopt, "adopt");
+  return new (P || (P = Promise))((resolve, reject) => {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -5048,7 +5782,7 @@ var __awaiter2 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(fulfilled, "fulfilled");
+    Name(fulfilled, "fulfilled");
     function rejected(value) {
       try {
         step(generator["throw"](value));
@@ -5056,32 +5790,46 @@ var __awaiter2 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(rejected, "rejected");
+    Name(rejected, "rejected");
     function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done
+        ? resolve(result.value)
+        : adopt(result.value).then(fulfilled, rejected);
     }
-    __name(step, "step");
+    Name(step, "step");
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
 };
-var resolveFetch2 = /* @__PURE__ */ __name((customFetch) => {
-  let _fetch;
+var resolveFetch2 = /* @__PURE__ */ Name((customFetch) => {
+  let Fetch;
   if (customFetch) {
-    _fetch = customFetch;
+    Fetch = customFetch;
   } else if (typeof fetch === "undefined") {
-    _fetch = /* @__PURE__ */ __name((...args) => Promise.resolve().then(() => (init_browser(), browser_exports)).then(({ default: fetch3 }) => fetch3(...args)), "_fetch");
+    Fetch = /* @__PURE__ */ Name(
+      (...args) =>
+        Promise.resolve()
+          .then(() => (initBrowser(), browserExports))
+          .then(({ default: fetch3 }) => fetch3(...args)),
+      "_fetch",
+    );
   } else {
-    _fetch = fetch;
+    Fetch = fetch;
   }
-  return (...args) => _fetch(...args);
+  return (...args) => Fetch(...args);
 }, "resolveFetch");
-var resolveResponse = /* @__PURE__ */ __name(() => __awaiter2(void 0, void 0, void 0, function* () {
-  if (typeof Response === "undefined") {
-    return (yield Promise.resolve().then(() => (init_browser(), browser_exports))).Response;
-  }
-  return Response;
-}), "resolveResponse");
-var recursiveToCamel = /* @__PURE__ */ __name((item) => {
+var resolveResponse = /* @__PURE__ */ Name(
+  () =>
+    Awaiter2(void 0, void 0, void 0, function* () {
+      if (typeof Response === "undefined") {
+        return (yield Promise.resolve().then(
+          () => (initBrowser(), browserExports),
+        )).Response;
+      }
+      return Response;
+    }),
+  "resolveResponse",
+);
+var recursiveToCamel = /* @__PURE__ */ Name((item) => {
   if (Array.isArray(item)) {
     return item.map((el) => recursiveToCamel(el));
   } else if (typeof item === "function" || item !== Object(item)) {
@@ -5089,21 +5837,25 @@ var recursiveToCamel = /* @__PURE__ */ __name((item) => {
   }
   const result = {};
   Object.entries(item).forEach(([key, value]) => {
-    const newKey = key.replace(/([-_][a-z])/gi, (c2) => c2.toUpperCase().replace(/[-_]/g, ""));
+    const newKey = key.replace(/([-_][a-z])/gi, (c2) =>
+      c2.toUpperCase().replace(/[-_]/g, ""),
+    );
     result[newKey] = recursiveToCamel(value);
   });
   return result;
 }, "recursiveToCamel");
 
 // node_modules/@supabase/storage-js/dist/module/lib/fetch.js
-var __awaiter3 = function(thisArg, _arguments, P, generator) {
+var Awaiter3 = (thisArg, _arguments, P, generator) => {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve) {
-      resolve(value);
-    });
+    return value instanceof P
+      ? value
+      : new P((resolve) => {
+          resolve(value);
+        });
   }
-  __name(adopt, "adopt");
-  return new (P || (P = Promise))(function(resolve, reject) {
+  Name(adopt, "adopt");
+  return new (P || (P = Promise))((resolve, reject) => {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -5111,7 +5863,7 @@ var __awaiter3 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(fulfilled, "fulfilled");
+    Name(fulfilled, "fulfilled");
     function rejected(value) {
       try {
         step(generator["throw"](value));
@@ -5119,92 +5871,141 @@ var __awaiter3 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(rejected, "rejected");
+    Name(rejected, "rejected");
     function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done
+        ? resolve(result.value)
+        : adopt(result.value).then(fulfilled, rejected);
     }
-    __name(step, "step");
+    Name(step, "step");
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
 };
-var _getErrorMessage = /* @__PURE__ */ __name((err) => err.msg || err.message || err.error_description || err.error || JSON.stringify(err), "_getErrorMessage");
-var handleError = /* @__PURE__ */ __name((error, reject, options) => __awaiter3(void 0, void 0, void 0, function* () {
-  const Res = yield resolveResponse();
-  if (error instanceof Res && !(options === null || options === void 0 ? void 0 : options.noResolveJson)) {
-    error.json().then((err) => {
-      reject(new StorageApiError(_getErrorMessage(err), error.status || 500));
-    }).catch((err) => {
-      reject(new StorageUnknownError(_getErrorMessage(err), err));
-    });
-  } else {
-    reject(new StorageUnknownError(_getErrorMessage(error), error));
-  }
-}), "handleError");
-var _getRequestParams = /* @__PURE__ */ __name((method, options, parameters, body) => {
-  const params = { method, headers: (options === null || options === void 0 ? void 0 : options.headers) || {} };
-  if (method === "GET") {
-    return params;
-  }
-  params.headers = Object.assign({ "Content-Type": "application/json" }, options === null || options === void 0 ? void 0 : options.headers);
-  if (body) {
-    params.body = JSON.stringify(body);
-  }
-  return Object.assign(Object.assign({}, params), parameters);
-}, "_getRequestParams");
-function _handleRequest(fetcher, method, url, options, parameters, body) {
-  return __awaiter3(this, void 0, void 0, function* () {
+var GetErrorMessage = /* @__PURE__ */ Name(
+  (err) =>
+    err.msg ||
+    err.message ||
+    err.error_description ||
+    err.error ||
+    JSON.stringify(err),
+  "_getErrorMessage",
+);
+var handleError = /* @__PURE__ */ Name(
+  (error, reject, options) =>
+    Awaiter3(void 0, void 0, void 0, function* () {
+      const Res = yield resolveResponse();
+      if (
+        error instanceof Res &&
+        !(options === null || options === void 0
+          ? void 0
+          : options.noResolveJson)
+      ) {
+        error
+          .json()
+          .then((err) => {
+            reject(
+              new StorageApiError(GetErrorMessage(err), error.status || 500),
+            );
+          })
+          .catch((err) => {
+            reject(new StorageUnknownError(GetErrorMessage(err), err));
+          });
+      } else {
+        reject(new StorageUnknownError(GetErrorMessage(error), error));
+      }
+    }),
+  "handleError",
+);
+var GetRequestParams = /* @__PURE__ */ Name(
+  (method, options, parameters, body) => {
+    const params = {
+      method,
+      headers:
+        (options === null || options === void 0 ? void 0 : options.headers) ||
+        {},
+    };
+    if (method === "GET") {
+      return params;
+    }
+    params.headers = Object.assign(
+      { "Content-Type": "application/json" },
+      options === null || options === void 0 ? void 0 : options.headers,
+    );
+    if (body) {
+      params.body = JSON.stringify(body);
+    }
+    return Object.assign(Object.assign({}, params), parameters);
+  },
+  "_getRequestParams",
+);
+function HandleRequest(fetcher, method, url, options, parameters, body) {
+  return Awaiter3(this, void 0, void 0, function* () {
     return new Promise((resolve, reject) => {
-      fetcher(url, _getRequestParams(method, options, parameters, body)).then((result) => {
-        if (!result.ok)
-          throw result;
-        if (options === null || options === void 0 ? void 0 : options.noResolveJson)
-          return result;
-        return result.json();
-      }).then((data) => resolve(data)).catch((error) => handleError(error, reject, options));
+      fetcher(url, GetRequestParams(method, options, parameters, body))
+        .then((result) => {
+          if (!result.ok) throw result;
+          if (
+            options === null || options === void 0
+              ? void 0
+              : options.noResolveJson
+          )
+            return result;
+          return result.json();
+        })
+        .then((data) => resolve(data))
+        .catch((error) => handleError(error, reject, options));
     });
   });
 }
-__name(_handleRequest, "_handleRequest");
+Name(HandleRequest, "_handleRequest");
 function get(fetcher, url, options, parameters) {
-  return __awaiter3(this, void 0, void 0, function* () {
-    return _handleRequest(fetcher, "GET", url, options, parameters);
+  return Awaiter3(this, void 0, void 0, function* () {
+    return HandleRequest(fetcher, "GET", url, options, parameters);
   });
 }
-__name(get, "get");
+Name(get, "get");
 function post(fetcher, url, body, options, parameters) {
-  return __awaiter3(this, void 0, void 0, function* () {
-    return _handleRequest(fetcher, "POST", url, options, parameters, body);
+  return Awaiter3(this, void 0, void 0, function* () {
+    return HandleRequest(fetcher, "POST", url, options, parameters, body);
   });
 }
-__name(post, "post");
+Name(post, "post");
 function put(fetcher, url, body, options, parameters) {
-  return __awaiter3(this, void 0, void 0, function* () {
-    return _handleRequest(fetcher, "PUT", url, options, parameters, body);
+  return Awaiter3(this, void 0, void 0, function* () {
+    return HandleRequest(fetcher, "PUT", url, options, parameters, body);
   });
 }
-__name(put, "put");
+Name(put, "put");
 function head(fetcher, url, options, parameters) {
-  return __awaiter3(this, void 0, void 0, function* () {
-    return _handleRequest(fetcher, "HEAD", url, Object.assign(Object.assign({}, options), { noResolveJson: true }), parameters);
+  return Awaiter3(this, void 0, void 0, function* () {
+    return HandleRequest(
+      fetcher,
+      "HEAD",
+      url,
+      Object.assign(Object.assign({}, options), { noResolveJson: true }),
+      parameters,
+    );
   });
 }
-__name(head, "head");
+Name(head, "head");
 function remove(fetcher, url, body, options, parameters) {
-  return __awaiter3(this, void 0, void 0, function* () {
-    return _handleRequest(fetcher, "DELETE", url, options, parameters, body);
+  return Awaiter3(this, void 0, void 0, function* () {
+    return HandleRequest(fetcher, "DELETE", url, options, parameters, body);
   });
 }
-__name(remove, "remove");
+Name(remove, "remove");
 
 // node_modules/@supabase/storage-js/dist/module/packages/StorageFileApi.js
-var __awaiter4 = function(thisArg, _arguments, P, generator) {
+var Awaiter4 = (thisArg, _arguments, P, generator) => {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve) {
-      resolve(value);
-    });
+    return value instanceof P
+      ? value
+      : new P((resolve) => {
+          resolve(value);
+        });
   }
-  __name(adopt, "adopt");
-  return new (P || (P = Promise))(function(resolve, reject) {
+  Name(adopt, "adopt");
+  return new (P || (P = Promise))((resolve, reject) => {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -5212,7 +6013,7 @@ var __awaiter4 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(fulfilled, "fulfilled");
+    Name(fulfilled, "fulfilled");
     function rejected(value) {
       try {
         step(generator["throw"](value));
@@ -5220,11 +6021,13 @@ var __awaiter4 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(rejected, "rejected");
+    Name(rejected, "rejected");
     function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done
+        ? resolve(result.value)
+        : adopt(result.value).then(fulfilled, rejected);
     }
-    __name(step, "step");
+    Name(step, "step");
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
 };
@@ -5233,13 +6036,13 @@ var DEFAULT_SEARCH_OPTIONS = {
   offset: 0,
   sortBy: {
     column: "name",
-    order: "asc"
-  }
+    order: "asc",
+  },
 };
 var DEFAULT_FILE_OPTIONS = {
   cacheControl: "3600",
   contentType: "text/plain;charset=UTF-8",
-  upsert: false
+  upsert: false,
 };
 var StorageFileApi = class {
   constructor(url, headers = {}, bucketId, fetch3) {
@@ -5256,11 +6059,17 @@ var StorageFileApi = class {
    * @param fileBody The body of the file to be stored in the bucket.
    */
   uploadOrUpdate(method, path, fileBody, fileOptions) {
-    return __awaiter4(this, void 0, void 0, function* () {
+    return Awaiter4(this, void 0, void 0, function* () {
       try {
         let body;
-        const options = Object.assign(Object.assign({}, DEFAULT_FILE_OPTIONS), fileOptions);
-        let headers = Object.assign(Object.assign({}, this.headers), method === "POST" && { "x-upsert": String(options.upsert) });
+        const options = Object.assign(
+          Object.assign({}, DEFAULT_FILE_OPTIONS),
+          fileOptions,
+        );
+        let headers = Object.assign(
+          Object.assign({}, this.headers),
+          method === "POST" && { "x-upsert": String(options.upsert) },
+        );
         const metadata = options.metadata;
         if (typeof Blob !== "undefined" && fileBody instanceof Blob) {
           body = new FormData();
@@ -5269,7 +6078,10 @@ var StorageFileApi = class {
             body.append("metadata", this.encodeMetadata(metadata));
           }
           body.append("", fileBody);
-        } else if (typeof FormData !== "undefined" && fileBody instanceof FormData) {
+        } else if (
+          typeof FormData !== "undefined" &&
+          fileBody instanceof FormData
+        ) {
           body = fileBody;
           body.append("cacheControl", options.cacheControl);
           if (metadata) {
@@ -5280,20 +6092,37 @@ var StorageFileApi = class {
           headers["cache-control"] = `max-age=${options.cacheControl}`;
           headers["content-type"] = options.contentType;
           if (metadata) {
-            headers["x-metadata"] = this.toBase64(this.encodeMetadata(metadata));
+            headers["x-metadata"] = this.toBase64(
+              this.encodeMetadata(metadata),
+            );
           }
         }
-        if (fileOptions === null || fileOptions === void 0 ? void 0 : fileOptions.headers) {
-          headers = Object.assign(Object.assign({}, headers), fileOptions.headers);
+        if (
+          fileOptions === null || fileOptions === void 0
+            ? void 0
+            : fileOptions.headers
+        ) {
+          headers = Object.assign(
+            Object.assign({}, headers),
+            fileOptions.headers,
+          );
         }
         const cleanPath = this._removeEmptyFolders(path);
-        const _path = this._getFinalPath(cleanPath);
-        const res = yield this.fetch(`${this.url}/object/${_path}`, Object.assign({ method, body, headers }, (options === null || options === void 0 ? void 0 : options.duplex) ? { duplex: options.duplex } : {}));
+        const Path = this._getFinalPath(cleanPath);
+        const res = yield this.fetch(
+          `${this.url}/object/${Path}`,
+          Object.assign(
+            { method, body, headers },
+            (options === null || options === void 0 ? void 0 : options.duplex)
+              ? { duplex: options.duplex }
+              : {},
+          ),
+        );
         const data = yield res.json();
         if (res.ok) {
           return {
             data: { path: cleanPath, id: data.Id, fullPath: data.Key },
-            error: null
+            error: null,
           };
         } else {
           const error = data;
@@ -5314,7 +6143,7 @@ var StorageFileApi = class {
    * @param fileBody The body of the file to be stored in the bucket.
    */
   upload(path, fileBody, fileOptions) {
-    return __awaiter4(this, void 0, void 0, function* () {
+    return Awaiter4(this, void 0, void 0, function* () {
       return this.uploadOrUpdate("POST", path, fileBody, fileOptions);
     });
   }
@@ -5325,20 +6154,28 @@ var StorageFileApi = class {
    * @param fileBody The body of the file to be stored in the bucket.
    */
   uploadToSignedUrl(path, token, fileBody, fileOptions) {
-    return __awaiter4(this, void 0, void 0, function* () {
+    return Awaiter4(this, void 0, void 0, function* () {
       const cleanPath = this._removeEmptyFolders(path);
-      const _path = this._getFinalPath(cleanPath);
-      const url = new URL(this.url + `/object/upload/sign/${_path}`);
+      const Path = this._getFinalPath(cleanPath);
+      const url = new URL(this.url + `/object/upload/sign/${Path}`);
       url.searchParams.set("token", token);
       try {
         let body;
-        const options = Object.assign({ upsert: DEFAULT_FILE_OPTIONS.upsert }, fileOptions);
-        const headers = Object.assign(Object.assign({}, this.headers), { "x-upsert": String(options.upsert) });
+        const options = Object.assign(
+          { upsert: DEFAULT_FILE_OPTIONS.upsert },
+          fileOptions,
+        );
+        const headers = Object.assign(Object.assign({}, this.headers), {
+          "x-upsert": String(options.upsert),
+        });
         if (typeof Blob !== "undefined" && fileBody instanceof Blob) {
           body = new FormData();
           body.append("cacheControl", options.cacheControl);
           body.append("", fileBody);
-        } else if (typeof FormData !== "undefined" && fileBody instanceof FormData) {
+        } else if (
+          typeof FormData !== "undefined" &&
+          fileBody instanceof FormData
+        ) {
           body = fileBody;
           body.append("cacheControl", options.cacheControl);
         } else {
@@ -5349,13 +6186,13 @@ var StorageFileApi = class {
         const res = yield this.fetch(url.toString(), {
           method: "PUT",
           body,
-          headers
+          headers,
         });
         const data = yield res.json();
         if (res.ok) {
           return {
             data: { path: cleanPath, fullPath: data.Key },
-            error: null
+            error: null,
           };
         } else {
           const error = data;
@@ -5377,20 +6214,28 @@ var StorageFileApi = class {
    * @param options.upsert If set to true, allows the file to be overwritten if it already exists.
    */
   createSignedUploadUrl(path, options) {
-    return __awaiter4(this, void 0, void 0, function* () {
+    return Awaiter4(this, void 0, void 0, function* () {
       try {
-        let _path = this._getFinalPath(path);
+        const Path = this._getFinalPath(path);
         const headers = Object.assign({}, this.headers);
         if (options === null || options === void 0 ? void 0 : options.upsert) {
           headers["x-upsert"] = "true";
         }
-        const data = yield post(this.fetch, `${this.url}/object/upload/sign/${_path}`, {}, { headers });
+        const data = yield post(
+          this.fetch,
+          `${this.url}/object/upload/sign/${Path}`,
+          {},
+          { headers },
+        );
         const url = new URL(this.url + data.url);
         const token = url.searchParams.get("token");
         if (!token) {
           throw new StorageError("No token returned by API");
         }
-        return { data: { signedUrl: url.toString(), path, token }, error: null };
+        return {
+          data: { signedUrl: url.toString(), path, token },
+          error: null,
+        };
       } catch (error) {
         if (isStorageError(error)) {
           return { data: null, error };
@@ -5406,7 +6251,7 @@ var StorageFileApi = class {
    * @param fileBody The body of the file to be stored in the bucket.
    */
   update(path, fileBody, fileOptions) {
-    return __awaiter4(this, void 0, void 0, function* () {
+    return Awaiter4(this, void 0, void 0, function* () {
       return this.uploadOrUpdate("PUT", path, fileBody, fileOptions);
     });
   }
@@ -5418,14 +6263,22 @@ var StorageFileApi = class {
    * @param options The destination options.
    */
   move(fromPath, toPath, options) {
-    return __awaiter4(this, void 0, void 0, function* () {
+    return Awaiter4(this, void 0, void 0, function* () {
       try {
-        const data = yield post(this.fetch, `${this.url}/object/move`, {
-          bucketId: this.bucketId,
-          sourceKey: fromPath,
-          destinationKey: toPath,
-          destinationBucket: options === null || options === void 0 ? void 0 : options.destinationBucket
-        }, { headers: this.headers });
+        const data = yield post(
+          this.fetch,
+          `${this.url}/object/move`,
+          {
+            bucketId: this.bucketId,
+            sourceKey: fromPath,
+            destinationKey: toPath,
+            destinationBucket:
+              options === null || options === void 0
+                ? void 0
+                : options.destinationBucket,
+          },
+          { headers: this.headers },
+        );
         return { data, error: null };
       } catch (error) {
         if (isStorageError(error)) {
@@ -5443,14 +6296,22 @@ var StorageFileApi = class {
    * @param options The destination options.
    */
   copy(fromPath, toPath, options) {
-    return __awaiter4(this, void 0, void 0, function* () {
+    return Awaiter4(this, void 0, void 0, function* () {
       try {
-        const data = yield post(this.fetch, `${this.url}/object/copy`, {
-          bucketId: this.bucketId,
-          sourceKey: fromPath,
-          destinationKey: toPath,
-          destinationBucket: options === null || options === void 0 ? void 0 : options.destinationBucket
-        }, { headers: this.headers });
+        const data = yield post(
+          this.fetch,
+          `${this.url}/object/copy`,
+          {
+            bucketId: this.bucketId,
+            sourceKey: fromPath,
+            destinationKey: toPath,
+            destinationBucket:
+              options === null || options === void 0
+                ? void 0
+                : options.destinationBucket,
+          },
+          { headers: this.headers },
+        );
         return { data: { path: data.Key }, error: null };
       } catch (error) {
         if (isStorageError(error)) {
@@ -5469,12 +6330,34 @@ var StorageFileApi = class {
    * @param options.transform Transform the asset before serving it to the client.
    */
   createSignedUrl(path, expiresIn, options) {
-    return __awaiter4(this, void 0, void 0, function* () {
+    return Awaiter4(this, void 0, void 0, function* () {
       try {
-        let _path = this._getFinalPath(path);
-        let data = yield post(this.fetch, `${this.url}/object/sign/${_path}`, Object.assign({ expiresIn }, (options === null || options === void 0 ? void 0 : options.transform) ? { transform: options.transform } : {}), { headers: this.headers });
-        const downloadQueryParam = (options === null || options === void 0 ? void 0 : options.download) ? `&download=${options.download === true ? "" : options.download}` : "";
-        const signedUrl = encodeURI(`${this.url}${data.signedURL}${downloadQueryParam}`);
+        const Path = this._getFinalPath(path);
+        let data = yield post(
+          this.fetch,
+          `${this.url}/object/sign/${Path}`,
+          Object.assign(
+            { expiresIn },
+            (
+              options === null || options === void 0
+                ? void 0
+                : options.transform
+            )
+              ? { transform: options.transform }
+              : {},
+          ),
+          { headers: this.headers },
+        );
+        const downloadQueryParam = (
+          options === null || options === void 0
+            ? void 0
+            : options.download
+        )
+          ? `&download=${options.download === true ? "" : options.download}`
+          : "";
+        const signedUrl = encodeURI(
+          `${this.url}${data.signedURL}${downloadQueryParam}`,
+        );
         data = { signedUrl };
         return { data, error: null };
       } catch (error) {
@@ -5493,13 +6376,32 @@ var StorageFileApi = class {
    * @param options.download triggers the file as a download if set to true. Set this parameter as the name of the file if you want to trigger the download with a different filename.
    */
   createSignedUrls(paths, expiresIn, options) {
-    return __awaiter4(this, void 0, void 0, function* () {
+    return Awaiter4(this, void 0, void 0, function* () {
       try {
-        const data = yield post(this.fetch, `${this.url}/object/sign/${this.bucketId}`, { expiresIn, paths }, { headers: this.headers });
-        const downloadQueryParam = (options === null || options === void 0 ? void 0 : options.download) ? `&download=${options.download === true ? "" : options.download}` : "";
+        const data = yield post(
+          this.fetch,
+          `${this.url}/object/sign/${this.bucketId}`,
+          { expiresIn, paths },
+          { headers: this.headers },
+        );
+        const downloadQueryParam = (
+          options === null || options === void 0
+            ? void 0
+            : options.download
+        )
+          ? `&download=${options.download === true ? "" : options.download}`
+          : "";
         return {
-          data: data.map((datum) => Object.assign(Object.assign({}, datum), { signedUrl: datum.signedURL ? encodeURI(`${this.url}${datum.signedURL}${downloadQueryParam}`) : null })),
-          error: null
+          data: data.map((datum) =>
+            Object.assign(Object.assign({}, datum), {
+              signedUrl: datum.signedURL
+                ? encodeURI(
+                    `${this.url}${datum.signedURL}${downloadQueryParam}`,
+                  )
+                : null,
+            }),
+          ),
+          error: null,
         };
       } catch (error) {
         if (isStorageError(error)) {
@@ -5516,17 +6418,29 @@ var StorageFileApi = class {
    * @param options.transform Transform the asset before serving it to the client.
    */
   download(path, options) {
-    return __awaiter4(this, void 0, void 0, function* () {
-      const wantsTransformation = typeof (options === null || options === void 0 ? void 0 : options.transform) !== "undefined";
-      const renderPath = wantsTransformation ? "render/image/authenticated" : "object";
-      const transformationQuery = this.transformOptsToQueryString((options === null || options === void 0 ? void 0 : options.transform) || {});
+    return Awaiter4(this, void 0, void 0, function* () {
+      const wantsTransformation =
+        typeof (options === null || options === void 0
+          ? void 0
+          : options.transform) !== "undefined";
+      const renderPath = wantsTransformation
+        ? "render/image/authenticated"
+        : "object";
+      const transformationQuery = this.transformOptsToQueryString(
+        (options === null || options === void 0 ? void 0 : options.transform) ||
+          {},
+      );
       const queryString = transformationQuery ? `?${transformationQuery}` : "";
       try {
-        const _path = this._getFinalPath(path);
-        const res = yield get(this.fetch, `${this.url}/${renderPath}/${_path}${queryString}`, {
-          headers: this.headers,
-          noResolveJson: true
-        });
+        const Path = this._getFinalPath(path);
+        const res = yield get(
+          this.fetch,
+          `${this.url}/${renderPath}/${Path}${queryString}`,
+          {
+            headers: this.headers,
+            noResolveJson: true,
+          },
+        );
         const data = yield res.blob();
         return { data, error: null };
       } catch (error) {
@@ -5542,11 +6456,11 @@ var StorageFileApi = class {
    * @param path
    */
   info(path) {
-    return __awaiter4(this, void 0, void 0, function* () {
-      const _path = this._getFinalPath(path);
+    return Awaiter4(this, void 0, void 0, function* () {
+      const Path = this._getFinalPath(path);
       try {
-        const data = yield get(this.fetch, `${this.url}/object/info/${_path}`, {
-          headers: this.headers
+        const data = yield get(this.fetch, `${this.url}/object/info/${Path}`, {
+          headers: this.headers,
         });
         return { data: recursiveToCamel(data), error: null };
       } catch (error) {
@@ -5562,17 +6476,23 @@ var StorageFileApi = class {
    * @param path
    */
   exists(path) {
-    return __awaiter4(this, void 0, void 0, function* () {
-      const _path = this._getFinalPath(path);
+    return Awaiter4(this, void 0, void 0, function* () {
+      const Path = this._getFinalPath(path);
       try {
-        yield head(this.fetch, `${this.url}/object/${_path}`, {
-          headers: this.headers
+        yield head(this.fetch, `${this.url}/object/${Path}`, {
+          headers: this.headers,
         });
         return { data: true, error: null };
       } catch (error) {
         if (isStorageError(error) && error instanceof StorageUnknownError) {
           const originalError = error.originalError;
-          if ([400, 404].includes(originalError === null || originalError === void 0 ? void 0 : originalError.status)) {
+          if (
+            [400, 404].includes(
+              originalError === null || originalError === void 0
+                ? void 0
+                : originalError.status,
+            )
+          ) {
             return { data: false, error };
           }
         }
@@ -5589,24 +6509,40 @@ var StorageFileApi = class {
    * @param options.transform Transform the asset before serving it to the client.
    */
   getPublicUrl(path, options) {
-    const _path = this._getFinalPath(path);
-    const _queryString = [];
-    const downloadQueryParam = (options === null || options === void 0 ? void 0 : options.download) ? `download=${options.download === true ? "" : options.download}` : "";
+    const Path = this._getFinalPath(path);
+    const QueryString = [];
+    const downloadQueryParam = (
+      options === null || options === void 0
+        ? void 0
+        : options.download
+    )
+      ? `download=${options.download === true ? "" : options.download}`
+      : "";
     if (downloadQueryParam !== "") {
-      _queryString.push(downloadQueryParam);
+      QueryString.push(downloadQueryParam);
     }
-    const wantsTransformation = typeof (options === null || options === void 0 ? void 0 : options.transform) !== "undefined";
+    const wantsTransformation =
+      typeof (options === null || options === void 0
+        ? void 0
+        : options.transform) !== "undefined";
     const renderPath = wantsTransformation ? "render/image" : "object";
-    const transformationQuery = this.transformOptsToQueryString((options === null || options === void 0 ? void 0 : options.transform) || {});
+    const transformationQuery = this.transformOptsToQueryString(
+      (options === null || options === void 0 ? void 0 : options.transform) ||
+        {},
+    );
     if (transformationQuery !== "") {
-      _queryString.push(transformationQuery);
+      QueryString.push(transformationQuery);
     }
-    let queryString = _queryString.join("&");
+    let queryString = QueryString.join("&");
     if (queryString !== "") {
       queryString = `?${queryString}`;
     }
     return {
-      data: { publicUrl: encodeURI(`${this.url}/${renderPath}/public/${_path}${queryString}`) }
+      data: {
+        publicUrl: encodeURI(
+          `${this.url}/${renderPath}/public/${Path}${queryString}`,
+        ),
+      },
     };
   }
   /**
@@ -5615,9 +6551,14 @@ var StorageFileApi = class {
    * @param paths An array of files to delete, including the path and file name. For example [`'folder/image.png'`].
    */
   remove(paths) {
-    return __awaiter4(this, void 0, void 0, function* () {
+    return Awaiter4(this, void 0, void 0, function* () {
       try {
-        const data = yield remove(this.fetch, `${this.url}/object/${this.bucketId}`, { prefixes: paths }, { headers: this.headers });
+        const data = yield remove(
+          this.fetch,
+          `${this.url}/object/${this.bucketId}`,
+          { prefixes: paths },
+          { headers: this.headers },
+        );
         return { data, error: null };
       } catch (error) {
         if (isStorageError(error)) {
@@ -5691,10 +6632,19 @@ var StorageFileApi = class {
    * @param path The folder path.
    */
   list(path, options, parameters) {
-    return __awaiter4(this, void 0, void 0, function* () {
+    return Awaiter4(this, void 0, void 0, function* () {
       try {
-        const body = Object.assign(Object.assign(Object.assign({}, DEFAULT_SEARCH_OPTIONS), options), { prefix: path || "" });
-        const data = yield post(this.fetch, `${this.url}/object/list/${this.bucketId}`, body, { headers: this.headers }, parameters);
+        const body = Object.assign(
+          Object.assign(Object.assign({}, DEFAULT_SEARCH_OPTIONS), options),
+          { prefix: path || "" },
+        );
+        const data = yield post(
+          this.fetch,
+          `${this.url}/object/list/${this.bucketId}`,
+          body,
+          { headers: this.headers },
+          parameters,
+        );
         return { data, error: null };
       } catch (error) {
         if (isStorageError(error)) {
@@ -5739,36 +6689,38 @@ var StorageFileApi = class {
     return params.join("&");
   }
 };
-__name(StorageFileApi, "StorageFileApi");
+Name(StorageFileApi, "StorageFileApi");
 
 // node_modules/@supabase/storage-js/dist/module/packages/StorageBucketApi.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/storage-js/dist/module/lib/constants.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/storage-js/dist/module/lib/version.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var version2 = "2.7.1";
 
 // node_modules/@supabase/storage-js/dist/module/lib/constants.js
 var DEFAULT_HEADERS = { "X-Client-Info": `storage-js/${version2}` };
 
 // node_modules/@supabase/storage-js/dist/module/packages/StorageBucketApi.js
-var __awaiter5 = function(thisArg, _arguments, P, generator) {
+var Awaiter5 = (thisArg, _arguments, P, generator) => {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve) {
-      resolve(value);
-    });
+    return value instanceof P
+      ? value
+      : new P((resolve) => {
+          resolve(value);
+        });
   }
-  __name(adopt, "adopt");
-  return new (P || (P = Promise))(function(resolve, reject) {
+  Name(adopt, "adopt");
+  return new (P || (P = Promise))((resolve, reject) => {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -5776,7 +6728,7 @@ var __awaiter5 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(fulfilled, "fulfilled");
+    Name(fulfilled, "fulfilled");
     function rejected(value) {
       try {
         step(generator["throw"](value));
@@ -5784,11 +6736,13 @@ var __awaiter5 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(rejected, "rejected");
+    Name(rejected, "rejected");
     function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done
+        ? resolve(result.value)
+        : adopt(result.value).then(fulfilled, rejected);
     }
-    __name(step, "step");
+    Name(step, "step");
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
 };
@@ -5802,9 +6756,11 @@ var StorageBucketApi = class {
    * Retrieves the details of all Storage buckets within an existing project.
    */
   listBuckets() {
-    return __awaiter5(this, void 0, void 0, function* () {
+    return Awaiter5(this, void 0, void 0, function* () {
       try {
-        const data = yield get(this.fetch, `${this.url}/bucket`, { headers: this.headers });
+        const data = yield get(this.fetch, `${this.url}/bucket`, {
+          headers: this.headers,
+        });
         return { data, error: null };
       } catch (error) {
         if (isStorageError(error)) {
@@ -5820,9 +6776,11 @@ var StorageBucketApi = class {
    * @param id The unique identifier of the bucket you would like to retrieve.
    */
   getBucket(id) {
-    return __awaiter5(this, void 0, void 0, function* () {
+    return Awaiter5(this, void 0, void 0, function* () {
       try {
-        const data = yield get(this.fetch, `${this.url}/bucket/${id}`, { headers: this.headers });
+        const data = yield get(this.fetch, `${this.url}/bucket/${id}`, {
+          headers: this.headers,
+        });
         return { data, error: null };
       } catch (error) {
         if (isStorageError(error)) {
@@ -5845,18 +6803,26 @@ var StorageBucketApi = class {
    * Each mime type specified can be a wildcard, e.g. image/*, or a specific mime type, e.g. image/png.
    * @returns newly created bucket id
    */
-  createBucket(id, options = {
-    public: false
-  }) {
-    return __awaiter5(this, void 0, void 0, function* () {
+  createBucket(
+    id,
+    options = {
+      public: false,
+    },
+  ) {
+    return Awaiter5(this, void 0, void 0, function* () {
       try {
-        const data = yield post(this.fetch, `${this.url}/bucket`, {
-          id,
-          name: id,
-          public: options.public,
-          file_size_limit: options.fileSizeLimit,
-          allowed_mime_types: options.allowedMimeTypes
-        }, { headers: this.headers });
+        const data = yield post(
+          this.fetch,
+          `${this.url}/bucket`,
+          {
+            id,
+            name: id,
+            public: options.public,
+            file_size_limit: options.fileSizeLimit,
+            allowed_mime_types: options.allowedMimeTypes,
+          },
+          { headers: this.headers },
+        );
         return { data, error: null };
       } catch (error) {
         if (isStorageError(error)) {
@@ -5879,15 +6845,20 @@ var StorageBucketApi = class {
    * Each mime type specified can be a wildcard, e.g. image/*, or a specific mime type, e.g. image/png.
    */
   updateBucket(id, options) {
-    return __awaiter5(this, void 0, void 0, function* () {
+    return Awaiter5(this, void 0, void 0, function* () {
       try {
-        const data = yield put(this.fetch, `${this.url}/bucket/${id}`, {
-          id,
-          name: id,
-          public: options.public,
-          file_size_limit: options.fileSizeLimit,
-          allowed_mime_types: options.allowedMimeTypes
-        }, { headers: this.headers });
+        const data = yield put(
+          this.fetch,
+          `${this.url}/bucket/${id}`,
+          {
+            id,
+            name: id,
+            public: options.public,
+            file_size_limit: options.fileSizeLimit,
+            allowed_mime_types: options.allowedMimeTypes,
+          },
+          { headers: this.headers },
+        );
         return { data, error: null };
       } catch (error) {
         if (isStorageError(error)) {
@@ -5903,9 +6874,14 @@ var StorageBucketApi = class {
    * @param id The unique identifier of the bucket you would like to empty.
    */
   emptyBucket(id) {
-    return __awaiter5(this, void 0, void 0, function* () {
+    return Awaiter5(this, void 0, void 0, function* () {
       try {
-        const data = yield post(this.fetch, `${this.url}/bucket/${id}/empty`, {}, { headers: this.headers });
+        const data = yield post(
+          this.fetch,
+          `${this.url}/bucket/${id}/empty`,
+          {},
+          { headers: this.headers },
+        );
         return { data, error: null };
       } catch (error) {
         if (isStorageError(error)) {
@@ -5922,9 +6898,14 @@ var StorageBucketApi = class {
    * @param id The unique identifier of the bucket you would like to delete.
    */
   deleteBucket(id) {
-    return __awaiter5(this, void 0, void 0, function* () {
+    return Awaiter5(this, void 0, void 0, function* () {
       try {
-        const data = yield remove(this.fetch, `${this.url}/bucket/${id}`, {}, { headers: this.headers });
+        const data = yield remove(
+          this.fetch,
+          `${this.url}/bucket/${id}`,
+          {},
+          { headers: this.headers },
+        );
         return { data, error: null };
       } catch (error) {
         if (isStorageError(error)) {
@@ -5935,7 +6916,7 @@ var StorageBucketApi = class {
     });
   }
 };
-__name(StorageBucketApi, "StorageBucketApi");
+Name(StorageBucketApi, "StorageBucketApi");
 
 // node_modules/@supabase/storage-js/dist/module/StorageClient.js
 var StorageClient = class extends StorageBucketApi {
@@ -5951,17 +6932,17 @@ var StorageClient = class extends StorageBucketApi {
     return new StorageFileApi(this.url, this.headers, id, this.fetch);
   }
 };
-__name(StorageClient, "StorageClient");
+Name(StorageClient, "StorageClient");
 
 // node_modules/@supabase/supabase-js/dist/module/lib/constants.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/supabase-js/dist/module/lib/version.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var version3 = "2.52.0";
 
 // node_modules/@supabase/supabase-js/dist/module/lib/constants.js
@@ -5970,39 +6951,44 @@ if (typeof Deno !== "undefined") {
   JS_ENV = "deno";
 } else if (typeof document !== "undefined") {
   JS_ENV = "web";
-} else if (typeof navigator !== "undefined" && navigator.product === "ReactNative") {
+} else if (
+  typeof navigator !== "undefined" &&
+  navigator.product === "ReactNative"
+) {
   JS_ENV = "react-native";
 } else {
   JS_ENV = "node";
 }
 var DEFAULT_HEADERS2 = { "X-Client-Info": `supabase-js-${JS_ENV}/${version3}` };
 var DEFAULT_GLOBAL_OPTIONS = {
-  headers: DEFAULT_HEADERS2
+  headers: DEFAULT_HEADERS2,
 };
 var DEFAULT_DB_OPTIONS = {
-  schema: "public"
+  schema: "public",
 };
 var DEFAULT_AUTH_OPTIONS = {
   autoRefreshToken: true,
   persistSession: true,
   detectSessionInUrl: true,
-  flowType: "implicit"
+  flowType: "implicit",
 };
 var DEFAULT_REALTIME_OPTIONS = {};
 
 // node_modules/@supabase/supabase-js/dist/module/lib/fetch.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-init_browser();
-var __awaiter6 = function(thisArg, _arguments, P, generator) {
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+initBrowser();
+var Awaiter6 = (thisArg, _arguments, P, generator) => {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve) {
-      resolve(value);
-    });
+    return value instanceof P
+      ? value
+      : new P((resolve) => {
+          resolve(value);
+        });
   }
-  __name(adopt, "adopt");
-  return new (P || (P = Promise))(function(resolve, reject) {
+  Name(adopt, "adopt");
+  return new (P || (P = Promise))((resolve, reject) => {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -6010,7 +6996,7 @@ var __awaiter6 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(fulfilled, "fulfilled");
+    Name(fulfilled, "fulfilled");
     function rejected(value) {
       try {
         step(generator["throw"](value));
@@ -6018,60 +7004,76 @@ var __awaiter6 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(rejected, "rejected");
+    Name(rejected, "rejected");
     function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done
+        ? resolve(result.value)
+        : adopt(result.value).then(fulfilled, rejected);
     }
-    __name(step, "step");
+    Name(step, "step");
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
 };
-var resolveFetch3 = /* @__PURE__ */ __name((customFetch) => {
-  let _fetch;
+var resolveFetch3 = /* @__PURE__ */ Name((customFetch) => {
+  let Fetch;
   if (customFetch) {
-    _fetch = customFetch;
+    Fetch = customFetch;
   } else if (typeof fetch === "undefined") {
-    _fetch = browser_default;
+    Fetch = browserDefault;
   } else {
-    _fetch = fetch;
+    Fetch = fetch;
   }
-  return (...args) => _fetch(...args);
+  return (...args) => Fetch(...args);
 }, "resolveFetch");
-var resolveHeadersConstructor = /* @__PURE__ */ __name(() => {
+var resolveHeadersConstructor = /* @__PURE__ */ Name(() => {
   if (typeof Headers === "undefined") {
     return Headers2;
   }
   return Headers;
 }, "resolveHeadersConstructor");
-var fetchWithAuth = /* @__PURE__ */ __name((supabaseKey, getAccessToken, customFetch) => {
-  const fetch3 = resolveFetch3(customFetch);
-  const HeadersConstructor = resolveHeadersConstructor();
-  return (input, init) => __awaiter6(void 0, void 0, void 0, function* () {
-    var _a;
-    const accessToken = (_a = yield getAccessToken()) !== null && _a !== void 0 ? _a : supabaseKey;
-    let headers = new HeadersConstructor(init === null || init === void 0 ? void 0 : init.headers);
-    if (!headers.has("apikey")) {
-      headers.set("apikey", supabaseKey);
-    }
-    if (!headers.has("Authorization")) {
-      headers.set("Authorization", `Bearer ${accessToken}`);
-    }
-    return fetch3(input, Object.assign(Object.assign({}, init), { headers }));
-  });
-}, "fetchWithAuth");
+var fetchWithAuth = /* @__PURE__ */ Name(
+  (supabaseKey, getAccessToken, customFetch) => {
+    const fetch3 = resolveFetch3(customFetch);
+    const HeadersConstructor = resolveHeadersConstructor();
+    return (input, init) =>
+      Awaiter6(void 0, void 0, void 0, function* () {
+        var A;
+        const accessToken =
+          (A = yield getAccessToken()) !== null && A !== void 0
+            ? A
+            : supabaseKey;
+        const headers = new HeadersConstructor(
+          init === null || init === void 0 ? void 0 : init.headers,
+        );
+        if (!headers.has("apikey")) {
+          headers.set("apikey", supabaseKey);
+        }
+        if (!headers.has("Authorization")) {
+          headers.set("Authorization", `Bearer ${accessToken}`);
+        }
+        return fetch3(
+          input,
+          Object.assign(Object.assign({}, init), { headers }),
+        );
+      });
+  },
+  "fetchWithAuth",
+);
 
 // node_modules/@supabase/supabase-js/dist/module/lib/helpers.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var __awaiter7 = function(thisArg, _arguments, P, generator) {
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var Awaiter7 = (thisArg, _arguments, P, generator) => {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve) {
-      resolve(value);
-    });
+    return value instanceof P
+      ? value
+      : new P((resolve) => {
+          resolve(value);
+        });
   }
-  __name(adopt, "adopt");
-  return new (P || (P = Promise))(function(resolve, reject) {
+  Name(adopt, "adopt");
+  return new (P || (P = Promise))((resolve, reject) => {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -6079,7 +7081,7 @@ var __awaiter7 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(fulfilled, "fulfilled");
+    Name(fulfilled, "fulfilled");
     function rejected(value) {
       try {
         step(generator["throw"](value));
@@ -6087,30 +7089,68 @@ var __awaiter7 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(rejected, "rejected");
+    Name(rejected, "rejected");
     function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done
+        ? resolve(result.value)
+        : adopt(result.value).then(fulfilled, rejected);
     }
-    __name(step, "step");
+    Name(step, "step");
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
 };
 function ensureTrailingSlash(url) {
   return url.endsWith("/") ? url : url + "/";
 }
-__name(ensureTrailingSlash, "ensureTrailingSlash");
+Name(ensureTrailingSlash, "ensureTrailingSlash");
 function applySettingDefaults(options, defaults) {
-  var _a, _b;
-  const { db: dbOptions, auth: authOptions, realtime: realtimeOptions, global: globalOptions } = options;
-  const { db: DEFAULT_DB_OPTIONS2, auth: DEFAULT_AUTH_OPTIONS2, realtime: DEFAULT_REALTIME_OPTIONS2, global: DEFAULT_GLOBAL_OPTIONS2 } = defaults;
+  var A, B;
+  const {
+    db: dbOptions,
+    auth: authOptions,
+    realtime: realtimeOptions,
+    global: globalOptions,
+  } = options;
+  const {
+    db: DEFAULT_DB_OPTIONS2,
+    auth: DEFAULT_AUTH_OPTIONS2,
+    realtime: DEFAULT_REALTIME_OPTIONS2,
+    global: DEFAULT_GLOBAL_OPTIONS2,
+  } = defaults;
   const result = {
     db: Object.assign(Object.assign({}, DEFAULT_DB_OPTIONS2), dbOptions),
     auth: Object.assign(Object.assign({}, DEFAULT_AUTH_OPTIONS2), authOptions),
-    realtime: Object.assign(Object.assign({}, DEFAULT_REALTIME_OPTIONS2), realtimeOptions),
-    global: Object.assign(Object.assign(Object.assign({}, DEFAULT_GLOBAL_OPTIONS2), globalOptions), { headers: Object.assign(Object.assign({}, (_a = DEFAULT_GLOBAL_OPTIONS2 === null || DEFAULT_GLOBAL_OPTIONS2 === void 0 ? void 0 : DEFAULT_GLOBAL_OPTIONS2.headers) !== null && _a !== void 0 ? _a : {}), (_b = globalOptions === null || globalOptions === void 0 ? void 0 : globalOptions.headers) !== null && _b !== void 0 ? _b : {}) }),
-    accessToken: () => __awaiter7(this, void 0, void 0, function* () {
-      return "";
-    })
+    realtime: Object.assign(
+      Object.assign({}, DEFAULT_REALTIME_OPTIONS2),
+      realtimeOptions,
+    ),
+    global: Object.assign(
+      Object.assign(Object.assign({}, DEFAULT_GLOBAL_OPTIONS2), globalOptions),
+      {
+        headers: Object.assign(
+          Object.assign(
+            {},
+            (A =
+              DEFAULT_GLOBAL_OPTIONS2 === null ||
+              DEFAULT_GLOBAL_OPTIONS2 === void 0
+                ? void 0
+                : DEFAULT_GLOBAL_OPTIONS2.headers) !== null && A !== void 0
+              ? A
+              : {},
+          ),
+          (B =
+            globalOptions === null || globalOptions === void 0
+              ? void 0
+              : globalOptions.headers) !== null && B !== void 0
+            ? B
+            : {},
+        ),
+      },
+    ),
+    accessToken: () =>
+      Awaiter7(this, void 0, void 0, function* () {
+        return "";
+      }),
   };
   if (options.accessToken) {
     result.accessToken = options.accessToken;
@@ -6119,43 +7159,44 @@ function applySettingDefaults(options, defaults) {
   }
   return result;
 }
-__name(applySettingDefaults, "applySettingDefaults");
+Name(applySettingDefaults, "applySettingDefaults");
 
 // node_modules/@supabase/supabase-js/dist/module/lib/SupabaseAuthClient.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/auth-js/dist/module/index.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/auth-js/dist/module/GoTrueAdminApi.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/auth-js/dist/module/lib/fetch.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/auth-js/dist/module/lib/constants.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/auth-js/dist/module/lib/version.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var version4 = "2.71.1";
 
 // node_modules/@supabase/auth-js/dist/module/lib/constants.js
 var AUTO_REFRESH_TICK_DURATION_MS = 30 * 1e3;
 var AUTO_REFRESH_TICK_THRESHOLD = 3;
-var EXPIRY_MARGIN_MS = AUTO_REFRESH_TICK_THRESHOLD * AUTO_REFRESH_TICK_DURATION_MS;
+var EXPIRY_MARGIN_MS =
+  AUTO_REFRESH_TICK_THRESHOLD * AUTO_REFRESH_TICK_DURATION_MS;
 var GOTRUE_URL = "http://localhost:9999";
 var STORAGE_KEY = "supabase.auth.token";
 var DEFAULT_HEADERS3 = { "X-Client-Info": `gotrue-js/${version4}` };
@@ -6163,21 +7204,21 @@ var API_VERSION_HEADER_NAME = "X-Supabase-Api-Version";
 var API_VERSIONS = {
   "2024-01-01": {
     timestamp: Date.parse("2024-01-01T00:00:00.0Z"),
-    name: "2024-01-01"
-  }
+    name: "2024-01-01",
+  },
 };
 var BASE64URL_REGEX = /^([a-z0-9_-]{4})*($|[a-z0-9_-]{3}$|[a-z0-9_-]{2}$)$/i;
 var JWKS_TTL = 10 * 60 * 1e3;
 
 // node_modules/@supabase/auth-js/dist/module/lib/helpers.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/auth-js/dist/module/lib/errors.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var AuthError = class extends Error {
   constructor(message, status, code) {
     super(message);
@@ -6187,11 +7228,13 @@ var AuthError = class extends Error {
     this.code = code;
   }
 };
-__name(AuthError, "AuthError");
+Name(AuthError, "AuthError");
 function isAuthError(error) {
-  return typeof error === "object" && error !== null && "__isAuthError" in error;
+  return (
+    typeof error === "object" && error !== null && "__isAuthError" in error
+  );
 }
-__name(isAuthError, "isAuthError");
+Name(isAuthError, "isAuthError");
 var AuthApiError = class extends AuthError {
   constructor(message, status, code) {
     super(message, status, code);
@@ -6200,11 +7243,11 @@ var AuthApiError = class extends AuthError {
     this.code = code;
   }
 };
-__name(AuthApiError, "AuthApiError");
+Name(AuthApiError, "AuthApiError");
 function isAuthApiError(error) {
   return isAuthError(error) && error.name === "AuthApiError";
 }
-__name(isAuthApiError, "isAuthApiError");
+Name(isAuthApiError, "isAuthApiError");
 var AuthUnknownError = class extends AuthError {
   constructor(message, originalError) {
     super(message);
@@ -6212,7 +7255,7 @@ var AuthUnknownError = class extends AuthError {
     this.originalError = originalError;
   }
 };
-__name(AuthUnknownError, "AuthUnknownError");
+Name(AuthUnknownError, "AuthUnknownError");
 var CustomAuthError = class extends AuthError {
   constructor(message, name, status, code) {
     super(message, status, code);
@@ -6220,29 +7263,34 @@ var CustomAuthError = class extends AuthError {
     this.status = status;
   }
 };
-__name(CustomAuthError, "CustomAuthError");
+Name(CustomAuthError, "CustomAuthError");
 var AuthSessionMissingError = class extends CustomAuthError {
   constructor() {
     super("Auth session missing!", "AuthSessionMissingError", 400, void 0);
   }
 };
-__name(AuthSessionMissingError, "AuthSessionMissingError");
+Name(AuthSessionMissingError, "AuthSessionMissingError");
 function isAuthSessionMissingError(error) {
   return isAuthError(error) && error.name === "AuthSessionMissingError";
 }
-__name(isAuthSessionMissingError, "isAuthSessionMissingError");
+Name(isAuthSessionMissingError, "isAuthSessionMissingError");
 var AuthInvalidTokenResponseError = class extends CustomAuthError {
   constructor() {
-    super("Auth session or user missing", "AuthInvalidTokenResponseError", 500, void 0);
+    super(
+      "Auth session or user missing",
+      "AuthInvalidTokenResponseError",
+      500,
+      void 0,
+    );
   }
 };
-__name(AuthInvalidTokenResponseError, "AuthInvalidTokenResponseError");
+Name(AuthInvalidTokenResponseError, "AuthInvalidTokenResponseError");
 var AuthInvalidCredentialsError = class extends CustomAuthError {
   constructor(message) {
     super(message, "AuthInvalidCredentialsError", 400, void 0);
   }
 };
-__name(AuthInvalidCredentialsError, "AuthInvalidCredentialsError");
+Name(AuthInvalidCredentialsError, "AuthInvalidCredentialsError");
 var AuthImplicitGrantRedirectError = class extends CustomAuthError {
   constructor(message, details = null) {
     super(message, "AuthImplicitGrantRedirectError", 500, void 0);
@@ -6254,15 +7302,15 @@ var AuthImplicitGrantRedirectError = class extends CustomAuthError {
       name: this.name,
       message: this.message,
       status: this.status,
-      details: this.details
+      details: this.details,
     };
   }
 };
-__name(AuthImplicitGrantRedirectError, "AuthImplicitGrantRedirectError");
+Name(AuthImplicitGrantRedirectError, "AuthImplicitGrantRedirectError");
 function isAuthImplicitGrantRedirectError(error) {
   return isAuthError(error) && error.name === "AuthImplicitGrantRedirectError";
 }
-__name(isAuthImplicitGrantRedirectError, "isAuthImplicitGrantRedirectError");
+Name(isAuthImplicitGrantRedirectError, "isAuthImplicitGrantRedirectError");
 var AuthPKCEGrantCodeExchangeError = class extends CustomAuthError {
   constructor(message, details = null) {
     super(message, "AuthPKCEGrantCodeExchangeError", 500, void 0);
@@ -6274,40 +7322,41 @@ var AuthPKCEGrantCodeExchangeError = class extends CustomAuthError {
       name: this.name,
       message: this.message,
       status: this.status,
-      details: this.details
+      details: this.details,
     };
   }
 };
-__name(AuthPKCEGrantCodeExchangeError, "AuthPKCEGrantCodeExchangeError");
+Name(AuthPKCEGrantCodeExchangeError, "AuthPKCEGrantCodeExchangeError");
 var AuthRetryableFetchError = class extends CustomAuthError {
   constructor(message, status) {
     super(message, "AuthRetryableFetchError", status, void 0);
   }
 };
-__name(AuthRetryableFetchError, "AuthRetryableFetchError");
+Name(AuthRetryableFetchError, "AuthRetryableFetchError");
 function isAuthRetryableFetchError(error) {
   return isAuthError(error) && error.name === "AuthRetryableFetchError";
 }
-__name(isAuthRetryableFetchError, "isAuthRetryableFetchError");
+Name(isAuthRetryableFetchError, "isAuthRetryableFetchError");
 var AuthWeakPasswordError = class extends CustomAuthError {
   constructor(message, status, reasons) {
     super(message, "AuthWeakPasswordError", status, "weak_password");
     this.reasons = reasons;
   }
 };
-__name(AuthWeakPasswordError, "AuthWeakPasswordError");
+Name(AuthWeakPasswordError, "AuthWeakPasswordError");
 var AuthInvalidJwtError = class extends CustomAuthError {
   constructor(message) {
     super(message, "AuthInvalidJwtError", 400, "invalid_jwt");
   }
 };
-__name(AuthInvalidJwtError, "AuthInvalidJwtError");
+Name(AuthInvalidJwtError, "AuthInvalidJwtError");
 
 // node_modules/@supabase/auth-js/dist/module/lib/base64url.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var TO_BASE64URL = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".split("");
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var TO_BASE64URL =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".split("");
 var IGNORE_BASE64URL = " 	\n\r=".split("");
 var FROM_BASE64URL = (() => {
   const charMap = new Array(128);
@@ -6324,51 +7373,53 @@ var FROM_BASE64URL = (() => {
 })();
 function byteToBase64URL(byte, state, emit) {
   if (byte !== null) {
-    state.queue = state.queue << 8 | byte;
+    state.queue = (state.queue << 8) | byte;
     state.queuedBits += 8;
     while (state.queuedBits >= 6) {
-      const pos = state.queue >> state.queuedBits - 6 & 63;
+      const pos = (state.queue >> (state.queuedBits - 6)) & 63;
       emit(TO_BASE64URL[pos]);
       state.queuedBits -= 6;
     }
   } else if (state.queuedBits > 0) {
-    state.queue = state.queue << 6 - state.queuedBits;
+    state.queue = state.queue << (6 - state.queuedBits);
     state.queuedBits = 6;
     while (state.queuedBits >= 6) {
-      const pos = state.queue >> state.queuedBits - 6 & 63;
+      const pos = (state.queue >> (state.queuedBits - 6)) & 63;
       emit(TO_BASE64URL[pos]);
       state.queuedBits -= 6;
     }
   }
 }
-__name(byteToBase64URL, "byteToBase64URL");
+Name(byteToBase64URL, "byteToBase64URL");
 function byteFromBase64URL(charCode, state, emit) {
   const bits = FROM_BASE64URL[charCode];
   if (bits > -1) {
-    state.queue = state.queue << 6 | bits;
+    state.queue = (state.queue << 6) | bits;
     state.queuedBits += 6;
     while (state.queuedBits >= 8) {
-      emit(state.queue >> state.queuedBits - 8 & 255);
+      emit((state.queue >> (state.queuedBits - 8)) & 255);
       state.queuedBits -= 8;
     }
   } else if (bits === -2) {
     return;
   } else {
-    throw new Error(`Invalid Base64-URL character "${String.fromCharCode(charCode)}"`);
+    throw new Error(
+      `Invalid Base64-URL character "${String.fromCharCode(charCode)}"`,
+    );
   }
 }
-__name(byteFromBase64URL, "byteFromBase64URL");
+Name(byteFromBase64URL, "byteFromBase64URL");
 function stringFromBase64URL(str) {
   const conv = [];
-  const utf8Emit = /* @__PURE__ */ __name((codepoint) => {
+  const utf8Emit = /* @__PURE__ */ Name((codepoint) => {
     conv.push(String.fromCodePoint(codepoint));
   }, "utf8Emit");
   const utf8State = {
     utf8seq: 0,
-    codepoint: 0
+    codepoint: 0,
   };
   const b64State = { queue: 0, queuedBits: 0 };
-  const byteEmit = /* @__PURE__ */ __name((byte) => {
+  const byteEmit = /* @__PURE__ */ Name((byte) => {
     stringFromUTF8(byte, utf8State, utf8Emit);
   }, "byteEmit");
   for (let i = 0; i < str.length; i += 1) {
@@ -6376,43 +7427,43 @@ function stringFromBase64URL(str) {
   }
   return conv.join("");
 }
-__name(stringFromBase64URL, "stringFromBase64URL");
+Name(stringFromBase64URL, "stringFromBase64URL");
 function codepointToUTF8(codepoint, emit) {
   if (codepoint <= 127) {
     emit(codepoint);
     return;
   } else if (codepoint <= 2047) {
-    emit(192 | codepoint >> 6);
-    emit(128 | codepoint & 63);
+    emit(192 | (codepoint >> 6));
+    emit(128 | (codepoint & 63));
     return;
   } else if (codepoint <= 65535) {
-    emit(224 | codepoint >> 12);
-    emit(128 | codepoint >> 6 & 63);
-    emit(128 | codepoint & 63);
+    emit(224 | (codepoint >> 12));
+    emit(128 | ((codepoint >> 6) & 63));
+    emit(128 | (codepoint & 63));
     return;
   } else if (codepoint <= 1114111) {
-    emit(240 | codepoint >> 18);
-    emit(128 | codepoint >> 12 & 63);
-    emit(128 | codepoint >> 6 & 63);
-    emit(128 | codepoint & 63);
+    emit(240 | (codepoint >> 18));
+    emit(128 | ((codepoint >> 12) & 63));
+    emit(128 | ((codepoint >> 6) & 63));
+    emit(128 | (codepoint & 63));
     return;
   }
   throw new Error(`Unrecognized Unicode codepoint: ${codepoint.toString(16)}`);
 }
-__name(codepointToUTF8, "codepointToUTF8");
+Name(codepointToUTF8, "codepointToUTF8");
 function stringToUTF8(str, emit) {
   for (let i = 0; i < str.length; i += 1) {
     let codepoint = str.charCodeAt(i);
     if (codepoint > 55295 && codepoint <= 56319) {
-      const highSurrogate = (codepoint - 55296) * 1024 & 65535;
-      const lowSurrogate = str.charCodeAt(i + 1) - 56320 & 65535;
+      const highSurrogate = ((codepoint - 55296) * 1024) & 65535;
+      const lowSurrogate = (str.charCodeAt(i + 1) - 56320) & 65535;
       codepoint = (lowSurrogate | highSurrogate) + 65536;
       i += 1;
     }
     codepointToUTF8(codepoint, emit);
   }
 }
-__name(stringToUTF8, "stringToUTF8");
+Name(stringToUTF8, "stringToUTF8");
 function stringFromUTF8(byte, state, emit) {
   if (state.utf8seq === 0) {
     if (byte <= 127) {
@@ -6420,7 +7471,7 @@ function stringFromUTF8(byte, state, emit) {
       return;
     }
     for (let leadingBit = 1; leadingBit < 6; leadingBit += 1) {
-      if ((byte >> 7 - leadingBit & 1) === 0) {
+      if (((byte >> (7 - leadingBit)) & 1) === 0) {
         state.utf8seq = leadingBit;
         break;
       }
@@ -6439,18 +7490,18 @@ function stringFromUTF8(byte, state, emit) {
     if (byte <= 127) {
       throw new Error("Invalid UTF-8 sequence");
     }
-    state.codepoint = state.codepoint << 6 | byte & 63;
+    state.codepoint = (state.codepoint << 6) | (byte & 63);
     state.utf8seq -= 1;
     if (state.utf8seq === 0) {
       emit(state.codepoint);
     }
   }
 }
-__name(stringFromUTF8, "stringFromUTF8");
+Name(stringFromUTF8, "stringFromUTF8");
 function base64UrlToUint8Array(str) {
   const result = [];
   const state = { queue: 0, queuedBits: 0 };
-  const onByte = /* @__PURE__ */ __name((byte) => {
+  const onByte = /* @__PURE__ */ Name((byte) => {
     result.push(byte);
   }, "onByte");
   for (let i = 0; i < str.length; i += 1) {
@@ -6458,44 +7509,48 @@ function base64UrlToUint8Array(str) {
   }
   return new Uint8Array(result);
 }
-__name(base64UrlToUint8Array, "base64UrlToUint8Array");
+Name(base64UrlToUint8Array, "base64UrlToUint8Array");
 function stringToUint8Array(str) {
   const result = [];
   stringToUTF8(str, (byte) => result.push(byte));
   return new Uint8Array(result);
 }
-__name(stringToUint8Array, "stringToUint8Array");
+Name(stringToUint8Array, "stringToUint8Array");
 function bytesToBase64URL(bytes) {
   const result = [];
   const state = { queue: 0, queuedBits: 0 };
-  const onChar = /* @__PURE__ */ __name((char) => {
+  const onChar = /* @__PURE__ */ Name((char) => {
     result.push(char);
   }, "onChar");
   bytes.forEach((byte) => byteToBase64URL(byte, state, onChar));
   byteToBase64URL(null, state, onChar);
   return result.join("");
 }
-__name(bytesToBase64URL, "bytesToBase64URL");
+Name(bytesToBase64URL, "bytesToBase64URL");
 
 // node_modules/@supabase/auth-js/dist/module/lib/helpers.js
 function expiresAt(expiresIn) {
   const timeNow = Math.round(Date.now() / 1e3);
   return timeNow + expiresIn;
 }
-__name(expiresAt, "expiresAt");
+Name(expiresAt, "expiresAt");
 function uuid() {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c2) {
-    const r = Math.random() * 16 | 0, v = c2 == "x" ? r : r & 3 | 8;
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c2) => {
+    const r = (Math.random() * 16) | 0,
+      v = c2 == "x" ? r : (r & 3) | 8;
     return v.toString(16);
   });
 }
-__name(uuid, "uuid");
-var isBrowser = /* @__PURE__ */ __name(() => typeof window !== "undefined" && typeof document !== "undefined", "isBrowser");
+Name(uuid, "uuid");
+var isBrowser = /* @__PURE__ */ Name(
+  () => typeof window !== "undefined" && typeof document !== "undefined",
+  "isBrowser",
+);
 var localStorageWriteTests = {
   tested: false,
-  writable: false
+  writable: false,
 };
-var supportsLocalStorage = /* @__PURE__ */ __name(() => {
+var supportsLocalStorage = /* @__PURE__ */ Name(() => {
   if (!isBrowser()) {
     return false;
   }
@@ -6530,33 +7585,45 @@ function parseParametersFromURL(href) {
       hashSearchParams.forEach((value, key) => {
         result[key] = value;
       });
-    } catch (e) {
-    }
+    } catch (e) {}
   }
   url.searchParams.forEach((value, key) => {
     result[key] = value;
   });
   return result;
 }
-__name(parseParametersFromURL, "parseParametersFromURL");
-var resolveFetch4 = /* @__PURE__ */ __name((customFetch) => {
-  let _fetch;
+Name(parseParametersFromURL, "parseParametersFromURL");
+var resolveFetch4 = /* @__PURE__ */ Name((customFetch) => {
+  let Fetch;
   if (customFetch) {
-    _fetch = customFetch;
+    Fetch = customFetch;
   } else if (typeof fetch === "undefined") {
-    _fetch = /* @__PURE__ */ __name((...args) => Promise.resolve().then(() => (init_browser(), browser_exports)).then(({ default: fetch3 }) => fetch3(...args)), "_fetch");
+    Fetch = /* @__PURE__ */ Name(
+      (...args) =>
+        Promise.resolve()
+          .then(() => (initBrowser(), browserExports))
+          .then(({ default: fetch3 }) => fetch3(...args)),
+      "_fetch",
+    );
   } else {
-    _fetch = fetch;
+    Fetch = fetch;
   }
-  return (...args) => _fetch(...args);
+  return (...args) => Fetch(...args);
 }, "resolveFetch");
-var looksLikeFetchResponse = /* @__PURE__ */ __name((maybeResponse) => {
-  return typeof maybeResponse === "object" && maybeResponse !== null && "status" in maybeResponse && "ok" in maybeResponse && "json" in maybeResponse && typeof maybeResponse.json === "function";
+var looksLikeFetchResponse = /* @__PURE__ */ Name((maybeResponse) => {
+  return (
+    typeof maybeResponse === "object" &&
+    maybeResponse !== null &&
+    "status" in maybeResponse &&
+    "ok" in maybeResponse &&
+    "json" in maybeResponse &&
+    typeof maybeResponse.json === "function"
+  );
 }, "looksLikeFetchResponse");
-var setItemAsync = /* @__PURE__ */ __name(async (storage, key, data) => {
+var setItemAsync = /* @__PURE__ */ Name(async (storage, key, data) => {
   await storage.setItem(key, JSON.stringify(data));
 }, "setItemAsync");
-var getItemAsync = /* @__PURE__ */ __name(async (storage, key) => {
+var getItemAsync = /* @__PURE__ */ Name(async (storage, key) => {
   const value = await storage.getItem(key);
   if (!value) {
     return null;
@@ -6567,20 +7634,18 @@ var getItemAsync = /* @__PURE__ */ __name(async (storage, key) => {
     return value;
   }
 }, "getItemAsync");
-var removeItemAsync = /* @__PURE__ */ __name(async (storage, key) => {
+var removeItemAsync = /* @__PURE__ */ Name(async (storage, key) => {
   await storage.removeItem(key);
 }, "removeItemAsync");
 var Deferred = class {
   constructor() {
-    ;
     this.promise = new Deferred.promiseConstructor((res, rej) => {
-      ;
       this.resolve = res;
       this.reject = rej;
     });
   }
 };
-__name(Deferred, "Deferred");
+Name(Deferred, "Deferred");
 Deferred.promiseConstructor = Promise;
 function decodeJWT(token) {
   const parts = token.split(".");
@@ -6599,21 +7664,20 @@ function decodeJWT(token) {
     signature: base64UrlToUint8Array(parts[2]),
     raw: {
       header: parts[0],
-      payload: parts[1]
-    }
+      payload: parts[1],
+    },
   };
   return data;
 }
-__name(decodeJWT, "decodeJWT");
+Name(decodeJWT, "decodeJWT");
 async function sleep(time2) {
   return await new Promise((accept) => {
     setTimeout(() => accept(null), time2);
   });
 }
-__name(sleep, "sleep");
+Name(sleep, "sleep");
 function retryable(fn, isRetryable) {
   const promise = new Promise((accept, reject) => {
-    ;
     (async () => {
       for (let attempt = 0; attempt < Infinity; attempt++) {
         try {
@@ -6633,16 +7697,17 @@ function retryable(fn, isRetryable) {
   });
   return promise;
 }
-__name(retryable, "retryable");
+Name(retryable, "retryable");
 function dec2hex(dec) {
   return ("0" + dec.toString(16)).substr(-2);
 }
-__name(dec2hex, "dec2hex");
+Name(dec2hex, "dec2hex");
 function generatePKCEVerifier() {
   const verifierLength = 56;
   const array = new Uint32Array(verifierLength);
   if (typeof crypto === "undefined") {
-    const charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+    const charSet =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
     const charSetLen = charSet.length;
     let verifier = "";
     for (let i = 0; i < verifierLength; i++) {
@@ -6653,38 +7718,57 @@ function generatePKCEVerifier() {
   crypto.getRandomValues(array);
   return Array.from(array, dec2hex).join("");
 }
-__name(generatePKCEVerifier, "generatePKCEVerifier");
+Name(generatePKCEVerifier, "generatePKCEVerifier");
 async function sha256(randomString) {
   const encoder = new TextEncoder();
   const encodedData = encoder.encode(randomString);
   const hash = await crypto.subtle.digest("SHA-256", encodedData);
   const bytes = new Uint8Array(hash);
-  return Array.from(bytes).map((c2) => String.fromCharCode(c2)).join("");
+  return Array.from(bytes)
+    .map((c2) => String.fromCharCode(c2))
+    .join("");
 }
-__name(sha256, "sha256");
+Name(sha256, "sha256");
 async function generatePKCEChallenge(verifier) {
-  const hasCryptoSupport = typeof crypto !== "undefined" && typeof crypto.subtle !== "undefined" && typeof TextEncoder !== "undefined";
+  const hasCryptoSupport =
+    typeof crypto !== "undefined" &&
+    typeof crypto.subtle !== "undefined" &&
+    typeof TextEncoder !== "undefined";
   if (!hasCryptoSupport) {
-    console.warn("WebCrypto API is not supported. Code challenge method will default to use plain instead of sha256.");
+    console.warn(
+      "WebCrypto API is not supported. Code challenge method will default to use plain instead of sha256.",
+    );
     return verifier;
   }
   const hashed = await sha256(verifier);
-  return btoa(hashed).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return btoa(hashed)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 }
-__name(generatePKCEChallenge, "generatePKCEChallenge");
-async function getCodeChallengeAndMethod(storage, storageKey, isPasswordRecovery = false) {
+Name(generatePKCEChallenge, "generatePKCEChallenge");
+async function getCodeChallengeAndMethod(
+  storage,
+  storageKey,
+  isPasswordRecovery = false,
+) {
   const codeVerifier = generatePKCEVerifier();
   let storedCodeVerifier = codeVerifier;
   if (isPasswordRecovery) {
     storedCodeVerifier += "/PASSWORD_RECOVERY";
   }
-  await setItemAsync(storage, `${storageKey}-code-verifier`, storedCodeVerifier);
+  await setItemAsync(
+    storage,
+    `${storageKey}-code-verifier`,
+    storedCodeVerifier,
+  );
   const codeChallenge = await generatePKCEChallenge(codeVerifier);
   const codeChallengeMethod = codeVerifier === codeChallenge ? "plain" : "s256";
   return [codeChallenge, codeChallengeMethod];
 }
-__name(getCodeChallengeAndMethod, "getCodeChallengeAndMethod");
-var API_VERSION_REGEX = /^2[0-9]{3}-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1])$/i;
+Name(getCodeChallengeAndMethod, "getCodeChallengeAndMethod");
+var API_VERSION_REGEX =
+  /^2[0-9]{3}-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1])$/i;
 function parseResponseAPIVersion(response) {
   const apiVersion = response.headers.get(API_VERSION_HEADER_NAME);
   if (!apiVersion) {
@@ -6700,7 +7784,7 @@ function parseResponseAPIVersion(response) {
     return null;
   }
 }
-__name(parseResponseAPIVersion, "parseResponseAPIVersion");
+Name(parseResponseAPIVersion, "parseResponseAPIVersion");
 function validateExp(exp) {
   if (!exp) {
     throw new Error("Missing exp claim");
@@ -6710,32 +7794,35 @@ function validateExp(exp) {
     throw new Error("JWT has expired");
   }
 }
-__name(validateExp, "validateExp");
+Name(validateExp, "validateExp");
 function getAlgorithm(alg) {
   switch (alg) {
     case "RS256":
       return {
         name: "RSASSA-PKCS1-v1_5",
-        hash: { name: "SHA-256" }
+        hash: { name: "SHA-256" },
       };
     case "ES256":
       return {
         name: "ECDSA",
         namedCurve: "P-256",
-        hash: { name: "SHA-256" }
+        hash: { name: "SHA-256" },
       };
     default:
       throw new Error("Invalid alg claim");
   }
 }
-__name(getAlgorithm, "getAlgorithm");
-var UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+Name(getAlgorithm, "getAlgorithm");
+var UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 function validateUUID(str) {
   if (!UUID_REGEX.test(str)) {
-    throw new Error("@supabase/auth-js: Expected parameter to be UUID but is not");
+    throw new Error(
+      "@supabase/auth-js: Expected parameter to be UUID but is not",
+    );
   }
 }
-__name(validateUUID, "validateUUID");
+Name(validateUUID, "validateUUID");
 function userNotAvailableProxy() {
   const proxyTarget = {};
   return new Proxy(proxyTarget, {
@@ -6745,112 +7832,198 @@ function userNotAvailableProxy() {
       }
       if (typeof prop === "symbol") {
         const sProp = prop.toString();
-        if (sProp === "Symbol(Symbol.toPrimitive)" || sProp === "Symbol(Symbol.toStringTag)" || sProp === "Symbol(util.inspect.custom)") {
+        if (
+          sProp === "Symbol(Symbol.toPrimitive)" ||
+          sProp === "Symbol(Symbol.toStringTag)" ||
+          sProp === "Symbol(util.inspect.custom)"
+        ) {
           return void 0;
         }
       }
-      throw new Error(`@supabase/auth-js: client was created with userStorage option and there was no user stored in the user storage. Accessing the "${prop}" property of the session object is not supported. Please use getUser() instead.`);
+      throw new Error(
+        `@supabase/auth-js: client was created with userStorage option and there was no user stored in the user storage. Accessing the "${prop}" property of the session object is not supported. Please use getUser() instead.`,
+      );
     },
     set: (_target, prop) => {
-      throw new Error(`@supabase/auth-js: client was created with userStorage option and there was no user stored in the user storage. Setting the "${prop}" property of the session object is not supported. Please use getUser() to fetch a user object you can manipulate.`);
+      throw new Error(
+        `@supabase/auth-js: client was created with userStorage option and there was no user stored in the user storage. Setting the "${prop}" property of the session object is not supported. Please use getUser() to fetch a user object you can manipulate.`,
+      );
     },
     deleteProperty: (_target, prop) => {
-      throw new Error(`@supabase/auth-js: client was created with userStorage option and there was no user stored in the user storage. Deleting the "${prop}" property of the session object is not supported. Please use getUser() to fetch a user object you can manipulate.`);
-    }
+      throw new Error(
+        `@supabase/auth-js: client was created with userStorage option and there was no user stored in the user storage. Deleting the "${prop}" property of the session object is not supported. Please use getUser() to fetch a user object you can manipulate.`,
+      );
+    },
   });
 }
-__name(userNotAvailableProxy, "userNotAvailableProxy");
+Name(userNotAvailableProxy, "userNotAvailableProxy");
 function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
-__name(deepClone, "deepClone");
+Name(deepClone, "deepClone");
 
 // node_modules/@supabase/auth-js/dist/module/lib/fetch.js
-var __rest = function(s, e) {
+var Rest = (s, e) => {
   var t = {};
-  for (var p in s)
-    if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-      t[p] = s[p];
+  for (var p in s) if (Object.hasOwn(s, p) && e.indexOf(p) < 0) t[p] = s[p];
   if (s != null && typeof Object.getOwnPropertySymbols === "function")
     for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-      if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+      if (
+        e.indexOf(p[i]) < 0 &&
+        Object.prototype.propertyIsEnumerable.call(s, p[i])
+      )
         t[p[i]] = s[p[i]];
     }
   return t;
 };
-var _getErrorMessage2 = /* @__PURE__ */ __name((err) => err.msg || err.message || err.error_description || err.error || JSON.stringify(err), "_getErrorMessage");
+var GetErrorMessage2 = /* @__PURE__ */ Name(
+  (err) =>
+    err.msg ||
+    err.message ||
+    err.error_description ||
+    err.error ||
+    JSON.stringify(err),
+  "_getErrorMessage",
+);
 var NETWORK_ERROR_CODES = [502, 503, 504];
 async function handleError2(error) {
-  var _a;
+  var A;
   if (!looksLikeFetchResponse(error)) {
-    throw new AuthRetryableFetchError(_getErrorMessage2(error), 0);
+    throw new AuthRetryableFetchError(GetErrorMessage2(error), 0);
   }
   if (NETWORK_ERROR_CODES.includes(error.status)) {
-    throw new AuthRetryableFetchError(_getErrorMessage2(error), error.status);
+    throw new AuthRetryableFetchError(GetErrorMessage2(error), error.status);
   }
   let data;
   try {
     data = await error.json();
   } catch (e) {
-    throw new AuthUnknownError(_getErrorMessage2(e), e);
+    throw new AuthUnknownError(GetErrorMessage2(e), e);
   }
   let errorCode = void 0;
   const responseAPIVersion = parseResponseAPIVersion(error);
-  if (responseAPIVersion && responseAPIVersion.getTime() >= API_VERSIONS["2024-01-01"].timestamp && typeof data === "object" && data && typeof data.code === "string") {
+  if (
+    responseAPIVersion &&
+    responseAPIVersion.getTime() >= API_VERSIONS["2024-01-01"].timestamp &&
+    typeof data === "object" &&
+    data &&
+    typeof data.code === "string"
+  ) {
     errorCode = data.code;
-  } else if (typeof data === "object" && data && typeof data.error_code === "string") {
+  } else if (
+    typeof data === "object" &&
+    data &&
+    typeof data.error_code === "string"
+  ) {
     errorCode = data.error_code;
   }
   if (!errorCode) {
-    if (typeof data === "object" && data && typeof data.weak_password === "object" && data.weak_password && Array.isArray(data.weak_password.reasons) && data.weak_password.reasons.length && data.weak_password.reasons.reduce((a, i) => a && typeof i === "string", true)) {
-      throw new AuthWeakPasswordError(_getErrorMessage2(data), error.status, data.weak_password.reasons);
+    if (
+      typeof data === "object" &&
+      data &&
+      typeof data.weak_password === "object" &&
+      data.weak_password &&
+      Array.isArray(data.weak_password.reasons) &&
+      data.weak_password.reasons.length &&
+      data.weak_password.reasons.reduce(
+        (a, i) => a && typeof i === "string",
+        true,
+      )
+    ) {
+      throw new AuthWeakPasswordError(
+        GetErrorMessage2(data),
+        error.status,
+        data.weak_password.reasons,
+      );
     }
   } else if (errorCode === "weak_password") {
-    throw new AuthWeakPasswordError(_getErrorMessage2(data), error.status, ((_a = data.weak_password) === null || _a === void 0 ? void 0 : _a.reasons) || []);
+    throw new AuthWeakPasswordError(
+      GetErrorMessage2(data),
+      error.status,
+      ((A = data.weak_password) === null || A === void 0
+        ? void 0
+        : A.reasons) || [],
+    );
   } else if (errorCode === "session_not_found") {
     throw new AuthSessionMissingError();
   }
-  throw new AuthApiError(_getErrorMessage2(data), error.status || 500, errorCode);
+  throw new AuthApiError(
+    GetErrorMessage2(data),
+    error.status || 500,
+    errorCode,
+  );
 }
-__name(handleError2, "handleError");
-var _getRequestParams2 = /* @__PURE__ */ __name((method, options, parameters, body) => {
-  const params = { method, headers: (options === null || options === void 0 ? void 0 : options.headers) || {} };
-  if (method === "GET") {
-    return params;
-  }
-  params.headers = Object.assign({ "Content-Type": "application/json;charset=UTF-8" }, options === null || options === void 0 ? void 0 : options.headers);
-  params.body = JSON.stringify(body);
-  return Object.assign(Object.assign({}, params), parameters);
-}, "_getRequestParams");
-async function _request(fetcher, method, url, options) {
-  var _a;
-  const headers = Object.assign({}, options === null || options === void 0 ? void 0 : options.headers);
+Name(handleError2, "handleError");
+var GetRequestParams2 = /* @__PURE__ */ Name(
+  (method, options, parameters, body) => {
+    const params = {
+      method,
+      headers:
+        (options === null || options === void 0 ? void 0 : options.headers) ||
+        {},
+    };
+    if (method === "GET") {
+      return params;
+    }
+    params.headers = Object.assign(
+      { "Content-Type": "application/json;charset=UTF-8" },
+      options === null || options === void 0 ? void 0 : options.headers,
+    );
+    params.body = JSON.stringify(body);
+    return Object.assign(Object.assign({}, params), parameters);
+  },
+  "_getRequestParams",
+);
+async function Request(fetcher, method, url, options) {
+  var A;
+  const headers = Object.assign(
+    {},
+    options === null || options === void 0 ? void 0 : options.headers,
+  );
   if (!headers[API_VERSION_HEADER_NAME]) {
     headers[API_VERSION_HEADER_NAME] = API_VERSIONS["2024-01-01"].name;
   }
   if (options === null || options === void 0 ? void 0 : options.jwt) {
     headers["Authorization"] = `Bearer ${options.jwt}`;
   }
-  const qs = (_a = options === null || options === void 0 ? void 0 : options.query) !== null && _a !== void 0 ? _a : {};
+  const qs =
+    (A = options === null || options === void 0 ? void 0 : options.query) !==
+      null && A !== void 0
+      ? A
+      : {};
   if (options === null || options === void 0 ? void 0 : options.redirectTo) {
     qs["redirect_to"] = options.redirectTo;
   }
-  const queryString = Object.keys(qs).length ? "?" + new URLSearchParams(qs).toString() : "";
-  const data = await _handleRequest2(fetcher, method, url + queryString, {
-    headers,
-    noResolveJson: options === null || options === void 0 ? void 0 : options.noResolveJson
-  }, {}, options === null || options === void 0 ? void 0 : options.body);
-  return (options === null || options === void 0 ? void 0 : options.xform) ? options === null || options === void 0 ? void 0 : options.xform(data) : { data: Object.assign({}, data), error: null };
+  const queryString = Object.keys(qs).length
+    ? "?" + new URLSearchParams(qs).toString()
+    : "";
+  const data = await HandleRequest2(
+    fetcher,
+    method,
+    url + queryString,
+    {
+      headers,
+      noResolveJson:
+        options === null || options === void 0 ? void 0 : options.noResolveJson,
+    },
+    {},
+    options === null || options === void 0 ? void 0 : options.body,
+  );
+  return (options === null || options === void 0 ? void 0 : options.xform)
+    ? options === null || options === void 0
+      ? void 0
+      : options.xform(data)
+    : { data: Object.assign({}, data), error: null };
 }
-__name(_request, "_request");
-async function _handleRequest2(fetcher, method, url, options, parameters, body) {
-  const requestParams = _getRequestParams2(method, options, parameters, body);
+Name(Request, "_request");
+async function HandleRequest2(fetcher, method, url, options, parameters, body) {
+  const requestParams = GetRequestParams2(method, options, parameters, body);
   let result;
   try {
     result = await fetcher(url, Object.assign({}, requestParams));
   } catch (e) {
     console.error(e);
-    throw new AuthRetryableFetchError(_getErrorMessage2(e), 0);
+    throw new AuthRetryableFetchError(GetErrorMessage2(e), 0);
   }
   if (!result.ok) {
     await handleError2(result);
@@ -6864,9 +8037,9 @@ async function _handleRequest2(fetcher, method, url, options, parameters, body) 
     await handleError2(e);
   }
 }
-__name(_handleRequest2, "_handleRequest");
-function _sessionResponse(data) {
-  var _a;
+Name(HandleRequest2, "_handleRequest");
+function SessionResponse(data) {
+  var A;
   let session = null;
   if (hasSession(data)) {
     session = Object.assign({}, data);
@@ -6874,71 +8047,97 @@ function _sessionResponse(data) {
       session.expires_at = expiresAt(data.expires_in);
     }
   }
-  const user = (_a = data.user) !== null && _a !== void 0 ? _a : data;
+  const user = (A = data.user) !== null && A !== void 0 ? A : data;
   return { data: { session, user }, error: null };
 }
-__name(_sessionResponse, "_sessionResponse");
-function _sessionResponsePassword(data) {
-  const response = _sessionResponse(data);
-  if (!response.error && data.weak_password && typeof data.weak_password === "object" && Array.isArray(data.weak_password.reasons) && data.weak_password.reasons.length && data.weak_password.message && typeof data.weak_password.message === "string" && data.weak_password.reasons.reduce((a, i) => a && typeof i === "string", true)) {
+Name(SessionResponse, "_sessionResponse");
+function SessionResponsePassword(data) {
+  const response = SessionResponse(data);
+  if (
+    !response.error &&
+    data.weak_password &&
+    typeof data.weak_password === "object" &&
+    Array.isArray(data.weak_password.reasons) &&
+    data.weak_password.reasons.length &&
+    data.weak_password.message &&
+    typeof data.weak_password.message === "string" &&
+    data.weak_password.reasons.reduce(
+      (a, i) => a && typeof i === "string",
+      true,
+    )
+  ) {
     response.data.weak_password = data.weak_password;
   }
   return response;
 }
-__name(_sessionResponsePassword, "_sessionResponsePassword");
-function _userResponse(data) {
-  var _a;
-  const user = (_a = data.user) !== null && _a !== void 0 ? _a : data;
+Name(SessionResponsePassword, "_sessionResponsePassword");
+function UserResponse(data) {
+  var A;
+  const user = (A = data.user) !== null && A !== void 0 ? A : data;
   return { data: { user }, error: null };
 }
-__name(_userResponse, "_userResponse");
-function _ssoResponse(data) {
+Name(UserResponse, "_userResponse");
+function SsoResponse(data) {
   return { data, error: null };
 }
-__name(_ssoResponse, "_ssoResponse");
-function _generateLinkResponse(data) {
-  const { action_link, email_otp, hashed_token, redirect_to, verification_type } = data, rest = __rest(data, ["action_link", "email_otp", "hashed_token", "redirect_to", "verification_type"]);
+Name(SsoResponse, "_ssoResponse");
+function GenerateLinkResponse(data) {
+  const {
+      action_link,
+      email_otp,
+      hashed_token,
+      redirect_to,
+      verification_type,
+    } = data,
+    rest = Rest(data, [
+      "action_link",
+      "email_otp",
+      "hashed_token",
+      "redirect_to",
+      "verification_type",
+    ]);
   const properties = {
     action_link,
     email_otp,
     hashed_token,
     redirect_to,
-    verification_type
+    verification_type,
   };
   const user = Object.assign({}, rest);
   return {
     data: {
       properties,
-      user
+      user,
     },
-    error: null
+    error: null,
   };
 }
-__name(_generateLinkResponse, "_generateLinkResponse");
-function _noResolveJsonResponse(data) {
+Name(GenerateLinkResponse, "_generateLinkResponse");
+function NoResolveJsonResponse(data) {
   return data;
 }
-__name(_noResolveJsonResponse, "_noResolveJsonResponse");
+Name(NoResolveJsonResponse, "_noResolveJsonResponse");
 function hasSession(data) {
   return data.access_token && data.refresh_token && data.expires_in;
 }
-__name(hasSession, "hasSession");
+Name(hasSession, "hasSession");
 
 // node_modules/@supabase/auth-js/dist/module/lib/types.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var SIGN_OUT_SCOPES = ["global", "local", "others"];
 
 // node_modules/@supabase/auth-js/dist/module/GoTrueAdminApi.js
-var __rest2 = function(s, e) {
+var Rest2 = (s, e) => {
   var t = {};
-  for (var p in s)
-    if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-      t[p] = s[p];
+  for (var p in s) if (Object.hasOwn(s, p) && e.indexOf(p) < 0) t[p] = s[p];
   if (s != null && typeof Object.getOwnPropertySymbols === "function")
     for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-      if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+      if (
+        e.indexOf(p[i]) < 0 &&
+        Object.prototype.propertyIsEnumerable.call(s, p[i])
+      )
         t[p[i]] = s[p[i]];
     }
   return t;
@@ -6950,7 +8149,7 @@ var GoTrueAdminApi = class {
     this.fetch = resolveFetch4(fetch3);
     this.mfa = {
       listFactors: this._listFactors.bind(this),
-      deleteFactor: this._deleteFactor.bind(this)
+      deleteFactor: this._deleteFactor.bind(this),
     };
   }
   /**
@@ -6960,13 +8159,15 @@ var GoTrueAdminApi = class {
    */
   async signOut(jwt, scope = SIGN_OUT_SCOPES[0]) {
     if (SIGN_OUT_SCOPES.indexOf(scope) < 0) {
-      throw new Error(`@supabase/auth-js: Parameter scope must be one of ${SIGN_OUT_SCOPES.join(", ")}`);
+      throw new Error(
+        `@supabase/auth-js: Parameter scope must be one of ${SIGN_OUT_SCOPES.join(", ")}`,
+      );
     }
     try {
-      await _request(this.fetch, "POST", `${this.url}/logout?scope=${scope}`, {
+      await Request(this.fetch, "POST", `${this.url}/logout?scope=${scope}`, {
         headers: this.headers,
         jwt,
-        noResolveJson: true
+        noResolveJson: true,
       });
       return { data: null, error: null };
     } catch (error) {
@@ -6983,11 +8184,11 @@ var GoTrueAdminApi = class {
    */
   async inviteUserByEmail(email, options = {}) {
     try {
-      return await _request(this.fetch, "POST", `${this.url}/invite`, {
+      return await Request(this.fetch, "POST", `${this.url}/invite`, {
         body: { email, data: options.data },
         headers: this.headers,
         redirectTo: options.redirectTo,
-        xform: _userResponse
+        xform: UserResponse,
       });
     } catch (error) {
       if (isAuthError(error)) {
@@ -7005,26 +8206,36 @@ var GoTrueAdminApi = class {
    */
   async generateLink(params) {
     try {
-      const { options } = params, rest = __rest2(params, ["options"]);
+      const { options } = params,
+        rest = Rest2(params, ["options"]);
       const body = Object.assign(Object.assign({}, rest), options);
       if ("newEmail" in rest) {
-        body.new_email = rest === null || rest === void 0 ? void 0 : rest.newEmail;
+        body.new_email =
+          rest === null || rest === void 0 ? void 0 : rest.newEmail;
         delete body["newEmail"];
       }
-      return await _request(this.fetch, "POST", `${this.url}/admin/generate_link`, {
-        body,
-        headers: this.headers,
-        xform: _generateLinkResponse,
-        redirectTo: options === null || options === void 0 ? void 0 : options.redirectTo
-      });
+      return await Request(
+        this.fetch,
+        "POST",
+        `${this.url}/admin/generate_link`,
+        {
+          body,
+          headers: this.headers,
+          xform: GenerateLinkResponse,
+          redirectTo:
+            options === null || options === void 0
+              ? void 0
+              : options.redirectTo,
+        },
+      );
     } catch (error) {
       if (isAuthError(error)) {
         return {
           data: {
             properties: null,
-            user: null
+            user: null,
           },
-          error
+          error,
         };
       }
       throw error;
@@ -7037,10 +8248,10 @@ var GoTrueAdminApi = class {
    */
   async createUser(attributes) {
     try {
-      return await _request(this.fetch, "POST", `${this.url}/admin/users`, {
+      return await Request(this.fetch, "POST", `${this.url}/admin/users`, {
         body: attributes,
         headers: this.headers,
-        xform: _userResponse
+        xform: UserResponse,
       });
     } catch (error) {
       if (isAuthError(error)) {
@@ -7056,32 +8267,68 @@ var GoTrueAdminApi = class {
    * @param params An object which supports `page` and `perPage` as numbers, to alter the paginated results.
    */
   async listUsers(params) {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var A, B, C, D, E, F, G;
     try {
       const pagination = { nextPage: null, lastPage: 0, total: 0 };
-      const response = await _request(this.fetch, "GET", `${this.url}/admin/users`, {
-        headers: this.headers,
-        noResolveJson: true,
-        query: {
-          page: (_b = (_a = params === null || params === void 0 ? void 0 : params.page) === null || _a === void 0 ? void 0 : _a.toString()) !== null && _b !== void 0 ? _b : "",
-          per_page: (_d = (_c = params === null || params === void 0 ? void 0 : params.perPage) === null || _c === void 0 ? void 0 : _c.toString()) !== null && _d !== void 0 ? _d : ""
+      const response = await Request(
+        this.fetch,
+        "GET",
+        `${this.url}/admin/users`,
+        {
+          headers: this.headers,
+          noResolveJson: true,
+          query: {
+            page:
+              (B =
+                (A =
+                  params === null || params === void 0
+                    ? void 0
+                    : params.page) === null || A === void 0
+                  ? void 0
+                  : A.toString()) !== null && B !== void 0
+                ? B
+                : "",
+            per_page:
+              (D =
+                (C =
+                  params === null || params === void 0
+                    ? void 0
+                    : params.perPage) === null || C === void 0
+                  ? void 0
+                  : C.toString()) !== null && D !== void 0
+                ? D
+                : "",
+          },
+          xform: NoResolveJsonResponse,
         },
-        xform: _noResolveJsonResponse
-      });
-      if (response.error)
-        throw response.error;
+      );
+      if (response.error) throw response.error;
       const users = await response.json();
-      const total = (_e = response.headers.get("x-total-count")) !== null && _e !== void 0 ? _e : 0;
-      const links = (_g = (_f = response.headers.get("link")) === null || _f === void 0 ? void 0 : _f.split(",")) !== null && _g !== void 0 ? _g : [];
+      const total =
+        (E = response.headers.get("x-total-count")) !== null && E !== void 0
+          ? E
+          : 0;
+      const links =
+        (G =
+          (F = response.headers.get("link")) === null || F === void 0
+            ? void 0
+            : F.split(",")) !== null && G !== void 0
+          ? G
+          : [];
       if (links.length > 0) {
         links.forEach((link) => {
-          const page = parseInt(link.split(";")[0].split("=")[1].substring(0, 1));
+          const page = parseInt(
+            link.split(";")[0].split("=")[1].substring(0, 1),
+          );
           const rel = JSON.parse(link.split(";")[1].split("=")[1]);
           pagination[`${rel}Page`] = page;
         });
         pagination.total = parseInt(total);
       }
-      return { data: Object.assign(Object.assign({}, users), pagination), error: null };
+      return {
+        data: Object.assign(Object.assign({}, users), pagination),
+        error: null,
+      };
     } catch (error) {
       if (isAuthError(error)) {
         return { data: { users: [] }, error };
@@ -7099,10 +8346,15 @@ var GoTrueAdminApi = class {
   async getUserById(uid) {
     validateUUID(uid);
     try {
-      return await _request(this.fetch, "GET", `${this.url}/admin/users/${uid}`, {
-        headers: this.headers,
-        xform: _userResponse
-      });
+      return await Request(
+        this.fetch,
+        "GET",
+        `${this.url}/admin/users/${uid}`,
+        {
+          headers: this.headers,
+          xform: UserResponse,
+        },
+      );
     } catch (error) {
       if (isAuthError(error)) {
         return { data: { user: null }, error };
@@ -7120,11 +8372,16 @@ var GoTrueAdminApi = class {
   async updateUserById(uid, attributes) {
     validateUUID(uid);
     try {
-      return await _request(this.fetch, "PUT", `${this.url}/admin/users/${uid}`, {
-        body: attributes,
-        headers: this.headers,
-        xform: _userResponse
-      });
+      return await Request(
+        this.fetch,
+        "PUT",
+        `${this.url}/admin/users/${uid}`,
+        {
+          body: attributes,
+          headers: this.headers,
+          xform: UserResponse,
+        },
+      );
     } catch (error) {
       if (isAuthError(error)) {
         return { data: { user: null }, error };
@@ -7144,13 +8401,18 @@ var GoTrueAdminApi = class {
   async deleteUser(id, shouldSoftDelete = false) {
     validateUUID(id);
     try {
-      return await _request(this.fetch, "DELETE", `${this.url}/admin/users/${id}`, {
-        headers: this.headers,
-        body: {
-          should_soft_delete: shouldSoftDelete
+      return await Request(
+        this.fetch,
+        "DELETE",
+        `${this.url}/admin/users/${id}`,
+        {
+          headers: this.headers,
+          body: {
+            should_soft_delete: shouldSoftDelete,
+          },
+          xform: UserResponse,
         },
-        xform: _userResponse
-      });
+      );
     } catch (error) {
       if (isAuthError(error)) {
         return { data: { user: null }, error };
@@ -7161,12 +8423,17 @@ var GoTrueAdminApi = class {
   async _listFactors(params) {
     validateUUID(params.userId);
     try {
-      const { data, error } = await _request(this.fetch, "GET", `${this.url}/admin/users/${params.userId}/factors`, {
-        headers: this.headers,
-        xform: (factors) => {
-          return { data: { factors }, error: null };
-        }
-      });
+      const { data, error } = await Request(
+        this.fetch,
+        "GET",
+        `${this.url}/admin/users/${params.userId}/factors`,
+        {
+          headers: this.headers,
+          xform: (factors) => {
+            return { data: { factors }, error: null };
+          },
+        },
+      );
       return { data, error };
     } catch (error) {
       if (isAuthError(error)) {
@@ -7179,9 +8446,14 @@ var GoTrueAdminApi = class {
     validateUUID(params.userId);
     validateUUID(params.id);
     try {
-      const data = await _request(this.fetch, "DELETE", `${this.url}/admin/users/${params.userId}/factors/${params.id}`, {
-        headers: this.headers
-      });
+      const data = await Request(
+        this.fetch,
+        "DELETE",
+        `${this.url}/admin/users/${params.userId}/factors/${params.id}`,
+        {
+          headers: this.headers,
+        },
+      );
       return { data, error: null };
     } catch (error) {
       if (isAuthError(error)) {
@@ -7191,17 +8463,17 @@ var GoTrueAdminApi = class {
     }
   }
 };
-__name(GoTrueAdminApi, "GoTrueAdminApi");
+Name(GoTrueAdminApi, "GoTrueAdminApi");
 
 // node_modules/@supabase/auth-js/dist/module/GoTrueClient.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/auth-js/dist/module/lib/local-storage.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 function memoryLocalStorageAdapter(store = {}) {
   return {
     getItem: (key) => {
@@ -7212,24 +8484,23 @@ function memoryLocalStorageAdapter(store = {}) {
     },
     removeItem: (key) => {
       delete store[key];
-    }
+    },
   };
 }
-__name(memoryLocalStorageAdapter, "memoryLocalStorageAdapter");
+Name(memoryLocalStorageAdapter, "memoryLocalStorageAdapter");
 
 // node_modules/@supabase/auth-js/dist/module/lib/polyfills.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 function polyfillGlobalThis() {
-  if (typeof globalThis === "object")
-    return;
+  if (typeof globalThis === "object") return;
   try {
     Object.defineProperty(Object.prototype, "__magic__", {
-      get: function() {
+      get: function () {
         return this;
       },
-      configurable: true
+      configurable: true,
     });
     __magic__.globalThis = __magic__;
     delete Object.prototype.__magic__;
@@ -7239,17 +8510,22 @@ function polyfillGlobalThis() {
     }
   }
 }
-__name(polyfillGlobalThis, "polyfillGlobalThis");
+Name(polyfillGlobalThis, "polyfillGlobalThis");
 
 // node_modules/@supabase/auth-js/dist/module/lib/locks.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var internals = {
   /**
    * @experimental
    */
-  debug: !!(globalThis && supportsLocalStorage() && globalThis.localStorage && globalThis.localStorage.getItem("supabase.gotrue-js.locks.debug") === "true")
+  debug: !!(
+    globalThis &&
+    supportsLocalStorage() &&
+    globalThis.localStorage &&
+    globalThis.localStorage.getItem("supabase.gotrue-js.locks.debug") === "true"
+  ),
 };
 var LockAcquireTimeoutError = class extends Error {
   constructor(message) {
@@ -7257,63 +8533,98 @@ var LockAcquireTimeoutError = class extends Error {
     this.isAcquireTimeout = true;
   }
 };
-__name(LockAcquireTimeoutError, "LockAcquireTimeoutError");
-var NavigatorLockAcquireTimeoutError = class extends LockAcquireTimeoutError {
-};
-__name(NavigatorLockAcquireTimeoutError, "NavigatorLockAcquireTimeoutError");
+Name(LockAcquireTimeoutError, "LockAcquireTimeoutError");
+var NavigatorLockAcquireTimeoutError = class extends LockAcquireTimeoutError {};
+Name(NavigatorLockAcquireTimeoutError, "NavigatorLockAcquireTimeoutError");
 async function navigatorLock(name, acquireTimeout, fn) {
   if (internals.debug) {
-    console.log("@supabase/gotrue-js: navigatorLock: acquire lock", name, acquireTimeout);
+    console.log(
+      "@supabase/gotrue-js: navigatorLock: acquire lock",
+      name,
+      acquireTimeout,
+    );
   }
   const abortController = new globalThis.AbortController();
   if (acquireTimeout > 0) {
     setTimeout(() => {
       abortController.abort();
       if (internals.debug) {
-        console.log("@supabase/gotrue-js: navigatorLock acquire timed out", name);
+        console.log(
+          "@supabase/gotrue-js: navigatorLock acquire timed out",
+          name,
+        );
       }
     }, acquireTimeout);
   }
-  return await Promise.resolve().then(() => globalThis.navigator.locks.request(name, acquireTimeout === 0 ? {
-    mode: "exclusive",
-    ifAvailable: true
-  } : {
-    mode: "exclusive",
-    signal: abortController.signal
-  }, async (lock) => {
-    if (lock) {
-      if (internals.debug) {
-        console.log("@supabase/gotrue-js: navigatorLock: acquired", name, lock.name);
-      }
-      try {
-        return await fn();
-      } finally {
-        if (internals.debug) {
-          console.log("@supabase/gotrue-js: navigatorLock: released", name, lock.name);
-        }
-      }
-    } else {
-      if (acquireTimeout === 0) {
-        if (internals.debug) {
-          console.log("@supabase/gotrue-js: navigatorLock: not immediately available", name);
-        }
-        throw new NavigatorLockAcquireTimeoutError(`Acquiring an exclusive Navigator LockManager lock "${name}" immediately failed`);
-      } else {
-        if (internals.debug) {
+  return await Promise.resolve().then(() =>
+    globalThis.navigator.locks.request(
+      name,
+      acquireTimeout === 0
+        ? {
+            mode: "exclusive",
+            ifAvailable: true,
+          }
+        : {
+            mode: "exclusive",
+            signal: abortController.signal,
+          },
+      async (lock) => {
+        if (lock) {
+          if (internals.debug) {
+            console.log(
+              "@supabase/gotrue-js: navigatorLock: acquired",
+              name,
+              lock.name,
+            );
+          }
           try {
-            const result = await globalThis.navigator.locks.query();
-            console.log("@supabase/gotrue-js: Navigator LockManager state", JSON.stringify(result, null, "  "));
-          } catch (e) {
-            console.warn("@supabase/gotrue-js: Error when querying Navigator LockManager state", e);
+            return await fn();
+          } finally {
+            if (internals.debug) {
+              console.log(
+                "@supabase/gotrue-js: navigatorLock: released",
+                name,
+                lock.name,
+              );
+            }
+          }
+        } else {
+          if (acquireTimeout === 0) {
+            if (internals.debug) {
+              console.log(
+                "@supabase/gotrue-js: navigatorLock: not immediately available",
+                name,
+              );
+            }
+            throw new NavigatorLockAcquireTimeoutError(
+              `Acquiring an exclusive Navigator LockManager lock "${name}" immediately failed`,
+            );
+          } else {
+            if (internals.debug) {
+              try {
+                const result = await globalThis.navigator.locks.query();
+                console.log(
+                  "@supabase/gotrue-js: Navigator LockManager state",
+                  JSON.stringify(result, null, "  "),
+                );
+              } catch (e) {
+                console.warn(
+                  "@supabase/gotrue-js: Error when querying Navigator LockManager state",
+                  e,
+                );
+              }
+            }
+            console.warn(
+              "@supabase/gotrue-js: Navigator LockManager returned a null lock when using #request without ifAvailable set to true, it appears this browser is not following the LockManager spec https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request",
+            );
+            return await fn();
           }
         }
-        console.warn("@supabase/gotrue-js: Navigator LockManager returned a null lock when using #request without ifAvailable set to true, it appears this browser is not following the LockManager spec https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request");
-        return await fn();
-      }
-    }
-  }));
+      },
+    ),
+  );
 }
-__name(navigatorLock, "navigatorLock");
+Name(navigatorLock, "navigatorLock");
 
 // node_modules/@supabase/auth-js/dist/module/GoTrueClient.js
 polyfillGlobalThis();
@@ -7326,19 +8637,19 @@ var DEFAULT_OPTIONS = {
   headers: DEFAULT_HEADERS3,
   flowType: "implicit",
   debug: false,
-  hasCustomAuthorizationHeader: false
+  hasCustomAuthorizationHeader: false,
 };
 async function lockNoOp(name, acquireTimeout, fn) {
   return await fn();
 }
-__name(lockNoOp, "lockNoOp");
+Name(lockNoOp, "lockNoOp");
 var GLOBAL_JWKS = {};
 var GoTrueClient = class {
   /**
    * Create a new client for use in the browser.
    */
   constructor(options) {
-    var _a, _b;
+    var A, B;
     this.userStorage = null;
     this.memoryStorage = null;
     this.stateChangeEmitters = /* @__PURE__ */ new Map();
@@ -7356,7 +8667,9 @@ var GoTrueClient = class {
     this.instanceID = GoTrueClient.nextInstanceID;
     GoTrueClient.nextInstanceID += 1;
     if (this.instanceID > 0 && isBrowser()) {
-      console.warn("Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.");
+      console.warn(
+        "Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+      );
     }
     const settings = Object.assign(Object.assign({}, DEFAULT_OPTIONS), options);
     this.logDebugMessages = !!settings.debug;
@@ -7369,7 +8682,7 @@ var GoTrueClient = class {
     this.admin = new GoTrueAdminApi({
       url: settings.url,
       headers: settings.headers,
-      fetch: settings.fetch
+      fetch: settings.fetch,
     });
     this.url = settings.url;
     this.headers = settings.headers;
@@ -7380,7 +8693,15 @@ var GoTrueClient = class {
     this.hasCustomAuthorizationHeader = settings.hasCustomAuthorizationHeader;
     if (settings.lock) {
       this.lock = settings.lock;
-    } else if (isBrowser() && ((_a = globalThis === null || globalThis === void 0 ? void 0 : globalThis.navigator) === null || _a === void 0 ? void 0 : _a.locks)) {
+    } else if (
+      isBrowser() &&
+      ((A =
+        globalThis === null || globalThis === void 0
+          ? void 0
+          : globalThis.navigator) === null || A === void 0
+        ? void 0
+        : A.locks)
+    ) {
       this.lock = navigatorLock;
     } else {
       this.lock = lockNoOp;
@@ -7396,7 +8717,8 @@ var GoTrueClient = class {
       challenge: this._challenge.bind(this),
       listFactors: this._listFactors.bind(this),
       challengeAndVerify: this._challengeAndVerify.bind(this),
-      getAuthenticatorAssuranceLevel: this._getAuthenticatorAssuranceLevel.bind(this)
+      getAuthenticatorAssuranceLevel:
+        this._getAuthenticatorAssuranceLevel.bind(this),
     };
     if (this.persistSession) {
       if (settings.storage) {
@@ -7416,16 +8738,35 @@ var GoTrueClient = class {
       this.memoryStorage = {};
       this.storage = memoryLocalStorageAdapter(this.memoryStorage);
     }
-    if (isBrowser() && globalThis.BroadcastChannel && this.persistSession && this.storageKey) {
+    if (
+      isBrowser() &&
+      globalThis.BroadcastChannel &&
+      this.persistSession &&
+      this.storageKey
+    ) {
       try {
-        this.broadcastChannel = new globalThis.BroadcastChannel(this.storageKey);
+        this.broadcastChannel = new globalThis.BroadcastChannel(
+          this.storageKey,
+        );
       } catch (e) {
-        console.error("Failed to create a new BroadcastChannel, multi-tab state changes will not be available", e);
+        console.error(
+          "Failed to create a new BroadcastChannel, multi-tab state changes will not be available",
+          e,
+        );
       }
-      (_b = this.broadcastChannel) === null || _b === void 0 ? void 0 : _b.addEventListener("message", async (event) => {
-        this._debug("received broadcast notification from other tab or client", event);
-        await this._notifyAllSubscribers(event.data.event, event.data.session, false);
-      });
+      (B = this.broadcastChannel) === null || B === void 0
+        ? void 0
+        : B.addEventListener("message", async (event) => {
+            this._debug(
+              "received broadcast notification from other tab or client",
+              event,
+            );
+            await this._notifyAllSubscribers(
+              event.data.event,
+              event.data.session,
+              false,
+            );
+          });
     }
     this.initialize();
   }
@@ -7433,22 +8774,45 @@ var GoTrueClient = class {
    * The JWKS used for verifying asymmetric JWTs
    */
   get jwks() {
-    var _a, _b;
-    return (_b = (_a = GLOBAL_JWKS[this.storageKey]) === null || _a === void 0 ? void 0 : _a.jwks) !== null && _b !== void 0 ? _b : { keys: [] };
+    var A, B;
+    return (B =
+      (A = GLOBAL_JWKS[this.storageKey]) === null || A === void 0
+        ? void 0
+        : A.jwks) !== null && B !== void 0
+      ? B
+      : { keys: [] };
   }
   set jwks(value) {
-    GLOBAL_JWKS[this.storageKey] = Object.assign(Object.assign({}, GLOBAL_JWKS[this.storageKey]), { jwks: value });
+    GLOBAL_JWKS[this.storageKey] = Object.assign(
+      Object.assign({}, GLOBAL_JWKS[this.storageKey]),
+      {
+        jwks: value,
+      },
+    );
   }
   get jwks_cached_at() {
-    var _a, _b;
-    return (_b = (_a = GLOBAL_JWKS[this.storageKey]) === null || _a === void 0 ? void 0 : _a.cachedAt) !== null && _b !== void 0 ? _b : Number.MIN_SAFE_INTEGER;
+    var A, B;
+    return (B =
+      (A = GLOBAL_JWKS[this.storageKey]) === null || A === void 0
+        ? void 0
+        : A.cachedAt) !== null && B !== void 0
+      ? B
+      : Number.MIN_SAFE_INTEGER;
   }
   set jwks_cached_at(value) {
-    GLOBAL_JWKS[this.storageKey] = Object.assign(Object.assign({}, GLOBAL_JWKS[this.storageKey]), { cachedAt: value });
+    GLOBAL_JWKS[this.storageKey] = Object.assign(
+      Object.assign({}, GLOBAL_JWKS[this.storageKey]),
+      {
+        cachedAt: value,
+      },
+    );
   }
   _debug(...args) {
     if (this.logDebugMessages) {
-      this.logger(`GoTrueClient@${this.instanceID} (${version4}) ${(/* @__PURE__ */ new Date()).toISOString()}`, ...args);
+      this.logger(
+        `GoTrueClient@${this.instanceID} (${version4}) ${(/* @__PURE__ */ new Date()).toISOString()}`,
+        ...args,
+      );
     }
     return this;
   }
@@ -7475,7 +8839,7 @@ var GoTrueClient = class {
    *    the whole lifetime of the client
    */
   async _initialize() {
-    var _a;
+    var A;
     try {
       const params = parseParametersFromURL(window.location.href);
       let callbackUrlType = "none";
@@ -7484,13 +8848,29 @@ var GoTrueClient = class {
       } else if (await this._isPKCECallback(params)) {
         callbackUrlType = "pkce";
       }
-      if (isBrowser() && this.detectSessionInUrl && callbackUrlType !== "none") {
-        const { data, error } = await this._getSessionFromURL(params, callbackUrlType);
+      if (
+        isBrowser() &&
+        this.detectSessionInUrl &&
+        callbackUrlType !== "none"
+      ) {
+        const { data, error } = await this._getSessionFromURL(
+          params,
+          callbackUrlType,
+        );
         if (error) {
-          this._debug("#_initialize()", "error detecting session from URL", error);
+          this._debug(
+            "#_initialize()",
+            "error detecting session from URL",
+            error,
+          );
           if (isAuthImplicitGrantRedirectError(error)) {
-            const errorCode = (_a = error.details) === null || _a === void 0 ? void 0 : _a.code;
-            if (errorCode === "identity_already_exists" || errorCode === "identity_not_found" || errorCode === "single_identity_not_deletable") {
+            const errorCode =
+              (A = error.details) === null || A === void 0 ? void 0 : A.code;
+            if (
+              errorCode === "identity_already_exists" ||
+              errorCode === "identity_not_found" ||
+              errorCode === "single_identity_not_deletable"
+            ) {
               return { error };
             }
           }
@@ -7498,7 +8878,13 @@ var GoTrueClient = class {
           return { error };
         }
         const { session, redirectType } = data;
-        this._debug("#_initialize()", "detected session in URL", session, "redirect type", redirectType);
+        this._debug(
+          "#_initialize()",
+          "detected session in URL",
+          session,
+          "redirect type",
+          redirectType,
+        );
         await this._saveSession(session);
         setTimeout(async () => {
           if (redirectType === "recovery") {
@@ -7516,7 +8902,10 @@ var GoTrueClient = class {
         return { error };
       }
       return {
-        error: new AuthUnknownError("Unexpected error during initialization", error)
+        error: new AuthUnknownError(
+          "Unexpected error during initialization",
+          error,
+        ),
       };
     } finally {
       await this._handleVisibilityChange();
@@ -7529,15 +8918,32 @@ var GoTrueClient = class {
    * @returns A session where the is_anonymous claim in the access token JWT set to true
    */
   async signInAnonymously(credentials) {
-    var _a, _b, _c;
+    var A, B, C;
     try {
-      const res = await _request(this.fetch, "POST", `${this.url}/signup`, {
+      const res = await Request(this.fetch, "POST", `${this.url}/signup`, {
         headers: this.headers,
         body: {
-          data: (_b = (_a = credentials === null || credentials === void 0 ? void 0 : credentials.options) === null || _a === void 0 ? void 0 : _a.data) !== null && _b !== void 0 ? _b : {},
-          gotrue_meta_security: { captcha_token: (_c = credentials === null || credentials === void 0 ? void 0 : credentials.options) === null || _c === void 0 ? void 0 : _c.captchaToken }
+          data:
+            (B =
+              (A =
+                credentials === null || credentials === void 0
+                  ? void 0
+                  : credentials.options) === null || A === void 0
+                ? void 0
+                : A.data) !== null && B !== void 0
+              ? B
+              : {},
+          gotrue_meta_security: {
+            captcha_token:
+              (C =
+                credentials === null || credentials === void 0
+                  ? void 0
+                  : credentials.options) === null || C === void 0
+                ? void 0
+                : C.captchaToken,
+          },
         },
-        xform: _sessionResponse
+        xform: SessionResponse,
       });
       const { data, error } = res;
       if (error || !data) {
@@ -7568,7 +8974,7 @@ var GoTrueClient = class {
    * @returns A user if the server has "autoconfirm" OFF
    */
   async signUp(credentials) {
-    var _a, _b, _c;
+    var A, B, C;
     try {
       let res;
       if ("email" in credentials) {
@@ -7576,37 +8982,70 @@ var GoTrueClient = class {
         let codeChallenge = null;
         let codeChallengeMethod = null;
         if (this.flowType === "pkce") {
-          ;
-          [codeChallenge, codeChallengeMethod] = await getCodeChallengeAndMethod(this.storage, this.storageKey);
+          [codeChallenge, codeChallengeMethod] =
+            await getCodeChallengeAndMethod(this.storage, this.storageKey);
         }
-        res = await _request(this.fetch, "POST", `${this.url}/signup`, {
+        res = await Request(this.fetch, "POST", `${this.url}/signup`, {
           headers: this.headers,
-          redirectTo: options === null || options === void 0 ? void 0 : options.emailRedirectTo,
+          redirectTo:
+            options === null || options === void 0
+              ? void 0
+              : options.emailRedirectTo,
           body: {
             email,
             password,
-            data: (_a = options === null || options === void 0 ? void 0 : options.data) !== null && _a !== void 0 ? _a : {},
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken },
+            data:
+              (A =
+                options === null || options === void 0
+                  ? void 0
+                  : options.data) !== null && A !== void 0
+                ? A
+                : {},
+            gotrue_meta_security: {
+              captcha_token:
+                options === null || options === void 0
+                  ? void 0
+                  : options.captchaToken,
+            },
             code_challenge: codeChallenge,
-            code_challenge_method: codeChallengeMethod
+            code_challenge_method: codeChallengeMethod,
           },
-          xform: _sessionResponse
+          xform: SessionResponse,
         });
       } else if ("phone" in credentials) {
         const { phone, password, options } = credentials;
-        res = await _request(this.fetch, "POST", `${this.url}/signup`, {
+        res = await Request(this.fetch, "POST", `${this.url}/signup`, {
           headers: this.headers,
           body: {
             phone,
             password,
-            data: (_b = options === null || options === void 0 ? void 0 : options.data) !== null && _b !== void 0 ? _b : {},
-            channel: (_c = options === null || options === void 0 ? void 0 : options.channel) !== null && _c !== void 0 ? _c : "sms",
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
+            data:
+              (B =
+                options === null || options === void 0
+                  ? void 0
+                  : options.data) !== null && B !== void 0
+                ? B
+                : {},
+            channel:
+              (C =
+                options === null || options === void 0
+                  ? void 0
+                  : options.channel) !== null && C !== void 0
+                ? C
+                : "sms",
+            gotrue_meta_security: {
+              captcha_token:
+                options === null || options === void 0
+                  ? void 0
+                  : options.captchaToken,
+            },
           },
-          xform: _sessionResponse
+          xform: SessionResponse,
         });
       } else {
-        throw new AuthInvalidCredentialsError("You must provide either an email or phone number and a password");
+        throw new AuthInvalidCredentialsError(
+          "You must provide either an email or phone number and a password",
+        );
       }
       const { data, error } = res;
       if (error || !data) {
@@ -7639,42 +9078,70 @@ var GoTrueClient = class {
       let res;
       if ("email" in credentials) {
         const { email, password, options } = credentials;
-        res = await _request(this.fetch, "POST", `${this.url}/token?grant_type=password`, {
-          headers: this.headers,
-          body: {
-            email,
-            password,
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
+        res = await Request(
+          this.fetch,
+          "POST",
+          `${this.url}/token?grant_type=password`,
+          {
+            headers: this.headers,
+            body: {
+              email,
+              password,
+              gotrue_meta_security: {
+                captcha_token:
+                  options === null || options === void 0
+                    ? void 0
+                    : options.captchaToken,
+              },
+            },
+            xform: SessionResponsePassword,
           },
-          xform: _sessionResponsePassword
-        });
+        );
       } else if ("phone" in credentials) {
         const { phone, password, options } = credentials;
-        res = await _request(this.fetch, "POST", `${this.url}/token?grant_type=password`, {
-          headers: this.headers,
-          body: {
-            phone,
-            password,
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
+        res = await Request(
+          this.fetch,
+          "POST",
+          `${this.url}/token?grant_type=password`,
+          {
+            headers: this.headers,
+            body: {
+              phone,
+              password,
+              gotrue_meta_security: {
+                captcha_token:
+                  options === null || options === void 0
+                    ? void 0
+                    : options.captchaToken,
+              },
+            },
+            xform: SessionResponsePassword,
           },
-          xform: _sessionResponsePassword
-        });
+        );
       } else {
-        throw new AuthInvalidCredentialsError("You must provide either an email or phone number and a password");
+        throw new AuthInvalidCredentialsError(
+          "You must provide either an email or phone number and a password",
+        );
       }
       const { data, error } = res;
       if (error) {
         return { data: { user: null, session: null }, error };
       } else if (!data || !data.session || !data.user) {
-        return { data: { user: null, session: null }, error: new AuthInvalidTokenResponseError() };
+        return {
+          data: { user: null, session: null },
+          error: new AuthInvalidTokenResponseError(),
+        };
       }
       if (data.session) {
         await this._saveSession(data.session);
         await this._notifyAllSubscribers("SIGNED_IN", data.session);
       }
       return {
-        data: Object.assign({ user: data.user, session: data.session }, data.weak_password ? { weakPassword: data.weak_password } : null),
-        error
+        data: Object.assign(
+          { user: data.user, session: data.session },
+          data.weak_password ? { weakPassword: data.weak_password } : null,
+        ),
+        error,
       };
     } catch (error) {
       if (isAuthError(error)) {
@@ -7688,12 +9155,22 @@ var GoTrueClient = class {
    * This method supports the PKCE flow.
    */
   async signInWithOAuth(credentials) {
-    var _a, _b, _c, _d;
+    var A, B, C, D;
     return await this._handleProviderSignIn(credentials.provider, {
-      redirectTo: (_a = credentials.options) === null || _a === void 0 ? void 0 : _a.redirectTo,
-      scopes: (_b = credentials.options) === null || _b === void 0 ? void 0 : _b.scopes,
-      queryParams: (_c = credentials.options) === null || _c === void 0 ? void 0 : _c.queryParams,
-      skipBrowserRedirect: (_d = credentials.options) === null || _d === void 0 ? void 0 : _d.skipBrowserRedirect
+      redirectTo:
+        (A = credentials.options) === null || A === void 0
+          ? void 0
+          : A.redirectTo,
+      scopes:
+        (B = credentials.options) === null || B === void 0 ? void 0 : B.scopes,
+      queryParams:
+        (C = credentials.options) === null || C === void 0
+          ? void 0
+          : C.queryParams,
+      skipBrowserRedirect:
+        (D = credentials.options) === null || D === void 0
+          ? void 0
+          : D.skipBrowserRedirect,
     });
   }
   /**
@@ -7717,7 +9194,7 @@ var GoTrueClient = class {
     throw new Error(`@supabase/auth-js: Unsupported chain "${chain}"`);
   }
   async signInWithSolana(credentials) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    var A, B, C, D, E, F, G, H, J, K, L, M;
     let message;
     let signature;
     if ("message" in credentials) {
@@ -7727,83 +9204,236 @@ var GoTrueClient = class {
       const { chain, wallet, statement, options } = credentials;
       let resolvedWallet;
       if (!isBrowser()) {
-        if (typeof wallet !== "object" || !(options === null || options === void 0 ? void 0 : options.url)) {
-          throw new Error("@supabase/auth-js: Both wallet and url must be specified in non-browser environments.");
+        if (
+          typeof wallet !== "object" ||
+          !(options === null || options === void 0 ? void 0 : options.url)
+        ) {
+          throw new Error(
+            "@supabase/auth-js: Both wallet and url must be specified in non-browser environments.",
+          );
         }
         resolvedWallet = wallet;
       } else if (typeof wallet === "object") {
         resolvedWallet = wallet;
       } else {
         const windowAny = window;
-        if ("solana" in windowAny && typeof windowAny.solana === "object" && ("signIn" in windowAny.solana && typeof windowAny.solana.signIn === "function" || "signMessage" in windowAny.solana && typeof windowAny.solana.signMessage === "function")) {
+        if (
+          "solana" in windowAny &&
+          typeof windowAny.solana === "object" &&
+          (("signIn" in windowAny.solana &&
+            typeof windowAny.solana.signIn === "function") ||
+            ("signMessage" in windowAny.solana &&
+              typeof windowAny.solana.signMessage === "function"))
+        ) {
           resolvedWallet = windowAny.solana;
         } else {
-          throw new Error(`@supabase/auth-js: No compatible Solana wallet interface on the window object (window.solana) detected. Make sure the user already has a wallet installed and connected for this app. Prefer passing the wallet interface object directly to signInWithWeb3({ chain: 'solana', wallet: resolvedUserWallet }) instead.`);
+          throw new Error(
+            `@supabase/auth-js: No compatible Solana wallet interface on the window object (window.solana) detected. Make sure the user already has a wallet installed and connected for this app. Prefer passing the wallet interface object directly to signInWithWeb3({ chain: 'solana', wallet: resolvedUserWallet }) instead.`,
+          );
         }
       }
-      const url = new URL((_a = options === null || options === void 0 ? void 0 : options.url) !== null && _a !== void 0 ? _a : window.location.href);
+      const url = new URL(
+        (A = options === null || options === void 0 ? void 0 : options.url) !==
+          null && A !== void 0
+          ? A
+          : window.location.href,
+      );
       if ("signIn" in resolvedWallet && resolvedWallet.signIn) {
-        const output = await resolvedWallet.signIn(Object.assign(Object.assign(Object.assign({ issuedAt: (/* @__PURE__ */ new Date()).toISOString() }, options === null || options === void 0 ? void 0 : options.signInWithSolana), {
-          // non-overridable properties
-          version: "1",
-          domain: url.host,
-          uri: url.href
-        }), statement ? { statement } : null));
+        const output = await resolvedWallet.signIn(
+          Object.assign(
+            Object.assign(
+              Object.assign(
+                { issuedAt: /* @__PURE__ */ new Date().toISOString() },
+                options === null || options === void 0
+                  ? void 0
+                  : options.signInWithSolana,
+              ),
+              {
+                // non-overridable properties
+                version: "1",
+                domain: url.host,
+                uri: url.href,
+              },
+            ),
+            statement ? { statement } : null,
+          ),
+        );
         let outputToProcess;
-        if (Array.isArray(output) && output[0] && typeof output[0] === "object") {
+        if (
+          Array.isArray(output) &&
+          output[0] &&
+          typeof output[0] === "object"
+        ) {
           outputToProcess = output[0];
-        } else if (output && typeof output === "object" && "signedMessage" in output && "signature" in output) {
+        } else if (
+          output &&
+          typeof output === "object" &&
+          "signedMessage" in output &&
+          "signature" in output
+        ) {
           outputToProcess = output;
         } else {
-          throw new Error("@supabase/auth-js: Wallet method signIn() returned unrecognized value");
+          throw new Error(
+            "@supabase/auth-js: Wallet method signIn() returned unrecognized value",
+          );
         }
-        if ("signedMessage" in outputToProcess && "signature" in outputToProcess && (typeof outputToProcess.signedMessage === "string" || outputToProcess.signedMessage instanceof Uint8Array) && outputToProcess.signature instanceof Uint8Array) {
-          message = typeof outputToProcess.signedMessage === "string" ? outputToProcess.signedMessage : new TextDecoder().decode(outputToProcess.signedMessage);
+        if (
+          "signedMessage" in outputToProcess &&
+          "signature" in outputToProcess &&
+          (typeof outputToProcess.signedMessage === "string" ||
+            outputToProcess.signedMessage instanceof Uint8Array) &&
+          outputToProcess.signature instanceof Uint8Array
+        ) {
+          message =
+            typeof outputToProcess.signedMessage === "string"
+              ? outputToProcess.signedMessage
+              : new TextDecoder().decode(outputToProcess.signedMessage);
           signature = outputToProcess.signature;
         } else {
-          throw new Error("@supabase/auth-js: Wallet method signIn() API returned object without signedMessage and signature fields");
+          throw new Error(
+            "@supabase/auth-js: Wallet method signIn() API returned object without signedMessage and signature fields",
+          );
         }
       } else {
-        if (!("signMessage" in resolvedWallet) || typeof resolvedWallet.signMessage !== "function" || !("publicKey" in resolvedWallet) || typeof resolvedWallet !== "object" || !resolvedWallet.publicKey || !("toBase58" in resolvedWallet.publicKey) || typeof resolvedWallet.publicKey.toBase58 !== "function") {
-          throw new Error("@supabase/auth-js: Wallet does not have a compatible signMessage() and publicKey.toBase58() API");
+        if (
+          !("signMessage" in resolvedWallet) ||
+          typeof resolvedWallet.signMessage !== "function" ||
+          !("publicKey" in resolvedWallet) ||
+          typeof resolvedWallet !== "object" ||
+          !resolvedWallet.publicKey ||
+          !("toBase58" in resolvedWallet.publicKey) ||
+          typeof resolvedWallet.publicKey.toBase58 !== "function"
+        ) {
+          throw new Error(
+            "@supabase/auth-js: Wallet does not have a compatible signMessage() and publicKey.toBase58() API",
+          );
         }
         message = [
           `${url.host} wants you to sign in with your Solana account:`,
           resolvedWallet.publicKey.toBase58(),
-          ...statement ? ["", statement, ""] : [""],
+          ...(statement ? ["", statement, ""] : [""]),
           "Version: 1",
           `URI: ${url.href}`,
-          `Issued At: ${(_c = (_b = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _b === void 0 ? void 0 : _b.issuedAt) !== null && _c !== void 0 ? _c : (/* @__PURE__ */ new Date()).toISOString()}`,
-          ...((_d = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _d === void 0 ? void 0 : _d.notBefore) ? [`Not Before: ${options.signInWithSolana.notBefore}`] : [],
-          ...((_e = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _e === void 0 ? void 0 : _e.expirationTime) ? [`Expiration Time: ${options.signInWithSolana.expirationTime}`] : [],
-          ...((_f = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _f === void 0 ? void 0 : _f.chainId) ? [`Chain ID: ${options.signInWithSolana.chainId}`] : [],
-          ...((_g = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _g === void 0 ? void 0 : _g.nonce) ? [`Nonce: ${options.signInWithSolana.nonce}`] : [],
-          ...((_h = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _h === void 0 ? void 0 : _h.requestId) ? [`Request ID: ${options.signInWithSolana.requestId}`] : [],
-          ...((_k = (_j = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _j === void 0 ? void 0 : _j.resources) === null || _k === void 0 ? void 0 : _k.length) ? [
-            "Resources",
-            ...options.signInWithSolana.resources.map((resource) => `- ${resource}`)
-          ] : []
+          `Issued At: ${(C = (B = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || B === void 0 ? void 0 : B.issuedAt) !== null && C !== void 0 ? C : /* @__PURE__ */ new Date().toISOString()}`,
+          ...((
+            (D =
+              options === null || options === void 0
+                ? void 0
+                : options.signInWithSolana) === null || D === void 0
+              ? void 0
+              : D.notBefore
+          )
+            ? [`Not Before: ${options.signInWithSolana.notBefore}`]
+            : []),
+          ...((
+            (E =
+              options === null || options === void 0
+                ? void 0
+                : options.signInWithSolana) === null || E === void 0
+              ? void 0
+              : E.expirationTime
+          )
+            ? [`Expiration Time: ${options.signInWithSolana.expirationTime}`]
+            : []),
+          ...((
+            (F =
+              options === null || options === void 0
+                ? void 0
+                : options.signInWithSolana) === null || F === void 0
+              ? void 0
+              : F.chainId
+          )
+            ? [`Chain ID: ${options.signInWithSolana.chainId}`]
+            : []),
+          ...((
+            (G =
+              options === null || options === void 0
+                ? void 0
+                : options.signInWithSolana) === null || G === void 0
+              ? void 0
+              : G.nonce
+          )
+            ? [`Nonce: ${options.signInWithSolana.nonce}`]
+            : []),
+          ...((
+            (H =
+              options === null || options === void 0
+                ? void 0
+                : options.signInWithSolana) === null || H === void 0
+              ? void 0
+              : H.requestId
+          )
+            ? [`Request ID: ${options.signInWithSolana.requestId}`]
+            : []),
+          ...((
+            (K =
+              (J =
+                options === null || options === void 0
+                  ? void 0
+                  : options.signInWithSolana) === null || J === void 0
+                ? void 0
+                : J.resources) === null || K === void 0
+              ? void 0
+              : K.length
+          )
+            ? [
+                "Resources",
+                ...options.signInWithSolana.resources.map(
+                  (resource) => `- ${resource}`,
+                ),
+              ]
+            : []),
         ].join("\n");
-        const maybeSignature = await resolvedWallet.signMessage(new TextEncoder().encode(message), "utf8");
+        const maybeSignature = await resolvedWallet.signMessage(
+          new TextEncoder().encode(message),
+          "utf8",
+        );
         if (!maybeSignature || !(maybeSignature instanceof Uint8Array)) {
-          throw new Error("@supabase/auth-js: Wallet signMessage() API returned an recognized value");
+          throw new Error(
+            "@supabase/auth-js: Wallet signMessage() API returned an recognized value",
+          );
         }
         signature = maybeSignature;
       }
     }
     try {
-      const { data, error } = await _request(this.fetch, "POST", `${this.url}/token?grant_type=web3`, {
-        headers: this.headers,
-        body: Object.assign({ chain: "solana", message, signature: bytesToBase64URL(signature) }, ((_l = credentials.options) === null || _l === void 0 ? void 0 : _l.captchaToken) ? { gotrue_meta_security: { captcha_token: (_m = credentials.options) === null || _m === void 0 ? void 0 : _m.captchaToken } } : null),
-        xform: _sessionResponse
-      });
+      const { data, error } = await Request(
+        this.fetch,
+        "POST",
+        `${this.url}/token?grant_type=web3`,
+        {
+          headers: this.headers,
+          body: Object.assign(
+            {
+              chain: "solana",
+              message,
+              signature: bytesToBase64URL(signature),
+            },
+            (
+              (L = credentials.options) === null || L === void 0
+                ? void 0
+                : L.captchaToken
+            )
+              ? {
+                  gotrue_meta_security: {
+                    captcha_token:
+                      (M = credentials.options) === null || M === void 0
+                        ? void 0
+                        : M.captchaToken,
+                  },
+                }
+              : null,
+          ),
+          xform: SessionResponse,
+        },
+      );
       if (error) {
         throw error;
       }
       if (!data || !data.session || !data.user) {
         return {
           data: { user: null, session: null },
-          error: new AuthInvalidTokenResponseError()
+          error: new AuthInvalidTokenResponseError(),
         };
       }
       if (data.session) {
@@ -7819,17 +9449,27 @@ var GoTrueClient = class {
     }
   }
   async _exchangeCodeForSession(authCode) {
-    const storageItem = await getItemAsync(this.storage, `${this.storageKey}-code-verifier`);
-    const [codeVerifier, redirectType] = (storageItem !== null && storageItem !== void 0 ? storageItem : "").split("/");
+    const storageItem = await getItemAsync(
+      this.storage,
+      `${this.storageKey}-code-verifier`,
+    );
+    const [codeVerifier, redirectType] = (
+      storageItem !== null && storageItem !== void 0 ? storageItem : ""
+    ).split("/");
     try {
-      const { data, error } = await _request(this.fetch, "POST", `${this.url}/token?grant_type=pkce`, {
-        headers: this.headers,
-        body: {
-          auth_code: authCode,
-          code_verifier: codeVerifier
+      const { data, error } = await Request(
+        this.fetch,
+        "POST",
+        `${this.url}/token?grant_type=pkce`,
+        {
+          headers: this.headers,
+          body: {
+            auth_code: authCode,
+            code_verifier: codeVerifier,
+          },
+          xform: SessionResponse,
         },
-        xform: _sessionResponse
-      });
+      );
       await removeItemAsync(this.storage, `${this.storageKey}-code-verifier`);
       if (error) {
         throw error;
@@ -7837,17 +9477,28 @@ var GoTrueClient = class {
       if (!data || !data.session || !data.user) {
         return {
           data: { user: null, session: null, redirectType: null },
-          error: new AuthInvalidTokenResponseError()
+          error: new AuthInvalidTokenResponseError(),
         };
       }
       if (data.session) {
         await this._saveSession(data.session);
         await this._notifyAllSubscribers("SIGNED_IN", data.session);
       }
-      return { data: Object.assign(Object.assign({}, data), { redirectType: redirectType !== null && redirectType !== void 0 ? redirectType : null }), error };
+      return {
+        data: Object.assign(Object.assign({}, data), {
+          redirectType:
+            redirectType !== null && redirectType !== void 0
+              ? redirectType
+              : null,
+        }),
+        error,
+      };
     } catch (error) {
       if (isAuthError(error)) {
-        return { data: { user: null, session: null, redirectType: null }, error };
+        return {
+          data: { user: null, session: null, redirectType: null },
+          error,
+        };
       }
       throw error;
     }
@@ -7859,24 +9510,34 @@ var GoTrueClient = class {
   async signInWithIdToken(credentials) {
     try {
       const { options, provider, token, access_token, nonce } = credentials;
-      const res = await _request(this.fetch, "POST", `${this.url}/token?grant_type=id_token`, {
-        headers: this.headers,
-        body: {
-          provider,
-          id_token: token,
-          access_token,
-          nonce,
-          gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
+      const res = await Request(
+        this.fetch,
+        "POST",
+        `${this.url}/token?grant_type=id_token`,
+        {
+          headers: this.headers,
+          body: {
+            provider,
+            id_token: token,
+            access_token,
+            nonce,
+            gotrue_meta_security: {
+              captcha_token:
+                options === null || options === void 0
+                  ? void 0
+                  : options.captchaToken,
+            },
+          },
+          xform: SessionResponse,
         },
-        xform: _sessionResponse
-      });
+      );
       const { data, error } = res;
       if (error) {
         return { data: { user: null, session: null }, error };
       } else if (!data || !data.session || !data.user) {
         return {
           data: { user: null, session: null },
-          error: new AuthInvalidTokenResponseError()
+          error: new AuthInvalidTokenResponseError(),
         };
       }
       if (data.session) {
@@ -7909,45 +9570,103 @@ var GoTrueClient = class {
    * This method supports PKCE when an email is passed.
    */
   async signInWithOtp(credentials) {
-    var _a, _b, _c, _d, _e;
+    var A, B, C, D, E;
     try {
       if ("email" in credentials) {
         const { email, options } = credentials;
         let codeChallenge = null;
         let codeChallengeMethod = null;
         if (this.flowType === "pkce") {
-          ;
-          [codeChallenge, codeChallengeMethod] = await getCodeChallengeAndMethod(this.storage, this.storageKey);
+          [codeChallenge, codeChallengeMethod] =
+            await getCodeChallengeAndMethod(this.storage, this.storageKey);
         }
-        const { error } = await _request(this.fetch, "POST", `${this.url}/otp`, {
+        const { error } = await Request(this.fetch, "POST", `${this.url}/otp`, {
           headers: this.headers,
           body: {
             email,
-            data: (_a = options === null || options === void 0 ? void 0 : options.data) !== null && _a !== void 0 ? _a : {},
-            create_user: (_b = options === null || options === void 0 ? void 0 : options.shouldCreateUser) !== null && _b !== void 0 ? _b : true,
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken },
+            data:
+              (A =
+                options === null || options === void 0
+                  ? void 0
+                  : options.data) !== null && A !== void 0
+                ? A
+                : {},
+            create_user:
+              (B =
+                options === null || options === void 0
+                  ? void 0
+                  : options.shouldCreateUser) !== null && B !== void 0
+                ? B
+                : true,
+            gotrue_meta_security: {
+              captcha_token:
+                options === null || options === void 0
+                  ? void 0
+                  : options.captchaToken,
+            },
             code_challenge: codeChallenge,
-            code_challenge_method: codeChallengeMethod
+            code_challenge_method: codeChallengeMethod,
           },
-          redirectTo: options === null || options === void 0 ? void 0 : options.emailRedirectTo
+          redirectTo:
+            options === null || options === void 0
+              ? void 0
+              : options.emailRedirectTo,
         });
         return { data: { user: null, session: null }, error };
       }
       if ("phone" in credentials) {
         const { phone, options } = credentials;
-        const { data, error } = await _request(this.fetch, "POST", `${this.url}/otp`, {
-          headers: this.headers,
-          body: {
-            phone,
-            data: (_c = options === null || options === void 0 ? void 0 : options.data) !== null && _c !== void 0 ? _c : {},
-            create_user: (_d = options === null || options === void 0 ? void 0 : options.shouldCreateUser) !== null && _d !== void 0 ? _d : true,
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken },
-            channel: (_e = options === null || options === void 0 ? void 0 : options.channel) !== null && _e !== void 0 ? _e : "sms"
-          }
-        });
-        return { data: { user: null, session: null, messageId: data === null || data === void 0 ? void 0 : data.message_id }, error };
+        const { data, error } = await Request(
+          this.fetch,
+          "POST",
+          `${this.url}/otp`,
+          {
+            headers: this.headers,
+            body: {
+              phone,
+              data:
+                (C =
+                  options === null || options === void 0
+                    ? void 0
+                    : options.data) !== null && C !== void 0
+                  ? C
+                  : {},
+              create_user:
+                (D =
+                  options === null || options === void 0
+                    ? void 0
+                    : options.shouldCreateUser) !== null && D !== void 0
+                  ? D
+                  : true,
+              gotrue_meta_security: {
+                captcha_token:
+                  options === null || options === void 0
+                    ? void 0
+                    : options.captchaToken,
+              },
+              channel:
+                (E =
+                  options === null || options === void 0
+                    ? void 0
+                    : options.channel) !== null && E !== void 0
+                  ? E
+                  : "sms",
+            },
+          },
+        );
+        return {
+          data: {
+            user: null,
+            session: null,
+            messageId:
+              data === null || data === void 0 ? void 0 : data.message_id,
+          },
+          error,
+        };
       }
-      throw new AuthInvalidCredentialsError("You must provide either an email or phone number.");
+      throw new AuthInvalidCredentialsError(
+        "You must provide either an email or phone number.",
+      );
     } catch (error) {
       if (isAuthError(error)) {
         return { data: { user: null, session: null }, error };
@@ -7959,20 +9678,31 @@ var GoTrueClient = class {
    * Log in a user given a User supplied OTP or TokenHash received through mobile or email.
    */
   async verifyOtp(params) {
-    var _a, _b;
+    var A, B;
     try {
       let redirectTo = void 0;
       let captchaToken = void 0;
       if ("options" in params) {
-        redirectTo = (_a = params.options) === null || _a === void 0 ? void 0 : _a.redirectTo;
-        captchaToken = (_b = params.options) === null || _b === void 0 ? void 0 : _b.captchaToken;
+        redirectTo =
+          (A = params.options) === null || A === void 0 ? void 0 : A.redirectTo;
+        captchaToken =
+          (B = params.options) === null || B === void 0
+            ? void 0
+            : B.captchaToken;
       }
-      const { data, error } = await _request(this.fetch, "POST", `${this.url}/verify`, {
-        headers: this.headers,
-        body: Object.assign(Object.assign({}, params), { gotrue_meta_security: { captcha_token: captchaToken } }),
-        redirectTo,
-        xform: _sessionResponse
-      });
+      const { data, error } = await Request(
+        this.fetch,
+        "POST",
+        `${this.url}/verify`,
+        {
+          headers: this.headers,
+          body: Object.assign(Object.assign({}, params), {
+            gotrue_meta_security: { captcha_token: captchaToken },
+          }),
+          redirectTo,
+          xform: SessionResponse,
+        },
+      );
       if (error) {
         throw error;
       }
@@ -7981,9 +9711,14 @@ var GoTrueClient = class {
       }
       const session = data.session;
       const user = data.user;
-      if (session === null || session === void 0 ? void 0 : session.access_token) {
+      if (
+        session === null || session === void 0 ? void 0 : session.access_token
+      ) {
         await this._saveSession(session);
-        await this._notifyAllSubscribers(params.type == "recovery" ? "PASSWORD_RECOVERY" : "SIGNED_IN", session);
+        await this._notifyAllSubscribers(
+          params.type == "recovery" ? "PASSWORD_RECOVERY" : "SIGNED_IN",
+          session,
+        );
       }
       return { data: { user, session }, error: null };
     } catch (error) {
@@ -8008,18 +9743,62 @@ var GoTrueClient = class {
    * organization's SSO Identity Provider UUID directly instead.
    */
   async signInWithSSO(params) {
-    var _a, _b, _c;
+    var A, B, C;
     try {
       let codeChallenge = null;
       let codeChallengeMethod = null;
       if (this.flowType === "pkce") {
-        ;
-        [codeChallenge, codeChallengeMethod] = await getCodeChallengeAndMethod(this.storage, this.storageKey);
+        [codeChallenge, codeChallengeMethod] = await getCodeChallengeAndMethod(
+          this.storage,
+          this.storageKey,
+        );
       }
-      return await _request(this.fetch, "POST", `${this.url}/sso`, {
-        body: Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, "providerId" in params ? { provider_id: params.providerId } : null), "domain" in params ? { domain: params.domain } : null), { redirect_to: (_b = (_a = params.options) === null || _a === void 0 ? void 0 : _a.redirectTo) !== null && _b !== void 0 ? _b : void 0 }), ((_c = params === null || params === void 0 ? void 0 : params.options) === null || _c === void 0 ? void 0 : _c.captchaToken) ? { gotrue_meta_security: { captcha_token: params.options.captchaToken } } : null), { skip_http_redirect: true, code_challenge: codeChallenge, code_challenge_method: codeChallengeMethod }),
+      return await Request(this.fetch, "POST", `${this.url}/sso`, {
+        body: Object.assign(
+          Object.assign(
+            Object.assign(
+              Object.assign(
+                Object.assign(
+                  {},
+                  "providerId" in params
+                    ? { provider_id: params.providerId }
+                    : null,
+                ),
+                "domain" in params ? { domain: params.domain } : null,
+              ),
+              {
+                redirect_to:
+                  (B =
+                    (A = params.options) === null || A === void 0
+                      ? void 0
+                      : A.redirectTo) !== null && B !== void 0
+                    ? B
+                    : void 0,
+              },
+            ),
+            (
+              (C =
+                params === null || params === void 0
+                  ? void 0
+                  : params.options) === null || C === void 0
+                ? void 0
+                : C.captchaToken
+            )
+              ? {
+                  gotrue_meta_security: {
+                    captcha_token: params.options.captchaToken,
+                  },
+                }
+              : null,
+          ),
+          {
+            skip_http_redirect: true,
+            code_challenge: codeChallenge,
+            code_challenge_method: codeChallengeMethod,
+          },
+        ),
         headers: this.headers,
-        xform: _ssoResponse
+        xform: SsoResponse,
       });
     } catch (error) {
       if (isAuthError(error)) {
@@ -8041,15 +9820,21 @@ var GoTrueClient = class {
   async _reauthenticate() {
     try {
       return await this._useSession(async (result) => {
-        const { data: { session }, error: sessionError } = result;
-        if (sessionError)
-          throw sessionError;
-        if (!session)
-          throw new AuthSessionMissingError();
-        const { error } = await _request(this.fetch, "GET", `${this.url}/reauthenticate`, {
-          headers: this.headers,
-          jwt: session.access_token
-        });
+        const {
+          data: { session },
+          error: sessionError,
+        } = result;
+        if (sessionError) throw sessionError;
+        if (!session) throw new AuthSessionMissingError();
+        const { error } = await Request(
+          this.fetch,
+          "GET",
+          `${this.url}/reauthenticate`,
+          {
+            headers: this.headers,
+            jwt: session.access_token,
+          },
+        );
         return { data: { user: null, session: null }, error };
       });
     } catch (error) {
@@ -8067,29 +9852,52 @@ var GoTrueClient = class {
       const endpoint = `${this.url}/resend`;
       if ("email" in credentials) {
         const { email, type, options } = credentials;
-        const { error } = await _request(this.fetch, "POST", endpoint, {
+        const { error } = await Request(this.fetch, "POST", endpoint, {
           headers: this.headers,
           body: {
             email,
             type,
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
+            gotrue_meta_security: {
+              captcha_token:
+                options === null || options === void 0
+                  ? void 0
+                  : options.captchaToken,
+            },
           },
-          redirectTo: options === null || options === void 0 ? void 0 : options.emailRedirectTo
+          redirectTo:
+            options === null || options === void 0
+              ? void 0
+              : options.emailRedirectTo,
         });
         return { data: { user: null, session: null }, error };
       } else if ("phone" in credentials) {
         const { phone, type, options } = credentials;
-        const { data, error } = await _request(this.fetch, "POST", endpoint, {
+        const { data, error } = await Request(this.fetch, "POST", endpoint, {
           headers: this.headers,
           body: {
             phone,
             type,
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
-          }
+            gotrue_meta_security: {
+              captcha_token:
+                options === null || options === void 0
+                  ? void 0
+                  : options.captchaToken,
+            },
+          },
         });
-        return { data: { user: null, session: null, messageId: data === null || data === void 0 ? void 0 : data.message_id }, error };
+        return {
+          data: {
+            user: null,
+            session: null,
+            messageId:
+              data === null || data === void 0 ? void 0 : data.message_id,
+          },
+          error,
+        };
       }
-      throw new AuthInvalidCredentialsError("You must provide either an email or phone number and a type");
+      throw new AuthInvalidCredentialsError(
+        "You must provide either an email or phone number and a type",
+      );
     } catch (error) {
       if (isAuthError(error)) {
         return { data: { user: null, session: null }, error };
@@ -8124,42 +9932,58 @@ var GoTrueClient = class {
     this._debug("#_acquireLock", "begin", acquireTimeout);
     try {
       if (this.lockAcquired) {
-        const last = this.pendingInLock.length ? this.pendingInLock[this.pendingInLock.length - 1] : Promise.resolve();
+        const last = this.pendingInLock.length
+          ? this.pendingInLock[this.pendingInLock.length - 1]
+          : Promise.resolve();
         const result = (async () => {
           await last;
           return await fn();
         })();
-        this.pendingInLock.push((async () => {
-          try {
-            await result;
-          } catch (e) {
-          }
-        })());
-        return result;
-      }
-      return await this.lock(`lock:${this.storageKey}`, acquireTimeout, async () => {
-        this._debug("#_acquireLock", "lock acquired for storage key", this.storageKey);
-        try {
-          this.lockAcquired = true;
-          const result = fn();
-          this.pendingInLock.push((async () => {
+        this.pendingInLock.push(
+          (async () => {
             try {
               await result;
-            } catch (e) {
+            } catch (e) {}
+          })(),
+        );
+        return result;
+      }
+      return await this.lock(
+        `lock:${this.storageKey}`,
+        acquireTimeout,
+        async () => {
+          this._debug(
+            "#_acquireLock",
+            "lock acquired for storage key",
+            this.storageKey,
+          );
+          try {
+            this.lockAcquired = true;
+            const result = fn();
+            this.pendingInLock.push(
+              (async () => {
+                try {
+                  await result;
+                } catch (e) {}
+              })(),
+            );
+            await result;
+            while (this.pendingInLock.length) {
+              const waitOn = [...this.pendingInLock];
+              await Promise.all(waitOn);
+              this.pendingInLock.splice(0, waitOn.length);
             }
-          })());
-          await result;
-          while (this.pendingInLock.length) {
-            const waitOn = [...this.pendingInLock];
-            await Promise.all(waitOn);
-            this.pendingInLock.splice(0, waitOn.length);
+            return await result;
+          } finally {
+            this._debug(
+              "#_acquireLock",
+              "lock released for storage key",
+              this.storageKey,
+            );
+            this.lockAcquired = false;
           }
-          return await result;
-        } finally {
-          this._debug("#_acquireLock", "lock released for storage key", this.storageKey);
-          this.lockAcquired = false;
-        }
-      });
+        },
+      );
     } finally {
       this._debug("#_acquireLock", "end");
     }
@@ -8187,7 +10011,11 @@ var GoTrueClient = class {
   async __loadSession() {
     this._debug("#__loadSession()", "begin");
     if (!this.lockAcquired) {
-      this._debug("#__loadSession()", "used outside of an acquired lock!", new Error().stack);
+      this._debug(
+        "#__loadSession()",
+        "used outside of an acquired lock!",
+        new Error().stack,
+      );
     }
     try {
       let currentSession = null;
@@ -8204,12 +10032,24 @@ var GoTrueClient = class {
       if (!currentSession) {
         return { data: { session: null }, error: null };
       }
-      const hasExpired = currentSession.expires_at ? currentSession.expires_at * 1e3 - Date.now() < EXPIRY_MARGIN_MS : false;
-      this._debug("#__loadSession()", `session has${hasExpired ? "" : " not"} expired`, "expires_at", currentSession.expires_at);
+      const hasExpired = currentSession.expires_at
+        ? currentSession.expires_at * 1e3 - Date.now() < EXPIRY_MARGIN_MS
+        : false;
+      this._debug(
+        "#__loadSession()",
+        `session has${hasExpired ? "" : " not"} expired`,
+        "expires_at",
+        currentSession.expires_at,
+      );
       if (!hasExpired) {
         if (this.userStorage) {
-          const maybeUser = await getItemAsync(this.userStorage, this.storageKey + "-user");
-          if (maybeUser === null || maybeUser === void 0 ? void 0 : maybeUser.user) {
+          const maybeUser = await getItemAsync(
+            this.userStorage,
+            this.storageKey + "-user",
+          );
+          if (
+            maybeUser === null || maybeUser === void 0 ? void 0 : maybeUser.user
+          ) {
             currentSession.user = maybeUser.user;
           } else {
             currentSession.user = userNotAvailableProxy();
@@ -8220,18 +10060,22 @@ var GoTrueClient = class {
           const proxySession = new Proxy(currentSession, {
             get: (target, prop, receiver) => {
               if (!suppressWarning && prop === "user") {
-                console.warn("Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.");
+                console.warn(
+                  "Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.",
+                );
                 suppressWarning = true;
                 this.suppressGetSessionWarning = true;
               }
               return Reflect.get(target, prop, receiver);
-            }
+            },
           });
           currentSession = proxySession;
         }
         return { data: { session: currentSession }, error: null };
       }
-      const { session, error } = await this._callRefreshToken(currentSession.refresh_token);
+      const { session, error } = await this._callRefreshToken(
+        currentSession.refresh_token,
+      );
       if (error) {
         return { data: { session: null }, error };
       }
@@ -8260,32 +10104,46 @@ var GoTrueClient = class {
   async _getUser(jwt) {
     try {
       if (jwt) {
-        return await _request(this.fetch, "GET", `${this.url}/user`, {
+        return await Request(this.fetch, "GET", `${this.url}/user`, {
           headers: this.headers,
           jwt,
-          xform: _userResponse
+          xform: UserResponse,
         });
       }
       return await this._useSession(async (result) => {
-        var _a, _b, _c;
+        var A, B, C;
         const { data, error } = result;
         if (error) {
           throw error;
         }
-        if (!((_a = data.session) === null || _a === void 0 ? void 0 : _a.access_token) && !this.hasCustomAuthorizationHeader) {
+        if (
+          !((A = data.session) === null || A === void 0
+            ? void 0
+            : A.access_token) &&
+          !this.hasCustomAuthorizationHeader
+        ) {
           return { data: { user: null }, error: new AuthSessionMissingError() };
         }
-        return await _request(this.fetch, "GET", `${this.url}/user`, {
+        return await Request(this.fetch, "GET", `${this.url}/user`, {
           headers: this.headers,
-          jwt: (_c = (_b = data.session) === null || _b === void 0 ? void 0 : _b.access_token) !== null && _c !== void 0 ? _c : void 0,
-          xform: _userResponse
+          jwt:
+            (C =
+              (B = data.session) === null || B === void 0
+                ? void 0
+                : B.access_token) !== null && C !== void 0
+              ? C
+              : void 0,
+          xform: UserResponse,
         });
       });
     } catch (error) {
       if (isAuthError(error)) {
         if (isAuthSessionMissingError(error)) {
           await this._removeSession();
-          await removeItemAsync(this.storage, `${this.storageKey}-code-verifier`);
+          await removeItemAsync(
+            this.storage,
+            `${this.storageKey}-code-verifier`,
+          );
         }
         return { data: { user: null }, error };
       }
@@ -8315,18 +10173,28 @@ var GoTrueClient = class {
         let codeChallenge = null;
         let codeChallengeMethod = null;
         if (this.flowType === "pkce" && attributes.email != null) {
-          ;
-          [codeChallenge, codeChallengeMethod] = await getCodeChallengeAndMethod(this.storage, this.storageKey);
+          [codeChallenge, codeChallengeMethod] =
+            await getCodeChallengeAndMethod(this.storage, this.storageKey);
         }
-        const { data, error: userError } = await _request(this.fetch, "PUT", `${this.url}/user`, {
-          headers: this.headers,
-          redirectTo: options === null || options === void 0 ? void 0 : options.emailRedirectTo,
-          body: Object.assign(Object.assign({}, attributes), { code_challenge: codeChallenge, code_challenge_method: codeChallengeMethod }),
-          jwt: session.access_token,
-          xform: _userResponse
-        });
-        if (userError)
-          throw userError;
+        const { data, error: userError } = await Request(
+          this.fetch,
+          "PUT",
+          `${this.url}/user`,
+          {
+            headers: this.headers,
+            redirectTo:
+              options === null || options === void 0
+                ? void 0
+                : options.emailRedirectTo,
+            body: Object.assign(Object.assign({}, attributes), {
+              code_challenge: codeChallenge,
+              code_challenge_method: codeChallengeMethod,
+            }),
+            jwt: session.access_token,
+            xform: UserResponse,
+          },
+        );
+        if (userError) throw userError;
         session.user = data.user;
         await this._saveSession(session);
         await this._notifyAllSubscribers("USER_UPDATED", session);
@@ -8365,7 +10233,8 @@ var GoTrueClient = class {
         hasExpired = expiresAt2 <= timeNow;
       }
       if (hasExpired) {
-        const { session: refreshedSession, error } = await this._callRefreshToken(currentSession.refresh_token);
+        const { session: refreshedSession, error } =
+          await this._callRefreshToken(currentSession.refresh_token);
         if (error) {
           return { data: { user: null, session: null }, error };
         }
@@ -8374,7 +10243,9 @@ var GoTrueClient = class {
         }
         session = refreshedSession;
       } else {
-        const { data, error } = await this._getUser(currentSession.access_token);
+        const { data, error } = await this._getUser(
+          currentSession.access_token,
+        );
         if (error) {
           throw error;
         }
@@ -8384,7 +10255,7 @@ var GoTrueClient = class {
           user: data.user,
           token_type: "bearer",
           expires_in: expiresAt2 - timeNow,
-          expires_at: expiresAt2
+          expires_at: expiresAt2,
         };
         await this._saveSession(session);
         await this._notifyAllSubscribers("SIGNED_IN", session);
@@ -8412,18 +10283,25 @@ var GoTrueClient = class {
   async _refreshSession(currentSession) {
     try {
       return await this._useSession(async (result) => {
-        var _a;
+        var A;
         if (!currentSession) {
           const { data, error: error2 } = result;
           if (error2) {
             throw error2;
           }
-          currentSession = (_a = data.session) !== null && _a !== void 0 ? _a : void 0;
+          currentSession =
+            (A = data.session) !== null && A !== void 0 ? A : void 0;
         }
-        if (!(currentSession === null || currentSession === void 0 ? void 0 : currentSession.refresh_token)) {
+        if (
+          !(currentSession === null || currentSession === void 0
+            ? void 0
+            : currentSession.refresh_token)
+        ) {
           throw new AuthSessionMissingError();
         }
-        const { session, error } = await this._callRefreshToken(currentSession.refresh_token);
+        const { session, error } = await this._callRefreshToken(
+          currentSession.refresh_token,
+        );
         if (error) {
           return { data: { user: null, session: null }, error };
         }
@@ -8447,20 +10325,28 @@ var GoTrueClient = class {
       if (!isBrowser())
         throw new AuthImplicitGrantRedirectError("No browser detected.");
       if (params.error || params.error_description || params.error_code) {
-        throw new AuthImplicitGrantRedirectError(params.error_description || "Error in URL with unspecified error_description", {
-          error: params.error || "unspecified_error",
-          code: params.error_code || "unspecified_code"
-        });
+        throw new AuthImplicitGrantRedirectError(
+          params.error_description ||
+            "Error in URL with unspecified error_description",
+          {
+            error: params.error || "unspecified_error",
+            code: params.error_code || "unspecified_code",
+          },
+        );
       }
       switch (callbackUrlType) {
         case "implicit":
           if (this.flowType === "pkce") {
-            throw new AuthPKCEGrantCodeExchangeError("Not a valid PKCE flow url.");
+            throw new AuthPKCEGrantCodeExchangeError(
+              "Not a valid PKCE flow url.",
+            );
           }
           break;
         case "pkce":
           if (this.flowType === "implicit") {
-            throw new AuthImplicitGrantRedirectError("Not a valid implicit grant flow url.");
+            throw new AuthImplicitGrantRedirectError(
+              "Not a valid implicit grant flow url.",
+            );
           }
           break;
         default:
@@ -8469,15 +10355,26 @@ var GoTrueClient = class {
         this._debug("#_initialize()", "begin", "is PKCE flow", true);
         if (!params.code)
           throw new AuthPKCEGrantCodeExchangeError("No code detected.");
-        const { data: data2, error: error2 } = await this._exchangeCodeForSession(params.code);
-        if (error2)
-          throw error2;
+        const { data: data2, error: error2 } =
+          await this._exchangeCodeForSession(params.code);
+        if (error2) throw error2;
         const url = new URL(window.location.href);
         url.searchParams.delete("code");
         window.history.replaceState(window.history.state, "", url.toString());
-        return { data: { session: data2.session, redirectType: null }, error: null };
+        return {
+          data: { session: data2.session, redirectType: null },
+          error: null,
+        };
       }
-      const { provider_token, provider_refresh_token, access_token, refresh_token, expires_in, expires_at, token_type } = params;
+      const {
+        provider_token,
+        provider_refresh_token,
+        access_token,
+        refresh_token,
+        expires_in,
+        expires_at,
+        token_type,
+      } = params;
       if (!access_token || !expires_in || !refresh_token || !token_type) {
         throw new AuthImplicitGrantRedirectError("No session defined in URL");
       }
@@ -8489,17 +10386,28 @@ var GoTrueClient = class {
       }
       const actuallyExpiresIn = expiresAt2 - timeNow;
       if (actuallyExpiresIn * 1e3 <= AUTO_REFRESH_TICK_DURATION_MS) {
-        console.warn(`@supabase/gotrue-js: Session as retrieved from URL expires in ${actuallyExpiresIn}s, should have been closer to ${expiresIn}s`);
+        console.warn(
+          `@supabase/gotrue-js: Session as retrieved from URL expires in ${actuallyExpiresIn}s, should have been closer to ${expiresIn}s`,
+        );
       }
       const issuedAt = expiresAt2 - expiresIn;
       if (timeNow - issuedAt >= 120) {
-        console.warn("@supabase/gotrue-js: Session as retrieved from URL was issued over 120s ago, URL could be stale", issuedAt, expiresAt2, timeNow);
+        console.warn(
+          "@supabase/gotrue-js: Session as retrieved from URL was issued over 120s ago, URL could be stale",
+          issuedAt,
+          expiresAt2,
+          timeNow,
+        );
       } else if (timeNow - issuedAt < 0) {
-        console.warn("@supabase/gotrue-js: Session as retrieved from URL was issued in the future? Check the device clock for skew", issuedAt, expiresAt2, timeNow);
+        console.warn(
+          "@supabase/gotrue-js: Session as retrieved from URL was issued in the future? Check the device clock for skew",
+          issuedAt,
+          expiresAt2,
+          timeNow,
+        );
       }
       const { data, error } = await this._getUser(access_token);
-      if (error)
-        throw error;
+      if (error) throw error;
       const session = {
         provider_token,
         provider_refresh_token,
@@ -8508,7 +10416,7 @@ var GoTrueClient = class {
         expires_at: expiresAt2,
         refresh_token,
         token_type,
-        user: data.user
+        user: data.user,
       };
       window.location.hash = "";
       this._debug("#_getSessionFromURL()", "clearing window.location.hash");
@@ -8530,7 +10438,10 @@ var GoTrueClient = class {
    * Checks if the current URL and backing storage contain parameters given by a PKCE flow
    */
   async _isPKCECallback(params) {
-    const currentStorageContent = await getItemAsync(this.storage, `${this.storageKey}-code-verifier`);
+    const currentStorageContent = await getItemAsync(
+      this.storage,
+      `${this.storageKey}-code-verifier`,
+    );
     return !!(params.code && currentStorageContent);
   }
   /**
@@ -8549,16 +10460,24 @@ var GoTrueClient = class {
   }
   async _signOut({ scope } = { scope: "global" }) {
     return await this._useSession(async (result) => {
-      var _a;
+      var A;
       const { data, error: sessionError } = result;
       if (sessionError) {
         return { error: sessionError };
       }
-      const accessToken = (_a = data.session) === null || _a === void 0 ? void 0 : _a.access_token;
+      const accessToken =
+        (A = data.session) === null || A === void 0 ? void 0 : A.access_token;
       if (accessToken) {
         const { error } = await this.admin.signOut(accessToken, scope);
         if (error) {
-          if (!(isAuthApiError(error) && (error.status === 404 || error.status === 401 || error.status === 403))) {
+          if (
+            !(
+              isAuthApiError(error) &&
+              (error.status === 404 ||
+                error.status === 401 ||
+                error.status === 403)
+            )
+          ) {
             return { error };
           }
         }
@@ -8580,9 +10499,13 @@ var GoTrueClient = class {
       id,
       callback,
       unsubscribe: () => {
-        this._debug("#unsubscribe()", "state change callback with id removed", id);
+        this._debug(
+          "#unsubscribe()",
+          "state change callback with id removed",
+          id,
+        );
         this.stateChangeEmitters.delete(id);
-      }
+      },
     };
     this._debug("#onAuthStateChange()", "registered callback with id", id);
     this.stateChangeEmitters.set(id, subscription);
@@ -8596,15 +10519,21 @@ var GoTrueClient = class {
   }
   async _emitInitialSession(id) {
     return await this._useSession(async (result) => {
-      var _a, _b;
+      var A, B;
       try {
-        const { data: { session }, error } = result;
-        if (error)
-          throw error;
-        await ((_a = this.stateChangeEmitters.get(id)) === null || _a === void 0 ? void 0 : _a.callback("INITIAL_SESSION", session));
+        const {
+          data: { session },
+          error,
+        } = result;
+        if (error) throw error;
+        await ((A = this.stateChangeEmitters.get(id)) === null || A === void 0
+          ? void 0
+          : A.callback("INITIAL_SESSION", session));
         this._debug("INITIAL_SESSION", "callback id", id, "session", session);
       } catch (err) {
-        await ((_b = this.stateChangeEmitters.get(id)) === null || _b === void 0 ? void 0 : _b.callback("INITIAL_SESSION", null));
+        await ((B = this.stateChangeEmitters.get(id)) === null || B === void 0
+          ? void 0
+          : B.callback("INITIAL_SESSION", null));
         this._debug("INITIAL_SESSION", "callback id", id, "error", err);
         console.error(err);
       }
@@ -8621,24 +10550,23 @@ var GoTrueClient = class {
     let codeChallenge = null;
     let codeChallengeMethod = null;
     if (this.flowType === "pkce") {
-      ;
       [codeChallenge, codeChallengeMethod] = await getCodeChallengeAndMethod(
         this.storage,
         this.storageKey,
-        true
+        true,
         // isPasswordRecovery
       );
     }
     try {
-      return await _request(this.fetch, "POST", `${this.url}/recover`, {
+      return await Request(this.fetch, "POST", `${this.url}/recover`, {
         body: {
           email,
           code_challenge: codeChallenge,
           code_challenge_method: codeChallengeMethod,
-          gotrue_meta_security: { captcha_token: options.captchaToken }
+          gotrue_meta_security: { captcha_token: options.captchaToken },
         },
         headers: this.headers,
-        redirectTo: options.redirectTo
+        redirectTo: options.redirectTo,
       });
     } catch (error) {
       if (isAuthError(error)) {
@@ -8651,12 +10579,17 @@ var GoTrueClient = class {
    * Gets all the identities linked to a user.
    */
   async getUserIdentities() {
-    var _a;
+    var A;
     try {
       const { data, error } = await this.getUser();
-      if (error)
-        throw error;
-      return { data: { identities: (_a = data.user.identities) !== null && _a !== void 0 ? _a : [] }, error: null };
+      if (error) throw error;
+      return {
+        data: {
+          identities:
+            (A = data.user.identities) !== null && A !== void 0 ? A : [],
+        },
+        error: null,
+      };
     } catch (error) {
       if (isAuthError(error)) {
         return { data: null, error };
@@ -8669,30 +10602,60 @@ var GoTrueClient = class {
    * This method supports the PKCE flow.
    */
   async linkIdentity(credentials) {
-    var _a;
+    var A;
     try {
       const { data, error } = await this._useSession(async (result) => {
-        var _a2, _b, _c, _d, _e;
+        var A2, B, C, D, E;
         const { data: data2, error: error2 } = result;
-        if (error2)
-          throw error2;
-        const url = await this._getUrlForProvider(`${this.url}/user/identities/authorize`, credentials.provider, {
-          redirectTo: (_a2 = credentials.options) === null || _a2 === void 0 ? void 0 : _a2.redirectTo,
-          scopes: (_b = credentials.options) === null || _b === void 0 ? void 0 : _b.scopes,
-          queryParams: (_c = credentials.options) === null || _c === void 0 ? void 0 : _c.queryParams,
-          skipBrowserRedirect: true
-        });
-        return await _request(this.fetch, "GET", url, {
+        if (error2) throw error2;
+        const url = await this._getUrlForProvider(
+          `${this.url}/user/identities/authorize`,
+          credentials.provider,
+          {
+            redirectTo:
+              (A2 = credentials.options) === null || A2 === void 0
+                ? void 0
+                : A2.redirectTo,
+            scopes:
+              (B = credentials.options) === null || B === void 0
+                ? void 0
+                : B.scopes,
+            queryParams:
+              (C = credentials.options) === null || C === void 0
+                ? void 0
+                : C.queryParams,
+            skipBrowserRedirect: true,
+          },
+        );
+        return await Request(this.fetch, "GET", url, {
           headers: this.headers,
-          jwt: (_e = (_d = data2.session) === null || _d === void 0 ? void 0 : _d.access_token) !== null && _e !== void 0 ? _e : void 0
+          jwt:
+            (E =
+              (D = data2.session) === null || D === void 0
+                ? void 0
+                : D.access_token) !== null && E !== void 0
+              ? E
+              : void 0,
         });
       });
-      if (error)
-        throw error;
-      if (isBrowser() && !((_a = credentials.options) === null || _a === void 0 ? void 0 : _a.skipBrowserRedirect)) {
-        window.location.assign(data === null || data === void 0 ? void 0 : data.url);
+      if (error) throw error;
+      if (
+        isBrowser() &&
+        !((A = credentials.options) === null || A === void 0
+          ? void 0
+          : A.skipBrowserRedirect)
+      ) {
+        window.location.assign(
+          data === null || data === void 0 ? void 0 : data.url,
+        );
       }
-      return { data: { provider: credentials.provider, url: data === null || data === void 0 ? void 0 : data.url }, error: null };
+      return {
+        data: {
+          provider: credentials.provider,
+          url: data === null || data === void 0 ? void 0 : data.url,
+        },
+        error: null,
+      };
     } catch (error) {
       if (isAuthError(error)) {
         return { data: { provider: credentials.provider, url: null }, error };
@@ -8706,15 +10669,26 @@ var GoTrueClient = class {
   async unlinkIdentity(identity) {
     try {
       return await this._useSession(async (result) => {
-        var _a, _b;
+        var A, B;
         const { data, error } = result;
         if (error) {
           throw error;
         }
-        return await _request(this.fetch, "DELETE", `${this.url}/user/identities/${identity.identity_id}`, {
-          headers: this.headers,
-          jwt: (_b = (_a = data.session) === null || _a === void 0 ? void 0 : _a.access_token) !== null && _b !== void 0 ? _b : void 0
-        });
+        return await Request(
+          this.fetch,
+          "DELETE",
+          `${this.url}/user/identities/${identity.identity_id}`,
+          {
+            headers: this.headers,
+            jwt:
+              (B =
+                (A = data.session) === null || A === void 0
+                  ? void 0
+                  : A.access_token) !== null && B !== void 0
+                ? B
+                : void 0,
+          },
+        );
       });
     } catch (error) {
       if (isAuthError(error)) {
@@ -8732,21 +10706,33 @@ var GoTrueClient = class {
     this._debug(debugName, "begin");
     try {
       const startedAt = Date.now();
-      return await retryable(async (attempt) => {
-        if (attempt > 0) {
-          await sleep(200 * Math.pow(2, attempt - 1));
-        }
-        this._debug(debugName, "refreshing attempt", attempt);
-        return await _request(this.fetch, "POST", `${this.url}/token?grant_type=refresh_token`, {
-          body: { refresh_token: refreshToken },
-          headers: this.headers,
-          xform: _sessionResponse
-        });
-      }, (attempt, error) => {
-        const nextBackOffInterval = 200 * Math.pow(2, attempt);
-        return error && isAuthRetryableFetchError(error) && // retryable only if the request can be sent before the backoff overflows the tick duration
-        Date.now() + nextBackOffInterval - startedAt < AUTO_REFRESH_TICK_DURATION_MS;
-      });
+      return await retryable(
+        async (attempt) => {
+          if (attempt > 0) {
+            await sleep(200 * 2 ** (attempt - 1));
+          }
+          this._debug(debugName, "refreshing attempt", attempt);
+          return await Request(
+            this.fetch,
+            "POST",
+            `${this.url}/token?grant_type=refresh_token`,
+            {
+              body: { refresh_token: refreshToken },
+              headers: this.headers,
+              xform: SessionResponse,
+            },
+          );
+        },
+        (attempt, error) => {
+          const nextBackOffInterval = 200 * 2 ** attempt;
+          return (
+            error &&
+            isAuthRetryableFetchError(error) && // retryable only if the request can be sent before the backoff overflows the tick duration
+            Date.now() + nextBackOffInterval - startedAt <
+              AUTO_REFRESH_TICK_DURATION_MS
+          );
+        },
+      );
     } catch (error) {
       this._debug(debugName, "error", error);
       if (isAuthError(error)) {
@@ -8758,16 +10744,33 @@ var GoTrueClient = class {
     }
   }
   _isValidSession(maybeSession) {
-    const isValidSession = typeof maybeSession === "object" && maybeSession !== null && "access_token" in maybeSession && "refresh_token" in maybeSession && "expires_at" in maybeSession;
+    const isValidSession =
+      typeof maybeSession === "object" &&
+      maybeSession !== null &&
+      "access_token" in maybeSession &&
+      "refresh_token" in maybeSession &&
+      "expires_at" in maybeSession;
     return isValidSession;
   }
   async _handleProviderSignIn(provider, options) {
-    const url = await this._getUrlForProvider(`${this.url}/authorize`, provider, {
-      redirectTo: options.redirectTo,
-      scopes: options.scopes,
-      queryParams: options.queryParams
-    });
-    this._debug("#_handleProviderSignIn()", "provider", provider, "options", options, "url", url);
+    const url = await this._getUrlForProvider(
+      `${this.url}/authorize`,
+      provider,
+      {
+        redirectTo: options.redirectTo,
+        scopes: options.scopes,
+        queryParams: options.queryParams,
+      },
+    );
+    this._debug(
+      "#_handleProviderSignIn()",
+      "provider",
+      provider,
+      "options",
+      options,
+      "url",
+      url,
+    );
     if (isBrowser() && !options.skipBrowserRedirect) {
       window.location.assign(url);
     }
@@ -8778,22 +10781,47 @@ var GoTrueClient = class {
    * Note: this method is async to accommodate for AsyncStorage e.g. in React native.
    */
   async _recoverAndRefresh() {
-    var _a, _b;
+    var A, B;
     const debugName = "#_recoverAndRefresh()";
     this._debug(debugName, "begin");
     try {
       const currentSession = await getItemAsync(this.storage, this.storageKey);
       if (currentSession && this.userStorage) {
-        let maybeUser = await getItemAsync(this.userStorage, this.storageKey + "-user");
-        if (!this.storage.isServer && Object.is(this.storage, this.userStorage) && !maybeUser) {
+        let maybeUser = await getItemAsync(
+          this.userStorage,
+          this.storageKey + "-user",
+        );
+        if (
+          !this.storage.isServer &&
+          Object.is(this.storage, this.userStorage) &&
+          !maybeUser
+        ) {
           maybeUser = { user: currentSession.user };
-          await setItemAsync(this.userStorage, this.storageKey + "-user", maybeUser);
+          await setItemAsync(
+            this.userStorage,
+            this.storageKey + "-user",
+            maybeUser,
+          );
         }
-        currentSession.user = (_a = maybeUser === null || maybeUser === void 0 ? void 0 : maybeUser.user) !== null && _a !== void 0 ? _a : userNotAvailableProxy();
+        currentSession.user =
+          (A =
+            maybeUser === null || maybeUser === void 0
+              ? void 0
+              : maybeUser.user) !== null && A !== void 0
+            ? A
+            : userNotAvailableProxy();
       } else if (currentSession && !currentSession.user) {
         if (!currentSession.user) {
-          const separateUser = await getItemAsync(this.storage, this.storageKey + "-user");
-          if (separateUser && (separateUser === null || separateUser === void 0 ? void 0 : separateUser.user)) {
+          const separateUser = await getItemAsync(
+            this.storage,
+            this.storageKey + "-user",
+          );
+          if (
+            separateUser &&
+            (separateUser === null || separateUser === void 0
+              ? void 0
+              : separateUser.user)
+          ) {
             currentSession.user = separateUser.user;
             await removeItemAsync(this.storage, this.storageKey + "-user");
             await setItemAsync(this.storage, this.storageKey, currentSession);
@@ -8810,32 +10838,62 @@ var GoTrueClient = class {
         }
         return;
       }
-      const expiresWithMargin = ((_b = currentSession.expires_at) !== null && _b !== void 0 ? _b : Infinity) * 1e3 - Date.now() < EXPIRY_MARGIN_MS;
-      this._debug(debugName, `session has${expiresWithMargin ? "" : " not"} expired with margin of ${EXPIRY_MARGIN_MS}s`);
+      const expiresWithMargin =
+        ((B = currentSession.expires_at) !== null && B !== void 0
+          ? B
+          : Infinity) *
+          1e3 -
+          Date.now() <
+        EXPIRY_MARGIN_MS;
+      this._debug(
+        debugName,
+        `session has${expiresWithMargin ? "" : " not"} expired with margin of ${EXPIRY_MARGIN_MS}s`,
+      );
       if (expiresWithMargin) {
         if (this.autoRefreshToken && currentSession.refresh_token) {
-          const { error } = await this._callRefreshToken(currentSession.refresh_token);
+          const { error } = await this._callRefreshToken(
+            currentSession.refresh_token,
+          );
           if (error) {
             console.error(error);
             if (!isAuthRetryableFetchError(error)) {
-              this._debug(debugName, "refresh failed with a non-retryable error, removing the session", error);
+              this._debug(
+                debugName,
+                "refresh failed with a non-retryable error, removing the session",
+                error,
+              );
               await this._removeSession();
             }
           }
         }
-      } else if (currentSession.user && currentSession.user.__isUserNotAvailableProxy === true) {
+      } else if (
+        currentSession.user &&
+        currentSession.user.__isUserNotAvailableProxy === true
+      ) {
         try {
-          const { data, error: userError } = await this._getUser(currentSession.access_token);
-          if (!userError && (data === null || data === void 0 ? void 0 : data.user)) {
+          const { data, error: userError } = await this._getUser(
+            currentSession.access_token,
+          );
+          if (
+            !userError &&
+            (data === null || data === void 0 ? void 0 : data.user)
+          ) {
             currentSession.user = data.user;
             await this._saveSession(currentSession);
             await this._notifyAllSubscribers("SIGNED_IN", currentSession);
           } else {
-            this._debug(debugName, "could not get user data, skipping SIGNED_IN notification");
+            this._debug(
+              debugName,
+              "could not get user data, skipping SIGNED_IN notification",
+            );
           }
         } catch (getUserError) {
           console.error("Error getting user data:", getUserError);
-          this._debug(debugName, "error getting user data, skipping SIGNED_IN notification", getUserError);
+          this._debug(
+            debugName,
+            "error getting user data, skipping SIGNED_IN notification",
+            getUserError,
+          );
         }
       } else {
         await this._notifyAllSubscribers("SIGNED_IN", currentSession);
@@ -8849,7 +10907,7 @@ var GoTrueClient = class {
     }
   }
   async _callRefreshToken(refreshToken) {
-    var _a, _b;
+    var A, B;
     if (!refreshToken) {
       throw new AuthSessionMissingError();
     }
@@ -8861,10 +10919,8 @@ var GoTrueClient = class {
     try {
       this.refreshingDeferred = new Deferred();
       const { data, error } = await this._refreshAccessToken(refreshToken);
-      if (error)
-        throw error;
-      if (!data.session)
-        throw new AuthSessionMissingError();
+      if (error) throw error;
+      if (!data.session) throw new AuthSessionMissingError();
       await this._saveSession(data.session);
       await this._notifyAllSubscribers("TOKEN_REFRESHED", data.session);
       const result = { session: data.session, error: null };
@@ -8877,10 +10933,14 @@ var GoTrueClient = class {
         if (!isAuthRetryableFetchError(error)) {
           await this._removeSession();
         }
-        (_a = this.refreshingDeferred) === null || _a === void 0 ? void 0 : _a.resolve(result);
+        (A = this.refreshingDeferred) === null || A === void 0
+          ? void 0
+          : A.resolve(result);
         return result;
       }
-      (_b = this.refreshingDeferred) === null || _b === void 0 ? void 0 : _b.reject(error);
+      (B = this.refreshingDeferred) === null || B === void 0
+        ? void 0
+        : B.reject(error);
       throw error;
     } finally {
       this.refreshingDeferred = null;
@@ -8895,13 +10955,15 @@ var GoTrueClient = class {
         this.broadcastChannel.postMessage({ event, session });
       }
       const errors = [];
-      const promises = Array.from(this.stateChangeEmitters.values()).map(async (x) => {
-        try {
-          await x.callback(event, session);
-        } catch (e) {
-          errors.push(e);
-        }
-      });
+      const promises = Array.from(this.stateChangeEmitters.values()).map(
+        async (x) => {
+          try {
+            await x.callback(event, session);
+          } catch (e) {
+            errors.push(e);
+          }
+        },
+      );
       await Promise.all(promises);
       if (errors.length > 0) {
         for (let i = 0; i < errors.length; i += 1) {
@@ -8921,11 +10983,13 @@ var GoTrueClient = class {
     this._debug("#_saveSession()", session);
     this.suppressGetSessionWarning = true;
     const sessionToProcess = Object.assign({}, session);
-    const userIsProxy = sessionToProcess.user && sessionToProcess.user.__isUserNotAvailableProxy === true;
+    const userIsProxy =
+      sessionToProcess.user &&
+      sessionToProcess.user.__isUserNotAvailableProxy === true;
     if (this.userStorage) {
       if (!userIsProxy && sessionToProcess.user) {
         await setItemAsync(this.userStorage, this.storageKey + "-user", {
-          user: sessionToProcess.user
+          user: sessionToProcess.user,
         });
       } else if (userIsProxy) {
       }
@@ -8959,7 +11023,13 @@ var GoTrueClient = class {
     const callback = this.visibilityChangedCallback;
     this.visibilityChangedCallback = null;
     try {
-      if (callback && isBrowser() && (window === null || window === void 0 ? void 0 : window.removeEventListener)) {
+      if (
+        callback &&
+        isBrowser() &&
+        (window === null || window === void 0
+          ? void 0
+          : window.removeEventListener)
+      ) {
         window.removeEventListener("visibilitychange", callback);
       }
     } catch (e) {
@@ -8973,11 +11043,21 @@ var GoTrueClient = class {
   async _startAutoRefresh() {
     await this._stopAutoRefresh();
     this._debug("#_startAutoRefresh()");
-    const ticker = setInterval(() => this._autoRefreshTokenTick(), AUTO_REFRESH_TICK_DURATION_MS);
+    const ticker = setInterval(
+      () => this._autoRefreshTokenTick(),
+      AUTO_REFRESH_TICK_DURATION_MS,
+    );
     this.autoRefreshTicker = ticker;
-    if (ticker && typeof ticker === "object" && typeof ticker.unref === "function") {
+    if (
+      ticker &&
+      typeof ticker === "object" &&
+      typeof ticker.unref === "function"
+    ) {
       ticker.unref();
-    } else if (typeof Deno !== "undefined" && typeof Deno.unrefTimer === "function") {
+    } else if (
+      typeof Deno !== "undefined" &&
+      typeof Deno.unrefTimer === "function"
+    ) {
       Deno.unrefTimer(ticker);
     }
     setTimeout(async () => {
@@ -9046,19 +11126,30 @@ var GoTrueClient = class {
           const now = Date.now();
           try {
             return await this._useSession(async (result) => {
-              const { data: { session } } = result;
+              const {
+                data: { session },
+              } = result;
               if (!session || !session.refresh_token || !session.expires_at) {
                 this._debug("#_autoRefreshTokenTick()", "no session");
                 return;
               }
-              const expiresInTicks = Math.floor((session.expires_at * 1e3 - now) / AUTO_REFRESH_TICK_DURATION_MS);
-              this._debug("#_autoRefreshTokenTick()", `access token expires in ${expiresInTicks} ticks, a tick lasts ${AUTO_REFRESH_TICK_DURATION_MS}ms, refresh threshold is ${AUTO_REFRESH_TICK_THRESHOLD} ticks`);
+              const expiresInTicks = Math.floor(
+                (session.expires_at * 1e3 - now) /
+                  AUTO_REFRESH_TICK_DURATION_MS,
+              );
+              this._debug(
+                "#_autoRefreshTokenTick()",
+                `access token expires in ${expiresInTicks} ticks, a tick lasts ${AUTO_REFRESH_TICK_DURATION_MS}ms, refresh threshold is ${AUTO_REFRESH_TICK_THRESHOLD} ticks`,
+              );
               if (expiresInTicks <= AUTO_REFRESH_TICK_THRESHOLD) {
                 await this._callRefreshToken(session.refresh_token);
               }
             });
           } catch (e) {
-            console.error("Auto refresh tick failed with error. This is likely a transient error.", e);
+            console.error(
+              "Auto refresh tick failed with error. This is likely a transient error.",
+              e,
+            );
           }
         } finally {
           this._debug("#_autoRefreshTokenTick()", "end");
@@ -9079,15 +11170,24 @@ var GoTrueClient = class {
    */
   async _handleVisibilityChange() {
     this._debug("#_handleVisibilityChange()");
-    if (!isBrowser() || !(window === null || window === void 0 ? void 0 : window.addEventListener)) {
+    if (
+      !isBrowser() ||
+      !(window === null || window === void 0 ? void 0 : window.addEventListener)
+    ) {
       if (this.autoRefreshToken) {
         this.startAutoRefresh();
       }
       return false;
     }
     try {
-      this.visibilityChangedCallback = async () => await this._onVisibilityChanged(false);
-      window === null || window === void 0 ? void 0 : window.addEventListener("visibilitychange", this.visibilityChangedCallback);
+      this.visibilityChangedCallback = async () =>
+        await this._onVisibilityChanged(false);
+      window === null || window === void 0
+        ? void 0
+        : window.addEventListener(
+            "visibilitychange",
+            this.visibilityChangedCallback,
+          );
       await this._onVisibilityChanged(true);
     } catch (error) {
       console.error("_handleVisibilityChange", error);
@@ -9107,7 +11207,10 @@ var GoTrueClient = class {
         await this.initializePromise;
         await this._acquireLock(-1, async () => {
           if (document.visibilityState !== "visible") {
-            this._debug(methodName, "acquired the lock to recover the session, but the browser visibilityState is no longer visible, aborting");
+            this._debug(
+              methodName,
+              "acquired the lock to recover the session, but the browser visibilityState is no longer visible, aborting",
+            );
             return;
           }
           await this._recoverAndRefresh();
@@ -9134,10 +11237,11 @@ var GoTrueClient = class {
       urlParams.push(`scopes=${encodeURIComponent(options.scopes)}`);
     }
     if (this.flowType === "pkce") {
-      const [codeChallenge, codeChallengeMethod] = await getCodeChallengeAndMethod(this.storage, this.storageKey);
+      const [codeChallenge, codeChallengeMethod] =
+        await getCodeChallengeAndMethod(this.storage, this.storageKey);
       const flowParams = new URLSearchParams({
         code_challenge: `${encodeURIComponent(codeChallenge)}`,
-        code_challenge_method: `${encodeURIComponent(codeChallengeMethod)}`
+        code_challenge_method: `${encodeURIComponent(codeChallengeMethod)}`,
       });
       urlParams.push(flowParams.toString());
     }
@@ -9145,7 +11249,11 @@ var GoTrueClient = class {
       const query = new URLSearchParams(options.queryParams);
       urlParams.push(query.toString());
     }
-    if (options === null || options === void 0 ? void 0 : options.skipBrowserRedirect) {
+    if (
+      options === null || options === void 0
+        ? void 0
+        : options.skipBrowserRedirect
+    ) {
       urlParams.push(`skip_http_redirect=${options.skipBrowserRedirect}`);
     }
     return `${url}?${urlParams.join("&")}`;
@@ -9153,15 +11261,26 @@ var GoTrueClient = class {
   async _unenroll(params) {
     try {
       return await this._useSession(async (result) => {
-        var _a;
+        var A;
         const { data: sessionData, error: sessionError } = result;
         if (sessionError) {
           return { data: null, error: sessionError };
         }
-        return await _request(this.fetch, "DELETE", `${this.url}/factors/${params.factorId}`, {
-          headers: this.headers,
-          jwt: (_a = sessionData === null || sessionData === void 0 ? void 0 : sessionData.session) === null || _a === void 0 ? void 0 : _a.access_token
-        });
+        return await Request(
+          this.fetch,
+          "DELETE",
+          `${this.url}/factors/${params.factorId}`,
+          {
+            headers: this.headers,
+            jwt:
+              (A =
+                sessionData === null || sessionData === void 0
+                  ? void 0
+                  : sessionData.session) === null || A === void 0
+                ? void 0
+                : A.access_token,
+          },
+        );
       });
     } catch (error) {
       if (isAuthError(error)) {
@@ -9173,21 +11292,46 @@ var GoTrueClient = class {
   async _enroll(params) {
     try {
       return await this._useSession(async (result) => {
-        var _a, _b;
+        var A, B;
         const { data: sessionData, error: sessionError } = result;
         if (sessionError) {
           return { data: null, error: sessionError };
         }
-        const body = Object.assign({ friendly_name: params.friendlyName, factor_type: params.factorType }, params.factorType === "phone" ? { phone: params.phone } : { issuer: params.issuer });
-        const { data, error } = await _request(this.fetch, "POST", `${this.url}/factors`, {
-          body,
-          headers: this.headers,
-          jwt: (_a = sessionData === null || sessionData === void 0 ? void 0 : sessionData.session) === null || _a === void 0 ? void 0 : _a.access_token
-        });
+        const body = Object.assign(
+          {
+            friendly_name: params.friendlyName,
+            factor_type: params.factorType,
+          },
+          params.factorType === "phone"
+            ? { phone: params.phone }
+            : { issuer: params.issuer },
+        );
+        const { data, error } = await Request(
+          this.fetch,
+          "POST",
+          `${this.url}/factors`,
+          {
+            body,
+            headers: this.headers,
+            jwt:
+              (A =
+                sessionData === null || sessionData === void 0
+                  ? void 0
+                  : sessionData.session) === null || A === void 0
+                ? void 0
+                : A.access_token,
+          },
+        );
         if (error) {
           return { data: null, error };
         }
-        if (params.factorType === "totp" && ((_b = data === null || data === void 0 ? void 0 : data.totp) === null || _b === void 0 ? void 0 : _b.qr_code)) {
+        if (
+          params.factorType === "totp" &&
+          ((B = data === null || data === void 0 ? void 0 : data.totp) ===
+            null || B === void 0
+            ? void 0
+            : B.qr_code)
+        ) {
           data.totp.qr_code = `data:image/svg+xml;utf-8,${data.totp.qr_code}`;
         }
         return { data, error: null };
@@ -9206,20 +11350,36 @@ var GoTrueClient = class {
     return this._acquireLock(-1, async () => {
       try {
         return await this._useSession(async (result) => {
-          var _a;
+          var A;
           const { data: sessionData, error: sessionError } = result;
           if (sessionError) {
             return { data: null, error: sessionError };
           }
-          const { data, error } = await _request(this.fetch, "POST", `${this.url}/factors/${params.factorId}/verify`, {
-            body: { code: params.code, challenge_id: params.challengeId },
-            headers: this.headers,
-            jwt: (_a = sessionData === null || sessionData === void 0 ? void 0 : sessionData.session) === null || _a === void 0 ? void 0 : _a.access_token
-          });
+          const { data, error } = await Request(
+            this.fetch,
+            "POST",
+            `${this.url}/factors/${params.factorId}/verify`,
+            {
+              body: { code: params.code, challenge_id: params.challengeId },
+              headers: this.headers,
+              jwt:
+                (A =
+                  sessionData === null || sessionData === void 0
+                    ? void 0
+                    : sessionData.session) === null || A === void 0
+                  ? void 0
+                  : A.access_token,
+            },
+          );
           if (error) {
             return { data: null, error };
           }
-          await this._saveSession(Object.assign({ expires_at: Math.round(Date.now() / 1e3) + data.expires_in }, data));
+          await this._saveSession(
+            Object.assign(
+              { expires_at: Math.round(Date.now() / 1e3) + data.expires_in },
+              data,
+            ),
+          );
           await this._notifyAllSubscribers("MFA_CHALLENGE_VERIFIED", data);
           return { data, error };
         });
@@ -9238,16 +11398,27 @@ var GoTrueClient = class {
     return this._acquireLock(-1, async () => {
       try {
         return await this._useSession(async (result) => {
-          var _a;
+          var A;
           const { data: sessionData, error: sessionError } = result;
           if (sessionError) {
             return { data: null, error: sessionError };
           }
-          return await _request(this.fetch, "POST", `${this.url}/factors/${params.factorId}/challenge`, {
-            body: { channel: params.channel },
-            headers: this.headers,
-            jwt: (_a = sessionData === null || sessionData === void 0 ? void 0 : sessionData.session) === null || _a === void 0 ? void 0 : _a.access_token
-          });
+          return await Request(
+            this.fetch,
+            "POST",
+            `${this.url}/factors/${params.factorId}/challenge`,
+            {
+              body: { channel: params.channel },
+              headers: this.headers,
+              jwt:
+                (A =
+                  sessionData === null || sessionData === void 0
+                    ? void 0
+                    : sessionData.session) === null || A === void 0
+                  ? void 0
+                  : A.access_token,
+            },
+          );
         });
       } catch (error) {
         if (isAuthError(error)) {
@@ -9261,36 +11432,46 @@ var GoTrueClient = class {
    * {@see GoTrueMFAApi#challengeAndVerify}
    */
   async _challengeAndVerify(params) {
-    const { data: challengeData, error: challengeError } = await this._challenge({
-      factorId: params.factorId
-    });
+    const { data: challengeData, error: challengeError } =
+      await this._challenge({
+        factorId: params.factorId,
+      });
     if (challengeError) {
       return { data: null, error: challengeError };
     }
     return await this._verify({
       factorId: params.factorId,
       challengeId: challengeData.id,
-      code: params.code
+      code: params.code,
     });
   }
   /**
    * {@see GoTrueMFAApi#listFactors}
    */
   async _listFactors() {
-    const { data: { user }, error: userError } = await this.getUser();
+    const {
+      data: { user },
+      error: userError,
+    } = await this.getUser();
     if (userError) {
       return { data: null, error: userError };
     }
-    const factors = (user === null || user === void 0 ? void 0 : user.factors) || [];
-    const totp = factors.filter((factor) => factor.factor_type === "totp" && factor.status === "verified");
-    const phone = factors.filter((factor) => factor.factor_type === "phone" && factor.status === "verified");
+    const factors =
+      (user === null || user === void 0 ? void 0 : user.factors) || [];
+    const totp = factors.filter(
+      (factor) => factor.factor_type === "totp" && factor.status === "verified",
+    );
+    const phone = factors.filter(
+      (factor) =>
+        factor.factor_type === "phone" && factor.status === "verified",
+    );
     return {
       data: {
         all: factors,
         totp,
-        phone
+        phone,
       },
-      error: null
+      error: null,
     };
   }
   /**
@@ -9299,15 +11480,22 @@ var GoTrueClient = class {
   async _getAuthenticatorAssuranceLevel() {
     return this._acquireLock(-1, async () => {
       return await this._useSession(async (result) => {
-        var _a, _b;
-        const { data: { session }, error: sessionError } = result;
+        var A, B;
+        const {
+          data: { session },
+          error: sessionError,
+        } = result;
         if (sessionError) {
           return { data: null, error: sessionError };
         }
         if (!session) {
           return {
-            data: { currentLevel: null, nextLevel: null, currentAuthenticationMethods: [] },
-            error: null
+            data: {
+              currentLevel: null,
+              nextLevel: null,
+              currentAuthenticationMethods: [],
+            },
+            error: null,
           };
         }
         const { payload } = decodeJWT(session.access_token);
@@ -9316,12 +11504,22 @@ var GoTrueClient = class {
           currentLevel = payload.aal;
         }
         let nextLevel = currentLevel;
-        const verifiedFactors = (_b = (_a = session.user.factors) === null || _a === void 0 ? void 0 : _a.filter((factor) => factor.status === "verified")) !== null && _b !== void 0 ? _b : [];
+        const verifiedFactors =
+          (B =
+            (A = session.user.factors) === null || A === void 0
+              ? void 0
+              : A.filter((factor) => factor.status === "verified")) !== null &&
+          B !== void 0
+            ? B
+            : [];
         if (verifiedFactors.length > 0) {
           nextLevel = "aal2";
         }
         const currentAuthenticationMethods = payload.amr || [];
-        return { data: { currentLevel, nextLevel, currentAuthenticationMethods }, error: null };
+        return {
+          data: { currentLevel, nextLevel, currentAuthenticationMethods },
+          error: null,
+        };
       });
     });
   }
@@ -9335,9 +11533,14 @@ var GoTrueClient = class {
     if (jwk && this.jwks_cached_at + JWKS_TTL > now) {
       return jwk;
     }
-    const { data, error } = await _request(this.fetch, "GET", `${this.url}/.well-known/jwks.json`, {
-      headers: this.headers
-    });
+    const { data, error } = await Request(
+      this.fetch,
+      "GET",
+      `${this.url}/.well-known/jwks.json`,
+      {
+        headers: this.headers,
+      },
+    );
     if (error) {
       throw error;
     }
@@ -9378,11 +11581,33 @@ var GoTrueClient = class {
         }
         token = data.session.access_token;
       }
-      const { header, payload, signature, raw: { header: rawHeader, payload: rawPayload } } = decodeJWT(token);
-      if (!(options === null || options === void 0 ? void 0 : options.allowExpired)) {
+      const {
+        header,
+        payload,
+        signature,
+        raw: { header: rawHeader, payload: rawPayload },
+      } = decodeJWT(token);
+      if (
+        !(options === null || options === void 0
+          ? void 0
+          : options.allowExpired)
+      ) {
         validateExp(payload.exp);
       }
-      const signingKey = !header.alg || header.alg.startsWith("HS") || !header.kid || !("crypto" in globalThis && "subtle" in globalThis.crypto) ? null : await this.fetchJwk(header.kid, (options === null || options === void 0 ? void 0 : options.keys) ? { keys: options.keys } : options === null || options === void 0 ? void 0 : options.jwks);
+      const signingKey =
+        !header.alg ||
+        header.alg.startsWith("HS") ||
+        !header.kid ||
+        !("crypto" in globalThis && "subtle" in globalThis.crypto)
+          ? null
+          : await this.fetchJwk(
+              header.kid,
+              (options === null || options === void 0 ? void 0 : options.keys)
+                ? { keys: options.keys }
+                : options === null || options === void 0
+                  ? void 0
+                  : options.jwks,
+            );
       if (!signingKey) {
         const { error } = await this.getUser(token);
         if (error) {
@@ -9392,16 +11617,25 @@ var GoTrueClient = class {
           data: {
             claims: payload,
             header,
-            signature
+            signature,
           },
-          error: null
+          error: null,
         };
       }
       const algorithm = getAlgorithm(header.alg);
-      const publicKey = await crypto.subtle.importKey("jwk", signingKey, algorithm, true, [
-        "verify"
-      ]);
-      const isValid = await crypto.subtle.verify(algorithm, publicKey, signature, stringToUint8Array(`${rawHeader}.${rawPayload}`));
+      const publicKey = await crypto.subtle.importKey(
+        "jwk",
+        signingKey,
+        algorithm,
+        true,
+        ["verify"],
+      );
+      const isValid = await crypto.subtle.verify(
+        algorithm,
+        publicKey,
+        signature,
+        stringToUint8Array(`${rawHeader}.${rawPayload}`),
+      );
       if (!isValid) {
         throw new AuthInvalidJwtError("Invalid JWT signature");
       }
@@ -9409,9 +11643,9 @@ var GoTrueClient = class {
         data: {
           claims: payload,
           header,
-          signature
+          signature,
         },
-        error: null
+        error: null,
       };
     } catch (error) {
       if (isAuthError(error)) {
@@ -9421,38 +11655,40 @@ var GoTrueClient = class {
     }
   }
 };
-__name(GoTrueClient, "GoTrueClient");
+Name(GoTrueClient, "GoTrueClient");
 GoTrueClient.nextInstanceID = 0;
 
 // node_modules/@supabase/auth-js/dist/module/AuthAdminApi.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // node_modules/@supabase/auth-js/dist/module/AuthClient.js
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var AuthClient = GoTrueClient;
-var AuthClient_default = AuthClient;
+var AuthClientDefault = AuthClient;
 
 // node_modules/@supabase/supabase-js/dist/module/lib/SupabaseAuthClient.js
-var SupabaseAuthClient = class extends AuthClient_default {
+var SupabaseAuthClient = class extends AuthClientDefault {
   constructor(options) {
     super(options);
   }
 };
-__name(SupabaseAuthClient, "SupabaseAuthClient");
+Name(SupabaseAuthClient, "SupabaseAuthClient");
 
 // node_modules/@supabase/supabase-js/dist/module/SupabaseClient.js
-var __awaiter8 = function(thisArg, _arguments, P, generator) {
+var Awaiter8 = (thisArg, _arguments, P, generator) => {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve) {
-      resolve(value);
-    });
+    return value instanceof P
+      ? value
+      : new P((resolve) => {
+          resolve(value);
+        });
   }
-  __name(adopt, "adopt");
-  return new (P || (P = Promise))(function(resolve, reject) {
+  Name(adopt, "adopt");
+  return new (P || (P = Promise))((resolve, reject) => {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -9460,7 +11696,7 @@ var __awaiter8 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(fulfilled, "fulfilled");
+    Name(fulfilled, "fulfilled");
     function rejected(value) {
       try {
         step(generator["throw"](value));
@@ -9468,11 +11704,13 @@ var __awaiter8 = function(thisArg, _arguments, P, generator) {
         reject(e);
       }
     }
-    __name(rejected, "rejected");
+    Name(rejected, "rejected");
     function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done
+        ? resolve(result.value)
+        : adopt(result.value).then(fulfilled, rejected);
     }
-    __name(step, "step");
+    Name(step, "step");
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
 };
@@ -9490,15 +11728,13 @@ var SupabaseClient = class {
    * @param options.global.headers Any additional headers to send with each network request.
    */
   constructor(supabaseUrl, supabaseKey, options) {
-    var _a, _b, _c;
+    var A, B, C;
     this.supabaseUrl = supabaseUrl;
     this.supabaseKey = supabaseKey;
-    if (!supabaseUrl)
-      throw new Error("supabaseUrl is required.");
-    if (!supabaseKey)
-      throw new Error("supabaseKey is required.");
-    const _supabaseUrl = ensureTrailingSlash(supabaseUrl);
-    const baseUrl = new URL(_supabaseUrl);
+    if (!supabaseUrl) throw new Error("supabaseUrl is required.");
+    if (!supabaseKey) throw new Error("supabaseKey is required.");
+    const SupabaseUrl = ensureTrailingSlash(supabaseUrl);
+    const baseUrl = new URL(SupabaseUrl);
     this.realtimeUrl = new URL("realtime/v1", baseUrl);
     this.realtimeUrl.protocol = this.realtimeUrl.protocol.replace("http", "ws");
     this.authUrl = new URL("auth/v1", baseUrl);
@@ -9508,28 +11744,53 @@ var SupabaseClient = class {
     const DEFAULTS = {
       db: DEFAULT_DB_OPTIONS,
       realtime: DEFAULT_REALTIME_OPTIONS,
-      auth: Object.assign(Object.assign({}, DEFAULT_AUTH_OPTIONS), { storageKey: defaultStorageKey }),
-      global: DEFAULT_GLOBAL_OPTIONS
+      auth: Object.assign(Object.assign({}, DEFAULT_AUTH_OPTIONS), {
+        storageKey: defaultStorageKey,
+      }),
+      global: DEFAULT_GLOBAL_OPTIONS,
     };
-    const settings = applySettingDefaults(options !== null && options !== void 0 ? options : {}, DEFAULTS);
-    this.storageKey = (_a = settings.auth.storageKey) !== null && _a !== void 0 ? _a : "";
-    this.headers = (_b = settings.global.headers) !== null && _b !== void 0 ? _b : {};
+    const settings = applySettingDefaults(
+      options !== null && options !== void 0 ? options : {},
+      DEFAULTS,
+    );
+    this.storageKey =
+      (A = settings.auth.storageKey) !== null && A !== void 0 ? A : "";
+    this.headers =
+      (B = settings.global.headers) !== null && B !== void 0 ? B : {};
     if (!settings.accessToken) {
-      this.auth = this._initSupabaseAuthClient((_c = settings.auth) !== null && _c !== void 0 ? _c : {}, this.headers, settings.global.fetch);
+      this.auth = this._initSupabaseAuthClient(
+        (C = settings.auth) !== null && C !== void 0 ? C : {},
+        this.headers,
+        settings.global.fetch,
+      );
     } else {
       this.accessToken = settings.accessToken;
-      this.auth = new Proxy({}, {
-        get: (_, prop) => {
-          throw new Error(`@supabase/supabase-js: Supabase Client is configured with the accessToken option, accessing supabase.auth.${String(prop)} is not possible`);
-        }
-      });
+      this.auth = new Proxy(
+        {},
+        {
+          get: (_, prop) => {
+            throw new Error(
+              `@supabase/supabase-js: Supabase Client is configured with the accessToken option, accessing supabase.auth.${String(prop)} is not possible`,
+            );
+          },
+        },
+      );
     }
-    this.fetch = fetchWithAuth(supabaseKey, this._getAccessToken.bind(this), settings.global.fetch);
-    this.realtime = this._initRealtimeClient(Object.assign({ headers: this.headers, accessToken: this._getAccessToken.bind(this) }, settings.realtime));
+    this.fetch = fetchWithAuth(
+      supabaseKey,
+      this._getAccessToken.bind(this),
+      settings.global.fetch,
+    );
+    this.realtime = this._initRealtimeClient(
+      Object.assign(
+        { headers: this.headers, accessToken: this._getAccessToken.bind(this) },
+        settings.realtime,
+      ),
+    );
     this.rest = new PostgrestClient(new URL("rest/v1", baseUrl).href, {
       headers: this.headers,
       schema: settings.db.schema,
-      fetch: this.fetch
+      fetch: this.fetch,
     });
     if (!settings.accessToken) {
       this._listenForAuthEvents();
@@ -9541,7 +11802,7 @@ var SupabaseClient = class {
   get functions() {
     return new FunctionsClient(this.functionsUrl.href, {
       headers: this.headers,
-      customFetch: this.fetch
+      customFetch: this.fetch,
     });
   }
   /**
@@ -9628,19 +11889,37 @@ var SupabaseClient = class {
     return this.realtime.removeAllChannels();
   }
   _getAccessToken() {
-    var _a, _b;
-    return __awaiter8(this, void 0, void 0, function* () {
+    var A, B;
+    return Awaiter8(this, void 0, void 0, function* () {
       if (this.accessToken) {
         return yield this.accessToken();
       }
       const { data } = yield this.auth.getSession();
-      return (_b = (_a = data.session) === null || _a === void 0 ? void 0 : _a.access_token) !== null && _b !== void 0 ? _b : null;
+      return (B =
+        (A = data.session) === null || A === void 0
+          ? void 0
+          : A.access_token) !== null && B !== void 0
+        ? B
+        : null;
     });
   }
-  _initSupabaseAuthClient({ autoRefreshToken, persistSession, detectSessionInUrl, storage, storageKey, flowType, lock, debug }, headers, fetch3) {
+  _initSupabaseAuthClient(
+    {
+      autoRefreshToken,
+      persistSession,
+      detectSessionInUrl,
+      storage,
+      storageKey,
+      flowType,
+      lock,
+      debug,
+    },
+    headers,
+    fetch3,
+  ) {
     const authHeaders = {
       Authorization: `Bearer ${this.supabaseKey}`,
-      apikey: `${this.supabaseKey}`
+      apikey: `${this.supabaseKey}`,
     };
     return new SupabaseAuthClient({
       url: this.authUrl.href,
@@ -9656,56 +11935,79 @@ var SupabaseClient = class {
       fetch: fetch3,
       // auth checks if there is a custom authorizaiton header using this flag
       // so it knows whether to return an error when getUser is called with no session
-      hasCustomAuthorizationHeader: "Authorization" in this.headers
+      hasCustomAuthorizationHeader: "Authorization" in this.headers,
     });
   }
   _initRealtimeClient(options) {
-    return new RealtimeClient(this.realtimeUrl.href, Object.assign(Object.assign({}, options), { params: Object.assign({ apikey: this.supabaseKey }, options === null || options === void 0 ? void 0 : options.params) }));
+    return new RealtimeClient(
+      this.realtimeUrl.href,
+      Object.assign(Object.assign({}, options), {
+        params: Object.assign(
+          { apikey: this.supabaseKey },
+          options === null || options === void 0 ? void 0 : options.params,
+        ),
+      }),
+    );
   }
   _listenForAuthEvents() {
-    let data = this.auth.onAuthStateChange((event, session) => {
-      this._handleTokenChanged(event, "CLIENT", session === null || session === void 0 ? void 0 : session.access_token);
+    const data = this.auth.onAuthStateChange((event, session) => {
+      this._handleTokenChanged(
+        event,
+        "CLIENT",
+        session === null || session === void 0 ? void 0 : session.access_token,
+      );
     });
     return data;
   }
   _handleTokenChanged(event, source, token) {
-    if ((event === "TOKEN_REFRESHED" || event === "SIGNED_IN") && this.changedAccessToken !== token) {
+    if (
+      (event === "TOKEN_REFRESHED" || event === "SIGNED_IN") &&
+      this.changedAccessToken !== token
+    ) {
       this.changedAccessToken = token;
     } else if (event === "SIGNED_OUT") {
       this.realtime.setAuth();
-      if (source == "STORAGE")
-        this.auth.signOut();
+      if (source == "STORAGE") this.auth.signOut();
       this.changedAccessToken = void 0;
     }
   }
 };
-__name(SupabaseClient, "SupabaseClient");
+Name(SupabaseClient, "SupabaseClient");
 
 // node_modules/@supabase/supabase-js/dist/module/index.js
-var createClient = /* @__PURE__ */ __name((supabaseUrl, supabaseKey, options) => {
+var createClient = /* @__PURE__ */ Name((supabaseUrl, supabaseKey, options) => {
   return new SupabaseClient(supabaseUrl, supabaseKey, options);
 }, "createClient");
 
 // src/lib/supabase.ts
-var createSupabaseClient = /* @__PURE__ */ __name((supabaseUrl, serviceRoleKey) => {
-  return createClient(supabaseUrl, serviceRoleKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    }
-  });
-}, "createSupabaseClient");
+var createSupabaseClient = /* @__PURE__ */ Name(
+  (supabaseUrl, serviceRoleKey) => {
+    return createClient(supabaseUrl, serviceRoleKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
+  },
+  "createSupabaseClient",
+);
 
 // src/middleware/auth.ts
-var authMiddleware = /* @__PURE__ */ __name(async (c2, next) => {
+var authMiddleware = /* @__PURE__ */ Name(async (c2, next) => {
   const authHeader = c2.req.header("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return c2.json({ error: "Unauthorized" }, 401);
   }
   const token = authHeader.replace("Bearer ", "");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: { user }, error } = await supabase.auth.getUser(token);
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(token);
     if (error || !user) {
       return c2.json({ error: "Invalid token" }, 401);
     }
@@ -9718,14 +12020,14 @@ var authMiddleware = /* @__PURE__ */ __name(async (c2, next) => {
 }, "authMiddleware");
 
 // src/routes/auth.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // src/lib/spotify.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var SpotifyAPI = class {
   clientId;
   clientSecret;
@@ -9743,9 +12045,9 @@ var SpotifyAPI = class {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": `Basic ${btoa(`${this.clientId}:${this.clientSecret}`)}`
+        Authorization: `Basic ${btoa(`${this.clientId}:${this.clientSecret}`)}`,
       },
-      body: "grant_type=client_credentials"
+      body: "grant_type=client_credentials",
     });
     if (!response.ok) {
       throw new Error("Failed to get Spotify access token");
@@ -9760,13 +12062,16 @@ var SpotifyAPI = class {
     const searchParams = new URLSearchParams({
       q: query,
       type: "track",
-      limit: limit.toString()
+      limit: limit.toString(),
     });
-    const response = await fetch(`https://api.spotify.com/v1/search?${searchParams}`, {
-      headers: {
-        "Authorization": `Bearer ${accessToken}`
-      }
-    });
+    const response = await fetch(
+      `https://api.spotify.com/v1/search?${searchParams}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
     if (!response.ok) {
       throw new Error("Failed to search Spotify tracks");
     }
@@ -9775,11 +12080,14 @@ var SpotifyAPI = class {
   }
   async getTrack(trackId) {
     const accessToken = await this.getAccessToken();
-    const response = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
-      headers: {
-        "Authorization": `Bearer ${accessToken}`
-      }
-    });
+    const response = await fetch(
+      `https://api.spotify.com/v1/tracks/${trackId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
     if (!response.ok) {
       throw new Error("Failed to get Spotify track");
     }
@@ -9792,14 +12100,14 @@ var SpotifyAPI = class {
       "user-read-email",
       "user-read-playback-state",
       "user-modify-playback-state",
-      "streaming"
+      "streaming",
     ].join(" ");
     const params = new URLSearchParams({
       response_type: "code",
       client_id: this.clientId,
       scope: scopes,
       redirect_uri: this.redirectUri,
-      state
+      state,
     });
     return `https://accounts.spotify.com/authorize?${params}`;
   }
@@ -9808,13 +12116,13 @@ var SpotifyAPI = class {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": `Basic ${btoa(`${this.clientId}:${this.clientSecret}`)}`
+        Authorization: `Basic ${btoa(`${this.clientId}:${this.clientSecret}`)}`,
       },
       body: new URLSearchParams({
         grant_type: "authorization_code",
         code,
-        redirect_uri: this.redirectUri
-      })
+        redirect_uri: this.redirectUri,
+      }),
     });
     if (!response.ok) {
       throw new Error("Failed to exchange code for token");
@@ -9826,12 +12134,12 @@ var SpotifyAPI = class {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": `Basic ${btoa(`${this.clientId}:${this.clientSecret}`)}`
+        Authorization: `Basic ${btoa(`${this.clientId}:${this.clientSecret}`)}`,
       },
       body: new URLSearchParams({
         grant_type: "refresh_token",
-        refresh_token: refreshToken
-      })
+        refresh_token: refreshToken,
+      }),
     });
     if (!response.ok) {
       throw new Error("Failed to refresh access token");
@@ -9841,8 +12149,8 @@ var SpotifyAPI = class {
   async getUserProfile(accessToken) {
     const response = await fetch("https://api.spotify.com/v1/me", {
       headers: {
-        "Authorization": `Bearer ${accessToken}`
-      }
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
     if (!response.ok) {
       throw new Error("Failed to get user profile");
@@ -9850,7 +12158,7 @@ var SpotifyAPI = class {
     return await response.json();
   }
 };
-__name(SpotifyAPI, "SpotifyAPI");
+Name(SpotifyAPI, "SpotifyAPI");
 
 // src/routes/auth.ts
 var authRouter = new Hono2();
@@ -9861,7 +12169,11 @@ authRouter.get("/spotify/authorize", async (c2) => {
   }
   try {
     const redirectUri = `${c2.env.API_BASE_URL}/api/auth/spotify/callback`;
-    const spotify = new SpotifyAPI(c2.env.SPOTIFY_CLIENT_ID, c2.env.SPOTIFY_CLIENT_SECRET, redirectUri);
+    const spotify = new SpotifyAPI(
+      c2.env.SPOTIFY_CLIENT_ID,
+      c2.env.SPOTIFY_CLIENT_SECRET,
+      redirectUri,
+    );
     const authUrl = spotify.getAuthUrl(userId);
     return c2.json({ auth_url: authUrl });
   } catch (error) {
@@ -9874,27 +12186,47 @@ authRouter.get("/spotify/callback", async (c2) => {
   const state = c2.req.query("state");
   const error = c2.req.query("error");
   if (error) {
-    return c2.json({ error: "Spotify authorization failed", details: error }, 400);
+    return c2.json(
+      { error: "Spotify authorization failed", details: error },
+      400,
+    );
   }
   if (!code || !state) {
     return c2.json({ error: "Missing code or state parameter" }, 400);
   }
   try {
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
     const redirectUri = `${c2.env.API_BASE_URL}/api/auth/spotify/callback`;
-    const spotify = new SpotifyAPI(c2.env.SPOTIFY_CLIENT_ID, c2.env.SPOTIFY_CLIENT_SECRET, redirectUri);
+    const spotify = new SpotifyAPI(
+      c2.env.SPOTIFY_CLIENT_ID,
+      c2.env.SPOTIFY_CLIENT_SECRET,
+      redirectUri,
+    );
     const tokenResponse = await spotify.exchangeCodeForToken(code);
-    const userProfile = await spotify.getUserProfile(tokenResponse.access_token);
-    const { error: updateError } = await supabase.from("profiles").update({
-      spotify_id: userProfile.id,
-      spotify_access_token: tokenResponse.access_token,
-      spotify_refresh_token: tokenResponse.refresh_token,
-      spotify_token_expires_at: new Date(Date.now() + tokenResponse.expires_in * 1e3).toISOString(),
-      updated_at: (/* @__PURE__ */ new Date()).toISOString()
-    }).eq("id", state);
+    const userProfile = await spotify.getUserProfile(
+      tokenResponse.access_token,
+    );
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({
+        spotify_id: userProfile.id,
+        spotify_access_token: tokenResponse.access_token,
+        spotify_refresh_token: tokenResponse.refresh_token,
+        spotify_token_expires_at: new Date(
+          Date.now() + tokenResponse.expires_in * 1e3,
+        ).toISOString(),
+        updated_at: /* @__PURE__ */ new Date().toISOString(),
+      })
+      .eq("id", state);
     if (updateError) {
       console.error("Profile update error:", updateError);
-      return c2.json({ error: "Failed to update profile with Spotify info" }, 500);
+      return c2.json(
+        { error: "Failed to update profile with Spotify info" },
+        500,
+      );
     }
     return c2.redirect(`${c2.env.CLIENT_URL}/settings?spotify=connected`);
   } catch (error2) {
@@ -9908,18 +12240,35 @@ authRouter.post("/spotify/refresh", async (c2) => {
     return c2.json({ error: "Unauthorized" }, 401);
   }
   try {
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { data: profile, error: profileError } = await supabase.from("profiles").select("spotify_refresh_token").eq("id", userId).single();
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("spotify_refresh_token")
+      .eq("id", userId)
+      .single();
     if (profileError || !profile?.spotify_refresh_token) {
       return c2.json({ error: "No Spotify refresh token found" }, 404);
     }
-    const spotify = new SpotifyAPI(c2.env.SPOTIFY_CLIENT_ID, c2.env.SPOTIFY_CLIENT_SECRET);
-    const tokenResponse = await spotify.refreshAccessToken(profile.spotify_refresh_token);
-    const { error: updateError } = await supabase.from("profiles").update({
-      spotify_access_token: tokenResponse.access_token,
-      spotify_token_expires_at: new Date(Date.now() + tokenResponse.expires_in * 1e3).toISOString(),
-      updated_at: (/* @__PURE__ */ new Date()).toISOString()
-    }).eq("id", userId);
+    const spotify = new SpotifyAPI(
+      c2.env.SPOTIFY_CLIENT_ID,
+      c2.env.SPOTIFY_CLIENT_SECRET,
+    );
+    const tokenResponse = await spotify.refreshAccessToken(
+      profile.spotify_refresh_token,
+    );
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({
+        spotify_access_token: tokenResponse.access_token,
+        spotify_token_expires_at: new Date(
+          Date.now() + tokenResponse.expires_in * 1e3,
+        ).toISOString(),
+        updated_at: /* @__PURE__ */ new Date().toISOString(),
+      })
+      .eq("id", userId);
     if (updateError) {
       console.error("Token update error:", updateError);
       return c2.json({ error: "Failed to update tokens" }, 500);
@@ -9936,14 +12285,20 @@ authRouter.delete("/spotify/disconnect", async (c2) => {
     return c2.json({ error: "Unauthorized" }, 401);
   }
   try {
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { error } = await supabase.from("profiles").update({
-      spotify_id: null,
-      spotify_access_token: null,
-      spotify_refresh_token: null,
-      spotify_token_expires_at: null,
-      updated_at: (/* @__PURE__ */ new Date()).toISOString()
-    }).eq("id", userId);
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        spotify_id: null,
+        spotify_access_token: null,
+        spotify_refresh_token: null,
+        spotify_token_expires_at: null,
+        updated_at: /* @__PURE__ */ new Date().toISOString(),
+      })
+      .eq("id", userId);
     if (error) {
       console.error("Disconnect error:", error);
       return c2.json({ error: "Failed to disconnect Spotify" }, 500);
@@ -9957,36 +12312,46 @@ authRouter.delete("/spotify/disconnect", async (c2) => {
 authRouter.post("/register", async (c2) => {
   const { email, password, username, display_name } = await c2.req.json();
   if (!email || !password || !username) {
-    return c2.json({ error: "Email, password, and username are required" }, 400);
+    return c2.json(
+      { error: "Email, password, and username are required" },
+      400,
+    );
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true
-    });
+    const { data: authData, error: authError } =
+      await supabase.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+      });
     if (authError) {
       return c2.json({ error: authError.message }, 400);
     }
     const { error: profileError } = await supabase.from("profiles").insert({
       id: authData.user.id,
       username,
-      display_name: display_name || username
+      display_name: display_name || username,
     });
     if (profileError) {
       await supabase.auth.admin.deleteUser(authData.user.id);
       return c2.json({ error: "Failed to create profile" }, 500);
     }
-    return c2.json({
-      message: "User registered successfully",
-      user: {
-        id: authData.user.id,
-        email: authData.user.email,
-        username,
-        display_name: display_name || username
-      }
-    }, 201);
+    return c2.json(
+      {
+        message: "User registered successfully",
+        user: {
+          id: authData.user.id,
+          email: authData.user.email,
+          username,
+          display_name: display_name || username,
+        },
+      },
+      201,
+    );
   } catch (error) {
     console.error("Registration error:", error);
     return c2.json({ error: "Registration failed" }, 500);
@@ -9997,16 +12362,23 @@ authRouter.post("/login", async (c2) => {
   if (!email || !password) {
     return c2.json({ error: "Email and password are required" }, 400);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_ANON_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_ANON_KEY,
+  );
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password
+      password,
     });
     if (error) {
       return c2.json({ error: error.message }, 401);
     }
-    const { data: profile, error: profileError } = await supabase.from("profiles").select("*").eq("id", data.user.id).single();
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", data.user.id)
+      .single();
     if (profileError) {
       return c2.json({ error: "Failed to fetch profile" }, 500);
     }
@@ -10017,8 +12389,8 @@ authRouter.post("/login", async (c2) => {
       user: {
         id: data.user.id,
         email: data.user.email,
-        ...profile
-      }
+        ...profile,
+      },
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -10030,10 +12402,13 @@ authRouter.post("/refresh", async (c2) => {
   if (!refresh_token) {
     return c2.json({ error: "Refresh token is required" }, 400);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_ANON_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_ANON_KEY,
+  );
   try {
     const { data, error } = await supabase.auth.refreshSession({
-      refresh_token
+      refresh_token,
     });
     if (error) {
       return c2.json({ error: error.message }, 401);
@@ -10041,7 +12416,7 @@ authRouter.post("/refresh", async (c2) => {
     return c2.json({
       access_token: data.session.access_token,
       refresh_token: data.session.refresh_token,
-      expires_at: data.session.expires_at
+      expires_at: data.session.expires_at,
     });
   } catch (error) {
     console.error("Token refresh error:", error);
@@ -10050,7 +12425,10 @@ authRouter.post("/refresh", async (c2) => {
 });
 authRouter.post("/logout", authMiddleware, async (c2) => {
   const user = c2.get("user");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
     const { error } = await supabase.auth.admin.signOut(user.id);
     if (error) {
@@ -10064,9 +12442,16 @@ authRouter.post("/logout", authMiddleware, async (c2) => {
 });
 authRouter.get("/me", authMiddleware, async (c2) => {
   const user = c2.get("user");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: profile, error } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
     if (error) {
       return c2.json({ error: "Failed to fetch profile" }, 500);
     }
@@ -10074,30 +12459,37 @@ authRouter.get("/me", authMiddleware, async (c2) => {
       user: {
         id: user.id,
         email: user.email,
-        ...profile
-      }
+        ...profile,
+      },
     });
   } catch (error) {
     console.error("User info error:", error);
     return c2.json({ error: "Failed to fetch user info" }, 500);
   }
 });
-var auth_default = authRouter;
+var authDefault = authRouter;
 
 // src/routes/profiles.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var profilesRouter = new Hono2();
 profilesRouter.get("/me", authMiddleware, async (c2) => {
   const user = c2.get("user");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: profile, error } = await supabase.from("profiles").select(`
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select(`
         *,
         followers:follows!follows_following_id_fkey(count),
         following:follows!follows_follower_id_fkey(count)
-      `).eq("id", user.id).single();
+      `)
+      .eq("id", user.id)
+      .single();
     if (error) {
       return c2.json({ error: "Profile not found" }, 404);
     }
@@ -10109,13 +12501,20 @@ profilesRouter.get("/me", authMiddleware, async (c2) => {
 });
 profilesRouter.get("/:userId", async (c2) => {
   const userId = c2.req.param("userId");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_ANON_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_ANON_KEY,
+  );
   try {
-    const { data: profile, error } = await supabase.from("profiles").select(`
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select(`
         *,
         followers:follows!follows_following_id_fkey(count),
         following:follows!follows_follower_id_fkey(count)
-      `).eq("id", userId).single();
+      `)
+      .eq("id", userId)
+      .single();
     if (error) {
       return c2.json({ error: "Profile not found" }, 404);
     }
@@ -10127,27 +12526,38 @@ profilesRouter.get("/:userId", async (c2) => {
 });
 profilesRouter.put("/me", authMiddleware, async (c2) => {
   const user = c2.get("user");
-  const { display_name, bio, username, profile_image_url } = await c2.req.json();
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const { display_name, bio, username, profile_image_url } =
+    await c2.req.json();
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
     if (username) {
-      const { data: existingUser, error: checkError } = await supabase.from("profiles").select("id").eq("username", username).neq("id", user.id).single();
+      const { data: existingUser, error: checkError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("username", username)
+        .neq("id", user.id)
+        .single();
       if (existingUser) {
         return c2.json({ error: "Username already exists" }, 400);
       }
     }
     const updateData = {
-      updated_at: (/* @__PURE__ */ new Date()).toISOString()
+      updated_at: /* @__PURE__ */ new Date().toISOString(),
     };
-    if (display_name !== void 0)
-      updateData.display_name = display_name;
-    if (bio !== void 0)
-      updateData.bio = bio;
-    if (username !== void 0)
-      updateData.username = username;
+    if (display_name !== void 0) updateData.display_name = display_name;
+    if (bio !== void 0) updateData.bio = bio;
+    if (username !== void 0) updateData.username = username;
     if (profile_image_url !== void 0)
       updateData.profile_image_url = profile_image_url;
-    const { data, error } = await supabase.from("profiles").update(updateData).eq("id", user.id).select().single();
+    const { data, error } = await supabase
+      .from("profiles")
+      .update(updateData)
+      .eq("id", user.id)
+      .select()
+      .single();
     if (error) {
       return c2.json({ error: error.message }, 400);
     }
@@ -10161,9 +12571,16 @@ profilesRouter.get("/search/:query", async (c2) => {
   const query = c2.req.param("query");
   const limit = Number(c2.req.query("limit")) || 20;
   const offset = Number(c2.req.query("offset")) || 0;
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_ANON_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_ANON_KEY,
+  );
   try {
-    const { data: profiles, error } = await supabase.from("profiles").select("id, username, display_name, bio, profile_image_url").or(`username.ilike.%${query}%,display_name.ilike.%${query}%`).range(offset, offset + limit - 1);
+    const { data: profiles, error } = await supabase
+      .from("profiles")
+      .select("id, username, display_name, bio, profile_image_url")
+      .or(`username.ilike.%${query}%,display_name.ilike.%${query}%`)
+      .range(offset, offset + limit - 1);
     if (error) {
       return c2.json({ error: error.message }, 400);
     }
@@ -10179,15 +12596,23 @@ profilesRouter.post("/:userId/follow", authMiddleware, async (c2) => {
   if (user.id === followingId) {
     return c2.json({ error: "Cannot follow yourself" }, 400);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: existing } = await supabase.from("follows").select("*").eq("follower_id", user.id).eq("following_id", followingId).single();
+    const { data: existing } = await supabase
+      .from("follows")
+      .select("*")
+      .eq("follower_id", user.id)
+      .eq("following_id", followingId)
+      .single();
     if (existing) {
       return c2.json({ error: "Already following this user" }, 400);
     }
     const { error } = await supabase.from("follows").insert({
       follower_id: user.id,
-      following_id: followingId
+      following_id: followingId,
     });
     if (error) {
       return c2.json({ error: error.message }, 400);
@@ -10201,9 +12626,16 @@ profilesRouter.post("/:userId/follow", authMiddleware, async (c2) => {
 profilesRouter.delete("/:userId/follow", authMiddleware, async (c2) => {
   const user = c2.get("user");
   const followingId = c2.req.param("userId");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { error } = await supabase.from("follows").delete().eq("follower_id", user.id).eq("following_id", followingId);
+    const { error } = await supabase
+      .from("follows")
+      .delete()
+      .eq("follower_id", user.id)
+      .eq("following_id", followingId);
     if (error) {
       return c2.json({ error: error.message }, 400);
     }
@@ -10217,12 +12649,19 @@ profilesRouter.get("/:userId/followers", async (c2) => {
   const userId = c2.req.param("userId");
   const limit = Number(c2.req.query("limit")) || 20;
   const offset = Number(c2.req.query("offset")) || 0;
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_ANON_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_ANON_KEY,
+  );
   try {
-    const { data: followers, error } = await supabase.from("follows").select(`
+    const { data: followers, error } = await supabase
+      .from("follows")
+      .select(`
         follower_id,
         profiles!follows_follower_id_fkey(id, username, display_name, profile_image_url)
-      `).eq("following_id", userId).range(offset, offset + limit - 1);
+      `)
+      .eq("following_id", userId)
+      .range(offset, offset + limit - 1);
     if (error) {
       return c2.json({ error: error.message }, 400);
     }
@@ -10236,12 +12675,19 @@ profilesRouter.get("/:userId/following", async (c2) => {
   const userId = c2.req.param("userId");
   const limit = Number(c2.req.query("limit")) || 20;
   const offset = Number(c2.req.query("offset")) || 0;
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_ANON_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_ANON_KEY,
+  );
   try {
-    const { data: following, error } = await supabase.from("follows").select(`
+    const { data: following, error } = await supabase
+      .from("follows")
+      .select(`
         following_id,
         profiles!follows_following_id_fkey(id, username, display_name, profile_image_url)
-      `).eq("follower_id", userId).range(offset, offset + limit - 1);
+      `)
+      .eq("follower_id", userId)
+      .range(offset, offset + limit - 1);
     if (error) {
       return c2.json({ error: error.message }, 400);
     }
@@ -10251,20 +12697,25 @@ profilesRouter.get("/:userId/following", async (c2) => {
     return c2.json({ error: "Failed to fetch following" }, 500);
   }
 });
-var profiles_default = profilesRouter;
+var profilesDefault = profilesRouter;
 
 // src/routes/posts.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var postsRouter = new Hono2();
 postsRouter.get("/", async (c2) => {
   const page = parseInt(c2.req.query("page") || "1");
   const limit = parseInt(c2.req.query("limit") || "20");
   const offset = (page - 1) * limit;
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: posts, error } = await supabase.from("posts").select(`
+    const { data: posts, error } = await supabase
+      .from("posts")
+      .select(`
         *,
         profiles!posts_user_id_fkey (
           id,
@@ -10281,7 +12732,9 @@ postsRouter.get("/", async (c2) => {
           preview_url,
           external_url
         )
-      `).order("created_at", { ascending: false }).range(offset, offset + limit - 1);
+      `)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
     if (error) {
       throw error;
     }
@@ -10293,9 +12746,14 @@ postsRouter.get("/", async (c2) => {
 });
 postsRouter.get("/:id", async (c2) => {
   const postId = c2.req.param("id");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: post2, error } = await supabase.from("posts").select(`
+    const { data: post2, error } = await supabase
+      .from("posts")
+      .select(`
         *,
         profiles!posts_user_id_fkey (
           id,
@@ -10312,7 +12770,9 @@ postsRouter.get("/:id", async (c2) => {
           preview_url,
           external_url
         )
-      `).eq("id", postId).single();
+      `)
+      .eq("id", postId)
+      .single();
     if (error) {
       return c2.json({ error: "Post not found" }, 404);
     }
@@ -10329,13 +12789,19 @@ postsRouter.post("/", async (c2) => {
   if (!content || content.trim() === "") {
     return c2.json({ error: "Content is required" }, 400);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: post2, error } = await supabase.from("posts").insert({
-      user_id: user.id,
-      content: content.trim(),
-      music_id: music_id || null
-    }).select(`
+    const { data: post2, error } = await supabase
+      .from("posts")
+      .insert({
+        user_id: user.id,
+        content: content.trim(),
+        music_id: music_id || null,
+      })
+      .select(`
         *,
         profiles!posts_user_id_fkey (
           id,
@@ -10352,7 +12818,8 @@ postsRouter.post("/", async (c2) => {
           preview_url,
           external_url
         )
-      `).single();
+      `)
+      .single();
     if (error) {
       throw error;
     }
@@ -10370,12 +12837,20 @@ postsRouter.put("/:id", async (c2) => {
   if (!content || content.trim() === "") {
     return c2.json({ error: "Content is required" }, 400);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: post2, error } = await supabase.from("posts").update({
-      content: content.trim(),
-      updated_at: (/* @__PURE__ */ new Date()).toISOString()
-    }).eq("id", postId).eq("user_id", user.id).select(`
+    const { data: post2, error } = await supabase
+      .from("posts")
+      .update({
+        content: content.trim(),
+        updated_at: /* @__PURE__ */ new Date().toISOString(),
+      })
+      .eq("id", postId)
+      .eq("user_id", user.id)
+      .select(`
         *,
         profiles!posts_user_id_fkey (
           id,
@@ -10392,7 +12867,8 @@ postsRouter.put("/:id", async (c2) => {
           preview_url,
           external_url
         )
-      `).single();
+      `)
+      .single();
     if (error) {
       if (error.code === "PGRST116") {
         return c2.json({ error: "Post not found or not authorized" }, 404);
@@ -10408,9 +12884,16 @@ postsRouter.put("/:id", async (c2) => {
 postsRouter.delete("/:id", async (c2) => {
   const user = c2.get("user");
   const postId = c2.req.param("id");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { error } = await supabase.from("posts").delete().eq("id", postId).eq("user_id", user.id);
+    const { error } = await supabase
+      .from("posts")
+      .delete()
+      .eq("id", postId)
+      .eq("user_id", user.id);
     if (error) {
       throw error;
     }
@@ -10420,12 +12903,12 @@ postsRouter.delete("/:id", async (c2) => {
     return c2.json({ error: "Failed to delete post" }, 500);
   }
 });
-var posts_default = postsRouter;
+var postsDefault = postsRouter;
 
 // src/routes/music.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var musicRouter = new Hono2();
 musicRouter.get("/search", async (c2) => {
   const query = c2.req.query("q");
@@ -10434,31 +12917,47 @@ musicRouter.get("/search", async (c2) => {
     return c2.json({ error: "Query parameter is required" }, 400);
   }
   try {
-    const spotify = new SpotifyAPI(c2.env.SPOTIFY_CLIENT_ID, c2.env.SPOTIFY_CLIENT_SECRET);
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+    const spotify = new SpotifyAPI(
+      c2.env.SPOTIFY_CLIENT_ID,
+      c2.env.SPOTIFY_CLIENT_SECRET,
+    );
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
     const tracks = await spotify.searchTracks(query, limit);
-    const formattedTracks = await Promise.all(tracks.map(async (track) => {
-      const { data: existingTrack } = await supabase.from("music").select("*").eq("spotify_id", track.id).single();
-      const trackData = {
-        spotify_id: track.id,
-        title: track.name,
-        artist: track.artists.map((artist) => artist.name).join(", "),
-        album: track.album.name,
-        image_url: track.album.images[0]?.url || null,
-        preview_url: track.preview_url,
-        external_url: track.external_urls.spotify,
-        duration_ms: track.duration_ms || null
-      };
-      if (!existingTrack) {
-        const { data: cachedTrack, error } = await supabase.from("music").insert(trackData).select().single();
-        if (!error && cachedTrack) {
-          return { ...trackData, id: cachedTrack.id };
+    const formattedTracks = await Promise.all(
+      tracks.map(async (track) => {
+        const { data: existingTrack } = await supabase
+          .from("music")
+          .select("*")
+          .eq("spotify_id", track.id)
+          .single();
+        const trackData = {
+          spotify_id: track.id,
+          title: track.name,
+          artist: track.artists.map((artist) => artist.name).join(", "),
+          album: track.album.name,
+          image_url: track.album.images[0]?.url || null,
+          preview_url: track.preview_url,
+          external_url: track.external_urls.spotify,
+          duration_ms: track.duration_ms || null,
+        };
+        if (!existingTrack) {
+          const { data: cachedTrack, error } = await supabase
+            .from("music")
+            .insert(trackData)
+            .select()
+            .single();
+          if (!error && cachedTrack) {
+            return { ...trackData, id: cachedTrack.id };
+          }
+        } else {
+          return { ...trackData, id: existingTrack.id };
         }
-      } else {
-        return { ...trackData, id: existingTrack.id };
-      }
-      return trackData;
-    }));
+        return trackData;
+      }),
+    );
     return c2.json({ tracks: formattedTracks });
   } catch (error) {
     console.error("Music search error:", error);
@@ -10467,13 +12966,23 @@ musicRouter.get("/search", async (c2) => {
 });
 musicRouter.get("/:spotifyId", async (c2) => {
   const spotifyId = c2.req.param("spotifyId");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: cachedMusic } = await supabase.from("music").select("*").eq("spotify_id", spotifyId).single();
+    const { data: cachedMusic } = await supabase
+      .from("music")
+      .select("*")
+      .eq("spotify_id", spotifyId)
+      .single();
     if (cachedMusic) {
       return c2.json({ music: cachedMusic });
     }
-    const spotify = new SpotifyAPI(c2.env.SPOTIFY_CLIENT_ID, c2.env.SPOTIFY_CLIENT_SECRET);
+    const spotify = new SpotifyAPI(
+      c2.env.SPOTIFY_CLIENT_ID,
+      c2.env.SPOTIFY_CLIENT_SECRET,
+    );
     const track = await spotify.getTrack(spotifyId);
     const trackData = {
       spotify_id: track.id,
@@ -10483,9 +12992,13 @@ musicRouter.get("/:spotifyId", async (c2) => {
       image_url: track.album.images[0]?.url || null,
       preview_url: track.preview_url,
       external_url: track.external_urls.spotify,
-      duration_ms: track.duration_ms
+      duration_ms: track.duration_ms,
     };
-    const { data: music, error } = await supabase.from("music").insert(trackData).select().single();
+    const { data: music, error } = await supabase
+      .from("music")
+      .insert(trackData)
+      .select()
+      .single();
     if (error) {
       console.error("Cache error:", error);
       return c2.json({ music: trackData });
@@ -10498,26 +13011,46 @@ musicRouter.get("/:spotifyId", async (c2) => {
 });
 musicRouter.post("/", async (c2) => {
   const body = await c2.req.json();
-  const { spotify_id, title, artist, album, image_url, preview_url, external_url, duration_ms } = body;
+  const {
+    spotify_id,
+    title,
+    artist,
+    album,
+    image_url,
+    preview_url,
+    external_url,
+    duration_ms,
+  } = body;
   if (!spotify_id || !title || !artist || !external_url) {
     return c2.json({ error: "Missing required fields" }, 400);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: existingMusic } = await supabase.from("music").select("*").eq("spotify_id", spotify_id).single();
+    const { data: existingMusic } = await supabase
+      .from("music")
+      .select("*")
+      .eq("spotify_id", spotify_id)
+      .single();
     if (existingMusic) {
       return c2.json({ music: existingMusic });
     }
-    const { data: music, error } = await supabase.from("music").insert({
-      spotify_id,
-      title,
-      artist,
-      album,
-      image_url,
-      preview_url,
-      external_url,
-      duration_ms
-    }).select().single();
+    const { data: music, error } = await supabase
+      .from("music")
+      .insert({
+        spotify_id,
+        title,
+        artist,
+        album,
+        image_url,
+        preview_url,
+        external_url,
+        duration_ms,
+      })
+      .select()
+      .single();
     if (error) {
       throw error;
     }
@@ -10534,23 +13067,32 @@ musicRouter.post("/play/:spotifyId", async (c2) => {
     return c2.json({ error: "Unauthorized" }, 401);
   }
   try {
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { data: profile, error: profileError } = await supabase.from("profiles").select("spotify_access_token, spotify_token_expires_at").eq("id", userId).single();
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("spotify_access_token, spotify_token_expires_at")
+      .eq("id", userId)
+      .single();
     if (profileError || !profile?.spotify_access_token) {
       return c2.json({ error: "Spotify not connected" }, 404);
     }
-    if (new Date(profile.spotify_token_expires_at) <= /* @__PURE__ */ new Date()) {
+    if (
+      new Date(profile.spotify_token_expires_at) <= /* @__PURE__ */ new Date()
+    ) {
       return c2.json({ error: "Spotify token expired, please refresh" }, 401);
     }
     const response = await fetch("https://api.spotify.com/v1/me/player/play", {
       method: "PUT",
       headers: {
-        "Authorization": `Bearer ${profile.spotify_access_token}`,
-        "Content-Type": "application/json"
+        Authorization: `Bearer ${profile.spotify_access_token}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        uris: [`spotify:track:${spotifyId}`]
-      })
+        uris: [`spotify:track:${spotifyId}`],
+      }),
     });
     if (response.status === 204) {
       return c2.json({ message: "Playback started" });
@@ -10558,7 +13100,10 @@ musicRouter.post("/play/:spotifyId", async (c2) => {
       return c2.json({ error: "No active device found" }, 404);
     } else {
       const errorData = await response.json();
-      return c2.json({ error: "Playback failed", details: errorData }, response.status);
+      return c2.json(
+        { error: "Playback failed", details: errorData },
+        response.status,
+      );
     }
   } catch (error) {
     console.error("Playback error:", error);
@@ -10571,22 +13116,32 @@ musicRouter.post("/pause", async (c2) => {
     return c2.json({ error: "Unauthorized" }, 401);
   }
   try {
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { data: profile, error: profileError } = await supabase.from("profiles").select("spotify_access_token").eq("id", userId).single();
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("spotify_access_token")
+      .eq("id", userId)
+      .single();
     if (profileError || !profile?.spotify_access_token) {
       return c2.json({ error: "Spotify not connected" }, 404);
     }
     const response = await fetch("https://api.spotify.com/v1/me/player/pause", {
       method: "PUT",
       headers: {
-        "Authorization": `Bearer ${profile.spotify_access_token}`
-      }
+        Authorization: `Bearer ${profile.spotify_access_token}`,
+      },
     });
     if (response.status === 204) {
       return c2.json({ message: "Playback paused" });
     } else {
       const errorData = await response.json();
-      return c2.json({ error: "Pause failed", details: errorData }, response.status);
+      return c2.json(
+        { error: "Pause failed", details: errorData },
+        response.status,
+      );
     }
   } catch (error) {
     console.error("Pause error:", error);
@@ -10599,15 +13154,22 @@ musicRouter.get("/player/state", async (c2) => {
     return c2.json({ error: "Unauthorized" }, 401);
   }
   try {
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { data: profile, error: profileError } = await supabase.from("profiles").select("spotify_access_token").eq("id", userId).single();
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("spotify_access_token")
+      .eq("id", userId)
+      .single();
     if (profileError || !profile?.spotify_access_token) {
       return c2.json({ error: "Spotify not connected" }, 404);
     }
     const response = await fetch("https://api.spotify.com/v1/me/player", {
       headers: {
-        "Authorization": `Bearer ${profile.spotify_access_token}`
-      }
+        Authorization: `Bearer ${profile.spotify_access_token}`,
+      },
     });
     if (response.status === 200) {
       const playerState = await response.json();
@@ -10616,24 +13178,27 @@ musicRouter.get("/player/state", async (c2) => {
       return c2.json({ player: null, message: "No active device" });
     } else {
       const errorData = await response.json();
-      return c2.json({ error: "Failed to get player state", details: errorData }, response.status);
+      return c2.json(
+        { error: "Failed to get player state", details: errorData },
+        response.status,
+      );
     }
   } catch (error) {
     console.error("Player state error:", error);
     return c2.json({ error: "Failed to get player state" }, 500);
   }
 });
-var music_default = musicRouter;
+var musicDefault = musicRouter;
 
 // src/routes/likes.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 
 // src/routes/notifications.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var notifications = new Hono2();
 notifications.use("*", authMiddleware);
 notifications.post("/", async (c2) => {
@@ -10641,41 +13206,83 @@ notifications.post("/", async (c2) => {
     const body = await c2.req.json();
     const { user_id, type, related_id, message } = body;
     if (!user_id || !type) {
-      return c2.json({ error: "\u30E6\u30FC\u30B6\u30FCID\u3068\u30BF\u30A4\u30D7\u306F\u5FC5\u9808\u3067\u3059" }, 400);
+      return c2.json(
+        {
+          error:
+            "\u30E6\u30FC\u30B6\u30FCID\u3068\u30BF\u30A4\u30D7\u306F\u5FC5\u9808\u3067\u3059",
+        },
+        400,
+      );
     }
     const currentUserId = c2.get("user")?.id;
     if (currentUserId === user_id) {
-      return c2.json({ message: "\u81EA\u5206\u3078\u306E\u901A\u77E5\u306F\u4F5C\u6210\u3055\u308C\u307E\u305B\u3093" }, 200);
+      return c2.json(
+        {
+          message:
+            "\u81EA\u5206\u3078\u306E\u901A\u77E5\u306F\u4F5C\u6210\u3055\u308C\u307E\u305B\u3093",
+        },
+        200,
+      );
     }
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { data, error } = await supabase.from("notifications").insert({
-      user_id,
-      type,
-      related_id,
-      message,
-      is_read: false
-    }).select().single();
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { data, error } = await supabase
+      .from("notifications")
+      .insert({
+        user_id,
+        type,
+        related_id,
+        message,
+        is_read: false,
+      })
+      .select()
+      .single();
     if (error) {
       console.error("\u901A\u77E5\u4F5C\u6210\u30A8\u30E9\u30FC:", error);
-      return c2.json({ error: "\u901A\u77E5\u306E\u4F5C\u6210\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      return c2.json(
+        {
+          error:
+            "\u901A\u77E5\u306E\u4F5C\u6210\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
     return c2.json(data, 201);
   } catch (error) {
-    console.error("\u901A\u77E5\u4F5C\u6210\u51E6\u7406\u30A8\u30E9\u30FC:", error);
-    return c2.json({ error: "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F" }, 500);
+    console.error(
+      "\u901A\u77E5\u4F5C\u6210\u51E6\u7406\u30A8\u30E9\u30FC:",
+      error,
+    );
+    return c2.json(
+      {
+        error:
+          "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F",
+      },
+      500,
+    );
   }
 });
 notifications.get("/", async (c2) => {
   try {
     const userId = c2.get("user")?.id;
     if (!userId) {
-      return c2.json({ error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" }, 401);
+      return c2.json(
+        { error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" },
+        401,
+      );
     }
     const page = parseInt(c2.req.query("page") || "1");
     const limit = parseInt(c2.req.query("limit") || "20");
     const offset = (page - 1) * limit;
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { data, error } = await supabase.from("notifications").select(`
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { data, error } = await supabase
+      .from("notifications")
+      .select(`
         *,
         related_user:profiles!notifications_related_id_fkey(
           id,
@@ -10683,15 +13290,33 @@ notifications.get("/", async (c2) => {
           display_name,
           profile_image_url
         )
-      `).eq("user_id", userId).order("created_at", { ascending: false }).range(offset, offset + limit - 1);
+      `)
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
     if (error) {
       console.error("\u901A\u77E5\u53D6\u5F97\u30A8\u30E9\u30FC:", error);
-      return c2.json({ error: "\u901A\u77E5\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      return c2.json(
+        {
+          error:
+            "\u901A\u77E5\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
     return c2.json(data || []);
   } catch (error) {
-    console.error("\u901A\u77E5\u4E00\u89A7\u53D6\u5F97\u51E6\u7406\u30A8\u30E9\u30FC:", error);
-    return c2.json({ error: "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F" }, 500);
+    console.error(
+      "\u901A\u77E5\u4E00\u89A7\u53D6\u5F97\u51E6\u7406\u30A8\u30E9\u30FC:",
+      error,
+    );
+    return c2.json(
+      {
+        error:
+          "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F",
+      },
+      500,
+    );
   }
 });
 notifications.put("/:id/read", async (c2) => {
@@ -10699,76 +13324,173 @@ notifications.put("/:id/read", async (c2) => {
     const notificationId = c2.req.param("id");
     const userId = c2.get("user")?.id;
     if (!userId) {
-      return c2.json({ error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" }, 401);
+      return c2.json(
+        { error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" },
+        401,
+      );
     }
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { data, error } = await supabase.from("notifications").update({ is_read: true }).eq("id", notificationId).eq("user_id", userId).select().single();
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { data, error } = await supabase
+      .from("notifications")
+      .update({ is_read: true })
+      .eq("id", notificationId)
+      .eq("user_id", userId)
+      .select()
+      .single();
     if (error) {
       console.error("\u901A\u77E5\u65E2\u8AAD\u30A8\u30E9\u30FC:", error);
-      return c2.json({ error: "\u901A\u77E5\u306E\u65E2\u8AAD\u51E6\u7406\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      return c2.json(
+        {
+          error:
+            "\u901A\u77E5\u306E\u65E2\u8AAD\u51E6\u7406\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
     if (!data) {
-      return c2.json({ error: "\u901A\u77E5\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093" }, 404);
+      return c2.json(
+        {
+          error: "\u901A\u77E5\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093",
+        },
+        404,
+      );
     }
     return c2.json(data);
   } catch (error) {
-    console.error("\u901A\u77E5\u65E2\u8AAD\u51E6\u7406\u30A8\u30E9\u30FC:", error);
-    return c2.json({ error: "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F" }, 500);
+    console.error(
+      "\u901A\u77E5\u65E2\u8AAD\u51E6\u7406\u30A8\u30E9\u30FC:",
+      error,
+    );
+    return c2.json(
+      {
+        error:
+          "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F",
+      },
+      500,
+    );
   }
 });
 notifications.put("/read-all", async (c2) => {
   try {
     const userId = c2.get("user")?.id;
     if (!userId) {
-      return c2.json({ error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" }, 401);
+      return c2.json(
+        { error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" },
+        401,
+      );
     }
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { error } = await supabase.from("notifications").update({ is_read: true }).eq("user_id", userId).eq("is_read", false);
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { error } = await supabase
+      .from("notifications")
+      .update({ is_read: true })
+      .eq("user_id", userId)
+      .eq("is_read", false);
     if (error) {
       console.error("\u5168\u901A\u77E5\u65E2\u8AAD\u30A8\u30E9\u30FC:", error);
-      return c2.json({ error: "\u901A\u77E5\u306E\u65E2\u8AAD\u51E6\u7406\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      return c2.json(
+        {
+          error:
+            "\u901A\u77E5\u306E\u65E2\u8AAD\u51E6\u7406\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
-    return c2.json({ message: "\u5168\u3066\u306E\u901A\u77E5\u3092\u65E2\u8AAD\u306B\u3057\u307E\u3057\u305F" });
+    return c2.json({
+      message:
+        "\u5168\u3066\u306E\u901A\u77E5\u3092\u65E2\u8AAD\u306B\u3057\u307E\u3057\u305F",
+    });
   } catch (error) {
-    console.error("\u5168\u901A\u77E5\u65E2\u8AAD\u51E6\u7406\u30A8\u30E9\u30FC:", error);
-    return c2.json({ error: "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F" }, 500);
+    console.error(
+      "\u5168\u901A\u77E5\u65E2\u8AAD\u51E6\u7406\u30A8\u30E9\u30FC:",
+      error,
+    );
+    return c2.json(
+      {
+        error:
+          "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F",
+      },
+      500,
+    );
   }
 });
 notifications.get("/unread-count", async (c2) => {
   try {
     const userId = c2.get("user")?.id;
     if (!userId) {
-      return c2.json({ error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" }, 401);
+      return c2.json(
+        { error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" },
+        401,
+      );
     }
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { count, error } = await supabase.from("notifications").select("*", { count: "exact", head: true }).eq("user_id", userId).eq("is_read", false);
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { count, error } = await supabase
+      .from("notifications")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .eq("is_read", false);
     if (error) {
-      console.error("\u672A\u8AAD\u901A\u77E5\u6570\u53D6\u5F97\u30A8\u30E9\u30FC:", error);
-      return c2.json({ error: "\u672A\u8AAD\u901A\u77E5\u6570\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      console.error(
+        "\u672A\u8AAD\u901A\u77E5\u6570\u53D6\u5F97\u30A8\u30E9\u30FC:",
+        error,
+      );
+      return c2.json(
+        {
+          error:
+            "\u672A\u8AAD\u901A\u77E5\u6570\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
     return c2.json({ count: count || 0 });
   } catch (error) {
-    console.error("\u672A\u8AAD\u901A\u77E5\u6570\u53D6\u5F97\u51E6\u7406\u30A8\u30E9\u30FC:", error);
-    return c2.json({ error: "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F" }, 500);
+    console.error(
+      "\u672A\u8AAD\u901A\u77E5\u6570\u53D6\u5F97\u51E6\u7406\u30A8\u30E9\u30FC:",
+      error,
+    );
+    return c2.json(
+      {
+        error:
+          "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F",
+      },
+      500,
+    );
   }
 });
-var createNotification = /* @__PURE__ */ __name(async (userId, type, relatedId, message) => {
-  try {
-    const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { error } = await supabase.from("notifications").insert({
-      user_id: userId,
-      type,
-      related_id: relatedId,
-      message,
-      is_read: false
-    });
-    if (error) {
-      console.error("\u901A\u77E5\u4F5C\u6210\u30A8\u30E9\u30FC:", error);
+var createNotification = /* @__PURE__ */ Name(
+  async (userId, type, relatedId, message) => {
+    try {
+      const supabase = createSupabaseClient(
+        c.env.SUPABASE_URL,
+        c.env.SUPABASE_SERVICE_ROLE_KEY,
+      );
+      const { error } = await supabase.from("notifications").insert({
+        user_id: userId,
+        type,
+        related_id: relatedId,
+        message,
+        is_read: false,
+      });
+      if (error) {
+        console.error("\u901A\u77E5\u4F5C\u6210\u30A8\u30E9\u30FC:", error);
+      }
+    } catch (error) {
+      console.error(
+        "\u901A\u77E5\u4F5C\u6210\u51E6\u7406\u30A8\u30E9\u30FC:",
+        error,
+      );
     }
-  } catch (error) {
-    console.error("\u901A\u77E5\u4F5C\u6210\u51E6\u7406\u30A8\u30E9\u30FC:", error);
-  }
-}, "createNotification");
+  },
+  "createNotification",
+);
 
 // src/routes/likes.ts
 var likesRouter = new Hono2();
@@ -10779,20 +13501,36 @@ likesRouter.post("/", async (c2) => {
   if (!user_track_id) {
     return c2.json({ error: "User track ID is required" }, 400);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: userTrack } = await supabase.from("user_tracks").select("id, user_id").eq("id", user_track_id).single();
+    const { data: userTrack } = await supabase
+      .from("user_tracks")
+      .select("id, user_id")
+      .eq("id", user_track_id)
+      .single();
     if (!userTrack) {
       return c2.json({ error: "User track not found" }, 404);
     }
-    const { data: existingLike } = await supabase.from("likes").select("id").eq("user_id", user.id).eq("user_track_id", user_track_id).single();
+    const { data: existingLike } = await supabase
+      .from("likes")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("user_track_id", user_track_id)
+      .single();
     if (existingLike) {
       return c2.json({ error: "User track already liked" }, 409);
     }
-    const { data: like, error } = await supabase.from("likes").insert({
-      user_id: user.id,
-      user_track_id
-    }).select().single();
+    const { data: like, error } = await supabase
+      .from("likes")
+      .insert({
+        user_id: user.id,
+        user_track_id,
+      })
+      .select()
+      .single();
     if (error) {
       throw error;
     }
@@ -10801,7 +13539,7 @@ likesRouter.post("/", async (c2) => {
         userTrack.user_id,
         "like",
         user_track_id,
-        `${user.username}\u304C\u3042\u306A\u305F\u306E\u697D\u66F2\u306B\u3044\u3044\u306D\u3057\u307E\u3057\u305F`
+        `${user.username}\u304C\u3042\u306A\u305F\u306E\u697D\u66F2\u306B\u3044\u3044\u306D\u3057\u307E\u3057\u305F`,
       );
     }
     return c2.json({ like }, 201);
@@ -10813,9 +13551,16 @@ likesRouter.post("/", async (c2) => {
 likesRouter.delete("/:userTrackId", async (c2) => {
   const user = c2.get("user");
   const userTrackId = c2.req.param("userTrackId");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { error } = await supabase.from("likes").delete().eq("user_id", user.id).eq("user_track_id", userTrackId);
+    const { error } = await supabase
+      .from("likes")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("user_track_id", userTrackId);
     if (error) {
       throw error;
     }
@@ -10828,9 +13573,17 @@ likesRouter.delete("/:userTrackId", async (c2) => {
 likesRouter.get("/status/:postId", async (c2) => {
   const user = c2.get("user");
   const postId = c2.req.param("postId");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: like } = await supabase.from("likes").select("id").eq("user_id", user.id).eq("post_id", postId).single();
+    const { data: like } = await supabase
+      .from("likes")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("post_id", postId)
+      .single();
     return c2.json({ isLiked: !!like });
   } catch (error) {
     console.error("Get like status error:", error);
@@ -10839,9 +13592,15 @@ likesRouter.get("/status/:postId", async (c2) => {
 });
 likesRouter.get("/count/:postId", async (c2) => {
   const postId = c2.req.param("postId");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { count, error } = await supabase.from("likes").select("*", { count: "exact", head: true }).eq("post_id", postId);
+    const { count, error } = await supabase
+      .from("likes")
+      .select("*", { count: "exact", head: true })
+      .eq("post_id", postId);
     if (error) {
       throw error;
     }
@@ -10856,9 +13615,14 @@ likesRouter.get("/post/:postId", async (c2) => {
   const page = parseInt(c2.req.query("page") || "1");
   const limit = parseInt(c2.req.query("limit") || "20");
   const offset = (page - 1) * limit;
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: likes, error } = await supabase.from("likes").select(`
+    const { data: likes, error } = await supabase
+      .from("likes")
+      .select(`
         *,
         profiles!likes_user_id_fkey (
           id,
@@ -10866,7 +13630,10 @@ likesRouter.get("/post/:postId", async (c2) => {
           display_name,
           avatar_url
         )
-      `).eq("post_id", postId).order("created_at", { ascending: false }).range(offset, offset + limit - 1);
+      `)
+      .eq("post_id", postId)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
     if (error) {
       throw error;
     }
@@ -10881,9 +13648,14 @@ likesRouter.get("/user-track/:userTrackId", async (c2) => {
   const page = parseInt(c2.req.query("page") || "1");
   const limit = parseInt(c2.req.query("limit") || "20");
   const offset = (page - 1) * limit;
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: likes, error } = await supabase.from("likes").select(`
+    const { data: likes, error } = await supabase
+      .from("likes")
+      .select(`
         *,
         profiles!likes_user_id_fkey (
           id,
@@ -10891,7 +13663,10 @@ likesRouter.get("/user-track/:userTrackId", async (c2) => {
           display_name,
           avatar_url
         )
-      `).eq("user_track_id", userTrackId).order("created_at", { ascending: false }).range(offset, offset + limit - 1);
+      `)
+      .eq("user_track_id", userTrackId)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
     if (error) {
       throw error;
     }
@@ -10901,12 +13676,12 @@ likesRouter.get("/user-track/:userTrackId", async (c2) => {
     return c2.json({ error: "Failed to get likes" }, 500);
   }
 });
-var likes_default = likesRouter;
+var likesDefault = likesRouter;
 
 // src/routes/comments.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var commentsRouter = new Hono2();
 function buildCommentTree(comments) {
   const commentMap = /* @__PURE__ */ new Map();
@@ -10914,7 +13689,7 @@ function buildCommentTree(comments) {
   comments.forEach((comment) => {
     commentMap.set(comment.id, {
       ...comment,
-      replies: []
+      replies: [],
     });
   });
   comments.forEach((comment) => {
@@ -10932,15 +13707,20 @@ function buildCommentTree(comments) {
   });
   return rootComments;
 }
-__name(buildCommentTree, "buildCommentTree");
+Name(buildCommentTree, "buildCommentTree");
 commentsRouter.get("/user-track/:userTrackId", async (c2) => {
   const userTrackId = c2.req.param("userTrackId");
   const page = parseInt(c2.req.query("page") || "1");
   const limit = parseInt(c2.req.query("limit") || "50");
   const offset = (page - 1) * limit;
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: comments, error } = await supabase.from("comments").select(`
+    const { data: comments, error } = await supabase
+      .from("comments")
+      .select(`
         *,
         profiles!comments_user_id_fkey (
           id,
@@ -10948,7 +13728,9 @@ commentsRouter.get("/user-track/:userTrackId", async (c2) => {
           display_name,
           avatar_url
         )
-      `).eq("user_track_id", userTrackId).order("created_at", { ascending: true });
+      `)
+      .eq("user_track_id", userTrackId)
+      .order("created_at", { ascending: true });
     if (error) {
       throw error;
     }
@@ -10958,7 +13740,7 @@ commentsRouter.get("/user-track/:userTrackId", async (c2) => {
       comments: paginatedRootComments,
       page,
       limit,
-      total: commentTree.length
+      total: commentTree.length,
     });
   } catch (error) {
     console.error("Get comments error:", error);
@@ -10972,29 +13754,46 @@ commentsRouter.post("/", async (c2) => {
   if (!user_track_id || !content || content.trim() === "") {
     return c2.json({ error: "User track ID and content are required" }, 400);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: userTrack } = await supabase.from("user_tracks").select("id, user_id").eq("id", user_track_id).single();
+    const { data: userTrack } = await supabase
+      .from("user_tracks")
+      .select("id, user_id")
+      .eq("id", user_track_id)
+      .single();
     if (!userTrack) {
       return c2.json({ error: "User track not found" }, 404);
     }
     let parentCommentOwner = null;
     if (parent_comment_id) {
-      const { data: parentComment } = await supabase.from("comments").select("id, user_track_id, user_id").eq("id", parent_comment_id).single();
+      const { data: parentComment } = await supabase
+        .from("comments")
+        .select("id, user_track_id, user_id")
+        .eq("id", parent_comment_id)
+        .single();
       if (!parentComment) {
         return c2.json({ error: "Parent comment not found" }, 404);
       }
       if (parentComment.user_track_id !== user_track_id) {
-        return c2.json({ error: "Parent comment does not belong to the same user track" }, 400);
+        return c2.json(
+          { error: "Parent comment does not belong to the same user track" },
+          400,
+        );
       }
       parentCommentOwner = parentComment.user_id;
     }
-    const { data: comment, error } = await supabase.from("comments").insert({
-      user_id: user.id,
-      user_track_id,
-      content: content.trim(),
-      parent_comment_id: parent_comment_id || null
-    }).select(`
+    const { data: comment, error } = await supabase
+      .from("comments")
+      .insert({
+        user_id: user.id,
+        user_track_id,
+        content: content.trim(),
+        parent_comment_id: parent_comment_id || null,
+      })
+      .select(`
         *,
         profiles!comments_user_id_fkey (
           id,
@@ -11002,23 +13801,28 @@ commentsRouter.post("/", async (c2) => {
           display_name,
           avatar_url
         )
-      `).single();
+      `)
+      .single();
     if (error) {
       throw error;
     }
-    if (parent_comment_id && parentCommentOwner && parentCommentOwner !== user.id) {
+    if (
+      parent_comment_id &&
+      parentCommentOwner &&
+      parentCommentOwner !== user.id
+    ) {
       await createNotification(
         parentCommentOwner,
         "reply",
         comment.id,
-        `${user.username}\u304C\u3042\u306A\u305F\u306E\u30B3\u30E1\u30F3\u30C8\u306B\u8FD4\u4FE1\u3057\u307E\u3057\u305F`
+        `${user.username}\u304C\u3042\u306A\u305F\u306E\u30B3\u30E1\u30F3\u30C8\u306B\u8FD4\u4FE1\u3057\u307E\u3057\u305F`,
       );
     } else if (!parent_comment_id && userTrack.user_id !== user.id) {
       await createNotification(
         userTrack.user_id,
         "comment",
         comment.id,
-        `${user.username}\u304C\u3042\u306A\u305F\u306E\u697D\u66F2\u306B\u30B3\u30E1\u30F3\u30C8\u3057\u307E\u3057\u305F`
+        `${user.username}\u304C\u3042\u306A\u305F\u306E\u697D\u66F2\u306B\u30B3\u30E1\u30F3\u30C8\u3057\u307E\u3057\u305F`,
       );
     }
     return c2.json({ comment }, 201);
@@ -11035,12 +13839,20 @@ commentsRouter.put("/:id", async (c2) => {
   if (!content || content.trim() === "") {
     return c2.json({ error: "Content is required" }, 400);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: comment, error } = await supabase.from("comments").update({
-      content: content.trim(),
-      updated_at: (/* @__PURE__ */ new Date()).toISOString()
-    }).eq("id", commentId).eq("user_id", user.id).select(`
+    const { data: comment, error } = await supabase
+      .from("comments")
+      .update({
+        content: content.trim(),
+        updated_at: /* @__PURE__ */ new Date().toISOString(),
+      })
+      .eq("id", commentId)
+      .eq("user_id", user.id)
+      .select(`
         *,
         profiles!comments_user_id_fkey (
           id,
@@ -11048,7 +13860,8 @@ commentsRouter.put("/:id", async (c2) => {
           display_name,
           avatar_url
         )
-      `).single();
+      `)
+      .single();
     if (error) {
       if (error.code === "PGRST116") {
         return c2.json({ error: "Comment not found or not authorized" }, 404);
@@ -11064,9 +13877,16 @@ commentsRouter.put("/:id", async (c2) => {
 commentsRouter.delete("/:id", async (c2) => {
   const user = c2.get("user");
   const commentId = c2.req.param("id");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { error } = await supabase.from("comments").delete().eq("id", commentId).eq("user_id", user.id);
+    const { error } = await supabase
+      .from("comments")
+      .delete()
+      .eq("id", commentId)
+      .eq("user_id", user.id);
     if (error) {
       throw error;
     }
@@ -11078,9 +13898,14 @@ commentsRouter.delete("/:id", async (c2) => {
 });
 commentsRouter.get("/:id", async (c2) => {
   const commentId = c2.req.param("id");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: comment, error } = await supabase.from("comments").select(`
+    const { data: comment, error } = await supabase
+      .from("comments")
+      .select(`
         *,
         profiles!comments_user_id_fkey (
           id,
@@ -11088,7 +13913,9 @@ commentsRouter.get("/:id", async (c2) => {
           display_name,
           avatar_url
         )
-      `).eq("id", commentId).single();
+      `)
+      .eq("id", commentId)
+      .single();
     if (error) {
       if (error.code === "PGRST116") {
         return c2.json({ error: "Comment not found" }, 404);
@@ -11101,17 +13928,24 @@ commentsRouter.get("/:id", async (c2) => {
     return c2.json({ error: "Failed to get comment" }, 500);
   }
 });
-var comments_default = commentsRouter;
+var commentsDefault = commentsRouter;
 
 // src/routes/categories.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var categoriesRouter = new Hono2();
 categoriesRouter.get("/", async (c2) => {
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: categories, error } = await supabase.from("categories").select("*").order("is_default", { ascending: false }).order("created_at", { ascending: true });
+    const { data: categories, error } = await supabase
+      .from("categories")
+      .select("*")
+      .order("is_default", { ascending: false })
+      .order("created_at", { ascending: true });
     if (error) {
       throw error;
     }
@@ -11123,9 +13957,16 @@ categoriesRouter.get("/", async (c2) => {
 });
 categoriesRouter.get("/:id", async (c2) => {
   const categoryId = c2.req.param("id");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: category, error } = await supabase.from("categories").select("*").eq("id", categoryId).single();
+    const { data: category, error } = await supabase
+      .from("categories")
+      .select("*")
+      .eq("id", categoryId)
+      .single();
     if (error) {
       return c2.json({ error: "Category not found" }, 404);
     }
@@ -11145,17 +13986,28 @@ categoriesRouter.post("/", async (c2) => {
   if (!name || name.trim() === "") {
     return c2.json({ error: "Category name is required" }, 400);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: existingCategory } = await supabase.from("categories").select("id").eq("name", name.trim()).single();
+    const { data: existingCategory } = await supabase
+      .from("categories")
+      .select("id")
+      .eq("name", name.trim())
+      .single();
     if (existingCategory) {
       return c2.json({ error: "Category with this name already exists" }, 409);
     }
-    const { data: category, error } = await supabase.from("categories").insert({
-      name: name.trim(),
-      description: description?.trim() || null,
-      is_default: false
-    }).select().single();
+    const { data: category, error } = await supabase
+      .from("categories")
+      .insert({
+        name: name.trim(),
+        description: description?.trim() || null,
+        is_default: false,
+      })
+      .select()
+      .single();
     if (error) {
       throw error;
     }
@@ -11176,23 +14028,40 @@ categoriesRouter.put("/:id", async (c2) => {
   if (!name || name.trim() === "") {
     return c2.json({ error: "Category name is required" }, 400);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: existingCategory, error: checkError } = await supabase.from("categories").select("id, is_default").eq("id", categoryId).single();
+    const { data: existingCategory, error: checkError } = await supabase
+      .from("categories")
+      .select("id, is_default")
+      .eq("id", categoryId)
+      .single();
     if (checkError || !existingCategory) {
       return c2.json({ error: "Category not found" }, 404);
     }
     if (existingCategory.is_default) {
       return c2.json({ error: "Cannot modify default categories" }, 403);
     }
-    const { data: duplicateCategory } = await supabase.from("categories").select("id").eq("name", name.trim()).neq("id", categoryId).single();
+    const { data: duplicateCategory } = await supabase
+      .from("categories")
+      .select("id")
+      .eq("name", name.trim())
+      .neq("id", categoryId)
+      .single();
     if (duplicateCategory) {
       return c2.json({ error: "Category with this name already exists" }, 409);
     }
-    const { data: category, error } = await supabase.from("categories").update({
-      name: name.trim(),
-      description: description?.trim() || null
-    }).eq("id", categoryId).select().single();
+    const { data: category, error } = await supabase
+      .from("categories")
+      .update({
+        name: name.trim(),
+        description: description?.trim() || null,
+      })
+      .eq("id", categoryId)
+      .select()
+      .single();
     if (error) {
       throw error;
     }
@@ -11208,23 +14077,37 @@ categoriesRouter.delete("/:id", async (c2) => {
   if (!user) {
     return c2.json({ error: "Unauthorized" }, 401);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: existingCategory, error: checkError } = await supabase.from("categories").select("id, is_default").eq("id", categoryId).single();
+    const { data: existingCategory, error: checkError } = await supabase
+      .from("categories")
+      .select("id, is_default")
+      .eq("id", categoryId)
+      .single();
     if (checkError || !existingCategory) {
       return c2.json({ error: "Category not found" }, 404);
     }
     if (existingCategory.is_default) {
       return c2.json({ error: "Cannot delete default categories" }, 403);
     }
-    const { data: userTracks, error: userTracksError } = await supabase.from("user_tracks").select("id").eq("category_id", categoryId).limit(1);
+    const { data: userTracks, error: userTracksError } = await supabase
+      .from("user_tracks")
+      .select("id")
+      .eq("category_id", categoryId)
+      .limit(1);
     if (userTracksError) {
       throw userTracksError;
     }
     if (userTracks && userTracks.length > 0) {
       return c2.json({ error: "Cannot delete category that is in use" }, 409);
     }
-    const { error } = await supabase.from("categories").delete().eq("id", categoryId);
+    const { error } = await supabase
+      .from("categories")
+      .delete()
+      .eq("id", categoryId);
     if (error) {
       throw error;
     }
@@ -11234,12 +14117,12 @@ categoriesRouter.delete("/:id", async (c2) => {
     return c2.json({ error: "Failed to delete category" }, 500);
   }
 });
-var categories_default = categoriesRouter;
+var categoriesDefault = categoriesRouter;
 
 // src/routes/userTracks.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var userTracksRouter = new Hono2();
 userTracksRouter.get("/", async (c2) => {
   const userId = c2.req.query("user_id");
@@ -11247,9 +14130,14 @@ userTracksRouter.get("/", async (c2) => {
   const page = parseInt(c2.req.query("page") || "1");
   const limit = parseInt(c2.req.query("limit") || "20");
   const offset = (page - 1) * limit;
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    let query = supabase.from("user_tracks").select(`
+    let query = supabase
+      .from("user_tracks")
+      .select(`
         *,
         profiles!user_tracks_user_id_fkey (
           id,
@@ -11273,7 +14161,9 @@ userTracksRouter.get("/", async (c2) => {
           external_url,
           duration_ms
         )
-      `).order("created_at", { ascending: false }).range(offset, offset + limit - 1);
+      `)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
     if (userId) {
       query = query.eq("user_id", userId);
     }
@@ -11292,9 +14182,14 @@ userTracksRouter.get("/", async (c2) => {
 });
 userTracksRouter.get("/:id", async (c2) => {
   const userTrackId = c2.req.param("id");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: userTrack, error } = await supabase.from("user_tracks").select(`
+    const { data: userTrack, error } = await supabase
+      .from("user_tracks")
+      .select(`
         *,
         profiles!user_tracks_user_id_fkey (
           id,
@@ -11318,7 +14213,9 @@ userTracksRouter.get("/:id", async (c2) => {
           external_url,
           duration_ms
         )
-      `).eq("id", userTrackId).single();
+      `)
+      .eq("id", userTrackId)
+      .single();
     if (error) {
       return c2.json({ error: "User track not found" }, 404);
     }
@@ -11336,24 +14233,47 @@ userTracksRouter.post("/", async (c2) => {
     return c2.json({ error: "Unauthorized" }, 401);
   }
   if (!category_id || !spotify_track_id) {
-    return c2.json({ error: "Category ID and Spotify track ID are required" }, 400);
+    return c2.json(
+      { error: "Category ID and Spotify track ID are required" },
+      400,
+    );
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: category, error: categoryError } = await supabase.from("categories").select("id").eq("id", category_id).single();
+    const { data: category, error: categoryError } = await supabase
+      .from("categories")
+      .select("id")
+      .eq("id", category_id)
+      .single();
     if (categoryError || !category) {
       return c2.json({ error: "Category not found" }, 404);
     }
-    const { data: existingUserTrack } = await supabase.from("user_tracks").select("id").eq("user_id", user.id).eq("category_id", category_id).eq("spotify_track_id", spotify_track_id).single();
+    const { data: existingUserTrack } = await supabase
+      .from("user_tracks")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("category_id", category_id)
+      .eq("spotify_track_id", spotify_track_id)
+      .single();
     if (existingUserTrack) {
       return c2.json({ error: "Track already exists in this category" }, 409);
     }
     let musicEntry = null;
-    const { data: existingMusic } = await supabase.from("music").select("*").eq("spotify_id", spotify_track_id).single();
+    const { data: existingMusic } = await supabase
+      .from("music")
+      .select("*")
+      .eq("spotify_id", spotify_track_id)
+      .single();
     if (existingMusic) {
       musicEntry = existingMusic;
     } else {
-      const spotify = new SpotifyAPI(c2.env.SPOTIFY_CLIENT_ID, c2.env.SPOTIFY_CLIENT_SECRET);
+      const spotify = new SpotifyAPI(
+        c2.env.SPOTIFY_CLIENT_ID,
+        c2.env.SPOTIFY_CLIENT_SECRET,
+      );
       const track = await spotify.getTrack(spotify_track_id);
       const trackData = {
         spotify_id: track.id,
@@ -11363,9 +14283,13 @@ userTracksRouter.post("/", async (c2) => {
         image_url: track.album.images[0]?.url || null,
         preview_url: track.preview_url,
         external_url: track.external_urls.spotify,
-        duration_ms: track.duration_ms || null
+        duration_ms: track.duration_ms || null,
       };
-      const { data: newMusic, error: musicError } = await supabase.from("music").insert(trackData).select().single();
+      const { data: newMusic, error: musicError } = await supabase
+        .from("music")
+        .insert(trackData)
+        .select()
+        .single();
       if (musicError) {
         console.error("Music cache error:", musicError);
         musicEntry = trackData;
@@ -11373,12 +14297,15 @@ userTracksRouter.post("/", async (c2) => {
         musicEntry = newMusic;
       }
     }
-    const { data: userTrack, error } = await supabase.from("user_tracks").insert({
-      user_id: user.id,
-      category_id,
-      spotify_track_id,
-      comment: comment?.trim() || null
-    }).select(`
+    const { data: userTrack, error } = await supabase
+      .from("user_tracks")
+      .insert({
+        user_id: user.id,
+        category_id,
+        spotify_track_id,
+        comment: comment?.trim() || null,
+      })
+      .select(`
         *,
         profiles!user_tracks_user_id_fkey (
           id,
@@ -11391,13 +14318,14 @@ userTracksRouter.post("/", async (c2) => {
           name,
           description
         )
-      `).single();
+      `)
+      .single();
     if (error) {
       throw error;
     }
     const responseUserTrack = {
       ...userTrack,
-      music: musicEntry
+      music: musicEntry,
     };
     return c2.json({ userTrack: responseUserTrack }, 201);
   } catch (error) {
@@ -11413,11 +14341,19 @@ userTracksRouter.put("/:id", async (c2) => {
   if (!user) {
     return c2.json({ error: "Unauthorized" }, 401);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: userTrack, error } = await supabase.from("user_tracks").update({
-      comment: comment?.trim() || null
-    }).eq("id", userTrackId).eq("user_id", user.id).select(`
+    const { data: userTrack, error } = await supabase
+      .from("user_tracks")
+      .update({
+        comment: comment?.trim() || null,
+      })
+      .eq("id", userTrackId)
+      .eq("user_id", user.id)
+      .select(`
         *,
         profiles!user_tracks_user_id_fkey (
           id,
@@ -11441,10 +14377,14 @@ userTracksRouter.put("/:id", async (c2) => {
           external_url,
           duration_ms
         )
-      `).single();
+      `)
+      .single();
     if (error) {
       if (error.code === "PGRST116") {
-        return c2.json({ error: "User track not found or not authorized" }, 404);
+        return c2.json(
+          { error: "User track not found or not authorized" },
+          404,
+        );
       }
       throw error;
     }
@@ -11460,9 +14400,16 @@ userTracksRouter.delete("/:id", async (c2) => {
   if (!user) {
     return c2.json({ error: "Unauthorized" }, 401);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { error } = await supabase.from("user_tracks").delete().eq("id", userTrackId).eq("user_id", user.id);
+    const { error } = await supabase
+      .from("user_tracks")
+      .delete()
+      .eq("id", userTrackId)
+      .eq("user_id", user.id);
     if (error) {
       throw error;
     }
@@ -11478,9 +14425,14 @@ userTracksRouter.get("/user/:userId/category/:categoryId", async (c2) => {
   const page = parseInt(c2.req.query("page") || "1");
   const limit = parseInt(c2.req.query("limit") || "20");
   const offset = (page - 1) * limit;
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: userTracks, error } = await supabase.from("user_tracks").select(`
+    const { data: userTracks, error } = await supabase
+      .from("user_tracks")
+      .select(`
         *,
         profiles!user_tracks_user_id_fkey (
           id,
@@ -11504,7 +14456,11 @@ userTracksRouter.get("/user/:userId/category/:categoryId", async (c2) => {
           external_url,
           duration_ms
         )
-      `).eq("user_id", userId).eq("category_id", categoryId).order("created_at", { ascending: false }).range(offset, offset + limit - 1);
+      `)
+      .eq("user_id", userId)
+      .eq("category_id", categoryId)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
     if (error) {
       throw error;
     }
@@ -11516,9 +14472,14 @@ userTracksRouter.get("/user/:userId/category/:categoryId", async (c2) => {
 });
 userTracksRouter.get("/user/:userId/categories", async (c2) => {
   const userId = c2.req.param("userId");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: categoriesWithCounts, error } = await supabase.from("categories").select(`
+    const { data: categoriesWithCounts, error } = await supabase
+      .from("categories")
+      .select(`
         *,
         user_tracks!user_tracks_category_id_fkey (
           id
@@ -11527,14 +14488,17 @@ userTracksRouter.get("/user/:userId/categories", async (c2) => {
     if (error) {
       throw error;
     }
-    const categories = categoriesWithCounts?.map((category) => ({
-      ...category,
-      track_count: category.user_tracks?.filter((track) => track.user_id === userId)?.length || 0,
-      user_tracks: void 0
-      // Remove the user_tracks array from response
-    })) || [];
+    const categories =
+      categoriesWithCounts?.map((category) => ({
+        ...category,
+        track_count:
+          category.user_tracks?.filter((track) => track.user_id === userId)
+            ?.length || 0,
+        user_tracks: void 0,
+        // Remove the user_tracks array from response
+      })) || [];
     const filteredCategories = categories.filter(
-      (cat) => cat.is_default || cat.track_count > 0
+      (cat) => cat.is_default || cat.track_count > 0,
     );
     return c2.json({ categories: filteredCategories });
   } catch (error) {
@@ -11542,40 +14506,82 @@ userTracksRouter.get("/user/:userId/categories", async (c2) => {
     return c2.json({ error: "Failed to get user categories" }, 500);
   }
 });
-var userTracks_default = userTracksRouter;
+var userTracksDefault = userTracksRouter;
 
 // src/routes/follows.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var followsRouter = new Hono2();
 followsRouter.post("/:followingId", async (c2) => {
   try {
     const user = c2.get("user");
     const followingId = c2.req.param("followingId");
     if (!user) {
-      return c2.json({ error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" }, 401);
+      return c2.json(
+        { error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" },
+        401,
+      );
     }
     if (user.id === followingId) {
-      return c2.json({ error: "\u81EA\u5206\u3092\u30D5\u30A9\u30ED\u30FC\u3059\u308B\u3053\u3068\u306F\u3067\u304D\u307E\u305B\u3093" }, 400);
+      return c2.json(
+        {
+          error:
+            "\u81EA\u5206\u3092\u30D5\u30A9\u30ED\u30FC\u3059\u308B\u3053\u3068\u306F\u3067\u304D\u307E\u305B\u3093",
+        },
+        400,
+      );
     }
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { data: targetUser, error: userError } = await supabase.from("profiles").select("id, username").eq("id", followingId).single();
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { data: targetUser, error: userError } = await supabase
+      .from("profiles")
+      .select("id, username")
+      .eq("id", followingId)
+      .single();
     if (userError || !targetUser) {
-      return c2.json({ error: "\u30E6\u30FC\u30B6\u30FC\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093" }, 404);
+      return c2.json(
+        {
+          error:
+            "\u30E6\u30FC\u30B6\u30FC\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093",
+        },
+        404,
+      );
     }
-    const { data: existingFollow, error: checkError } = await supabase.from("follows").select("id").eq("follower_id", user.id).eq("following_id", followingId).single();
+    const { data: existingFollow, error: checkError } = await supabase
+      .from("follows")
+      .select("id")
+      .eq("follower_id", user.id)
+      .eq("following_id", followingId)
+      .single();
     if (checkError && checkError.code !== "PGRST116") {
       console.error("Check follow error:", checkError);
-      return c2.json({ error: "\u30D5\u30A9\u30ED\u30FC\u72B6\u614B\u306E\u78BA\u8A8D\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      return c2.json(
+        {
+          error:
+            "\u30D5\u30A9\u30ED\u30FC\u72B6\u614B\u306E\u78BA\u8A8D\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
     if (existingFollow) {
-      return c2.json({ error: "\u65E2\u306B\u30D5\u30A9\u30ED\u30FC\u3057\u3066\u3044\u307E\u3059" }, 409);
+      return c2.json(
+        {
+          error:
+            "\u65E2\u306B\u30D5\u30A9\u30ED\u30FC\u3057\u3066\u3044\u307E\u3059",
+        },
+        409,
+      );
     }
-    const { data: follow, error: followError } = await supabase.from("follows").insert({
-      follower_id: user.id,
-      following_id: followingId
-    }).select(`
+    const { data: follow, error: followError } = await supabase
+      .from("follows")
+      .insert({
+        follower_id: user.id,
+        following_id: followingId,
+      })
+      .select(`
         *,
         profiles!follows_following_id_fkey (
           id,
@@ -11583,21 +14589,37 @@ followsRouter.post("/:followingId", async (c2) => {
           display_name,
           avatar_url
         )
-      `).single();
+      `)
+      .single();
     if (followError) {
       console.error("Follow error:", followError);
-      return c2.json({ error: "\u30D5\u30A9\u30ED\u30FC\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      return c2.json(
+        {
+          error:
+            "\u30D5\u30A9\u30ED\u30FC\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
     await createNotification(
       followingId,
       "follow",
       user.id,
-      `${targetUser.username}\u304C\u3042\u306A\u305F\u3092\u30D5\u30A9\u30ED\u30FC\u3057\u307E\u3057\u305F`
+      `${targetUser.username}\u304C\u3042\u306A\u305F\u3092\u30D5\u30A9\u30ED\u30FC\u3057\u307E\u3057\u305F`,
     );
-    return c2.json({ follow, message: "\u30D5\u30A9\u30ED\u30FC\u3057\u307E\u3057\u305F" }, 201);
+    return c2.json(
+      { follow, message: "\u30D5\u30A9\u30ED\u30FC\u3057\u307E\u3057\u305F" },
+      201,
+    );
   } catch (error) {
     console.error("Follow endpoint error:", error);
-    return c2.json({ error: "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F" }, 500);
+    return c2.json(
+      {
+        error:
+          "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F",
+      },
+      500,
+    );
   }
 });
 followsRouter.delete("/:followingId", async (c2) => {
@@ -11605,18 +14627,42 @@ followsRouter.delete("/:followingId", async (c2) => {
     const user = c2.get("user");
     const followingId = c2.req.param("followingId");
     if (!user) {
-      return c2.json({ error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" }, 401);
+      return c2.json(
+        { error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" },
+        401,
+      );
     }
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { error } = await supabase.from("follows").delete().eq("follower_id", user.id).eq("following_id", followingId);
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { error } = await supabase
+      .from("follows")
+      .delete()
+      .eq("follower_id", user.id)
+      .eq("following_id", followingId);
     if (error) {
       console.error("Unfollow error:", error);
-      return c2.json({ error: "\u30A2\u30F3\u30D5\u30A9\u30ED\u30FC\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      return c2.json(
+        {
+          error:
+            "\u30A2\u30F3\u30D5\u30A9\u30ED\u30FC\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
-    return c2.json({ message: "\u30A2\u30F3\u30D5\u30A9\u30ED\u30FC\u3057\u307E\u3057\u305F" });
+    return c2.json({
+      message: "\u30A2\u30F3\u30D5\u30A9\u30ED\u30FC\u3057\u307E\u3057\u305F",
+    });
   } catch (error) {
     console.error("Unfollow endpoint error:", error);
-    return c2.json({ error: "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F" }, 500);
+    return c2.json(
+      {
+        error:
+          "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F",
+      },
+      500,
+    );
   }
 });
 followsRouter.get("/following/:userId", async (c2) => {
@@ -11625,8 +14671,13 @@ followsRouter.get("/following/:userId", async (c2) => {
     const page = Number(c2.req.query("page")) || 1;
     const limit = Number(c2.req.query("limit")) || 20;
     const offset = (page - 1) * limit;
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { data: following, error } = await supabase.from("follows").select(`
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { data: following, error } = await supabase
+      .from("follows")
+      .select(`
         created_at,
         profiles!follows_following_id_fkey (
           id,
@@ -11635,15 +14686,30 @@ followsRouter.get("/following/:userId", async (c2) => {
           bio,
           avatar_url
         )
-      `).eq("follower_id", userId).order("created_at", { ascending: false }).range(offset, offset + limit - 1);
+      `)
+      .eq("follower_id", userId)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
     if (error) {
       console.error("Get following error:", error);
-      return c2.json({ error: "\u30D5\u30A9\u30ED\u30FC\u4E2D\u30E6\u30FC\u30B6\u30FC\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      return c2.json(
+        {
+          error:
+            "\u30D5\u30A9\u30ED\u30FC\u4E2D\u30E6\u30FC\u30B6\u30FC\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
     return c2.json({ following, page, limit });
   } catch (error) {
     console.error("Get following endpoint error:", error);
-    return c2.json({ error: "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F" }, 500);
+    return c2.json(
+      {
+        error:
+          "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F",
+      },
+      500,
+    );
   }
 });
 followsRouter.get("/followers/:userId", async (c2) => {
@@ -11652,8 +14718,13 @@ followsRouter.get("/followers/:userId", async (c2) => {
     const page = Number(c2.req.query("page")) || 1;
     const limit = Number(c2.req.query("limit")) || 20;
     const offset = (page - 1) * limit;
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { data: followers, error } = await supabase.from("follows").select(`
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { data: followers, error } = await supabase
+      .from("follows")
+      .select(`
         created_at,
         profiles!follows_follower_id_fkey (
           id,
@@ -11662,31 +14733,66 @@ followsRouter.get("/followers/:userId", async (c2) => {
           bio,
           avatar_url
         )
-      `).eq("following_id", userId).order("created_at", { ascending: false }).range(offset, offset + limit - 1);
+      `)
+      .eq("following_id", userId)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
     if (error) {
       console.error("Get followers error:", error);
-      return c2.json({ error: "\u30D5\u30A9\u30ED\u30EF\u30FC\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      return c2.json(
+        {
+          error:
+            "\u30D5\u30A9\u30ED\u30EF\u30FC\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
     return c2.json({ followers, page, limit });
   } catch (error) {
     console.error("Get followers endpoint error:", error);
-    return c2.json({ error: "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F" }, 500);
+    return c2.json(
+      {
+        error:
+          "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F",
+      },
+      500,
+    );
   }
 });
 followsRouter.get("/status/:followerId/:followingId", async (c2) => {
   try {
     const followerId = c2.req.param("followerId");
     const followingId = c2.req.param("followingId");
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { data: follow, error } = await supabase.from("follows").select("id").eq("follower_id", followerId).eq("following_id", followingId).single();
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { data: follow, error } = await supabase
+      .from("follows")
+      .select("id")
+      .eq("follower_id", followerId)
+      .eq("following_id", followingId)
+      .single();
     if (error && error.code !== "PGRST116") {
       console.error("Check follow status error:", error);
-      return c2.json({ error: "\u30D5\u30A9\u30ED\u30FC\u72B6\u614B\u306E\u78BA\u8A8D\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      return c2.json(
+        {
+          error:
+            "\u30D5\u30A9\u30ED\u30FC\u72B6\u614B\u306E\u78BA\u8A8D\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
     return c2.json({ isFollowing: !!follow });
   } catch (error) {
     console.error("Check follow status error:", error);
-    return c2.json({ error: "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F" }, 500);
+    return c2.json(
+      {
+        error:
+          "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F",
+      },
+      500,
+    );
   }
 });
 followsRouter.get("/status/:userId", async (c2) => {
@@ -11694,64 +14800,132 @@ followsRouter.get("/status/:userId", async (c2) => {
     const currentUserId = c2.get("user")?.id;
     const targetUserId = c2.req.param("userId");
     if (!currentUserId) {
-      return c2.json({ error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" }, 401);
+      return c2.json(
+        { error: "\u8A8D\u8A3C\u304C\u5FC5\u8981\u3067\u3059" },
+        401,
+      );
     }
     if (!targetUserId) {
-      return c2.json({ error: "\u30E6\u30FC\u30B6\u30FCID\u304C\u5FC5\u8981\u3067\u3059" }, 400);
+      return c2.json(
+        { error: "\u30E6\u30FC\u30B6\u30FCID\u304C\u5FC5\u8981\u3067\u3059" },
+        400,
+      );
     }
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { data: followData, error: followError } = await supabase.from("follows").select("id").eq("follower_id", currentUserId).eq("following_id", targetUserId).single();
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { data: followData, error: followError } = await supabase
+      .from("follows")
+      .select("id")
+      .eq("follower_id", currentUserId)
+      .eq("following_id", targetUserId)
+      .single();
     if (followError && followError.code !== "PGRST116") {
       console.error("Follow status check error:", followError);
-      return c2.json({ error: "\u30D5\u30A9\u30ED\u30FC\u72B6\u614B\u306E\u78BA\u8A8D\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      return c2.json(
+        {
+          error:
+            "\u30D5\u30A9\u30ED\u30FC\u72B6\u614B\u306E\u78BA\u8A8D\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
     const [followingCountResult, followersCountResult] = await Promise.all([
-      supabase.from("follows").select("*", { count: "exact", head: true }).eq("follower_id", targetUserId),
-      supabase.from("follows").select("*", { count: "exact", head: true }).eq("following_id", targetUserId)
+      supabase
+        .from("follows")
+        .select("*", { count: "exact", head: true })
+        .eq("follower_id", targetUserId),
+      supabase
+        .from("follows")
+        .select("*", { count: "exact", head: true })
+        .eq("following_id", targetUserId),
     ]);
     if (followingCountResult.error || followersCountResult.error) {
-      console.error("Count error:", followingCountResult.error || followersCountResult.error);
-      return c2.json({ error: "\u30D5\u30A9\u30ED\u30FC\u6570\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      console.error(
+        "Count error:",
+        followingCountResult.error || followersCountResult.error,
+      );
+      return c2.json(
+        {
+          error:
+            "\u30D5\u30A9\u30ED\u30FC\u6570\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
     return c2.json({
       isFollowing: !!followData,
       followingCount: followingCountResult.count || 0,
-      followersCount: followersCountResult.count || 0
+      followersCount: followersCountResult.count || 0,
     });
   } catch (error) {
     console.error("Follow status endpoint error:", error);
-    return c2.json({ error: "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F" }, 500);
+    return c2.json(
+      {
+        error:
+          "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F",
+      },
+      500,
+    );
   }
 });
 followsRouter.get("/counts/:userId", async (c2) => {
   try {
     const userId = c2.req.param("userId");
-    const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
-    const { count: followersCount, error: followersError } = await supabase.from("follows").select("*", { count: "exact", head: true }).eq("following_id", userId);
+    const supabase = createSupabaseClient(
+      c2.env.SUPABASE_URL,
+      c2.env.SUPABASE_SERVICE_ROLE_KEY,
+    );
+    const { count: followersCount, error: followersError } = await supabase
+      .from("follows")
+      .select("*", { count: "exact", head: true })
+      .eq("following_id", userId);
     if (followersError) {
       console.error("Get followers count error:", followersError);
-      return c2.json({ error: "\u30D5\u30A9\u30ED\u30EF\u30FC\u6570\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      return c2.json(
+        {
+          error:
+            "\u30D5\u30A9\u30ED\u30EF\u30FC\u6570\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
-    const { count: followingCount, error: followingError } = await supabase.from("follows").select("*", { count: "exact", head: true }).eq("follower_id", userId);
+    const { count: followingCount, error: followingError } = await supabase
+      .from("follows")
+      .select("*", { count: "exact", head: true })
+      .eq("follower_id", userId);
     if (followingError) {
       console.error("Get following count error:", followingError);
-      return c2.json({ error: "\u30D5\u30A9\u30ED\u30FC\u4E2D\u6570\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F" }, 500);
+      return c2.json(
+        {
+          error:
+            "\u30D5\u30A9\u30ED\u30FC\u4E2D\u6570\u306E\u53D6\u5F97\u306B\u5931\u6557\u3057\u307E\u3057\u305F",
+        },
+        500,
+      );
     }
     return c2.json({
       followers: followersCount || 0,
-      following: followingCount || 0
+      following: followingCount || 0,
     });
   } catch (error) {
     console.error("Get follow counts error:", error);
-    return c2.json({ error: "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F" }, 500);
+    return c2.json(
+      {
+        error:
+          "\u30B5\u30FC\u30D0\u30FC\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F",
+      },
+      500,
+    );
   }
 });
-var follows_default = followsRouter;
+var followsDefault = followsRouter;
 
 // src/routes/timeline.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 var timelineRouter = new Hono2();
 timelineRouter.get("/", async (c2) => {
   const user = c2.get("user");
@@ -11761,14 +14935,25 @@ timelineRouter.get("/", async (c2) => {
   if (!user) {
     return c2.json({ error: "Unauthorized" }, 401);
   }
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: followedUsers, error: followError } = await supabase.from("follows").select("following_id").eq("follower_id", user.id);
+    const { data: followedUsers, error: followError } = await supabase
+      .from("follows")
+      .select("following_id")
+      .eq("follower_id", user.id);
     if (followError) {
       throw followError;
     }
-    const userIds = [user.id, ...followedUsers?.map((f) => f.following_id) || []];
-    const { data: timelinePosts, error: postsError } = await supabase.from("user_tracks").select(`
+    const userIds = [
+      user.id,
+      ...(followedUsers?.map((f) => f.following_id) || []),
+    ];
+    const { data: timelinePosts, error: postsError } = await supabase
+      .from("user_tracks")
+      .select(`
         *,
         profiles!user_tracks_user_id_fkey (
           id,
@@ -11792,28 +14977,42 @@ timelineRouter.get("/", async (c2) => {
           external_url,
           duration_ms
         )
-      `).in("user_id", userIds).order("created_at", { ascending: false }).range(offset, offset + limit - 1);
+      `)
+      .in("user_id", userIds)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
     if (postsError) {
       throw postsError;
     }
     const timelineWithLikes = await Promise.all(
       (timelinePosts || []).map(async (post2) => {
-        const { count: likesCount } = await supabase.from("likes").select("*", { count: "exact", head: true }).eq("user_track_id", post2.id);
-        const { data: userLike } = await supabase.from("likes").select("id").eq("user_track_id", post2.id).eq("user_id", user.id).single();
-        const { count: commentsCount } = await supabase.from("comments").select("*", { count: "exact", head: true }).eq("user_track_id", post2.id);
+        const { count: likesCount } = await supabase
+          .from("likes")
+          .select("*", { count: "exact", head: true })
+          .eq("user_track_id", post2.id);
+        const { data: userLike } = await supabase
+          .from("likes")
+          .select("id")
+          .eq("user_track_id", post2.id)
+          .eq("user_id", user.id)
+          .single();
+        const { count: commentsCount } = await supabase
+          .from("comments")
+          .select("*", { count: "exact", head: true })
+          .eq("user_track_id", post2.id);
         return {
           ...post2,
           likes_count: likesCount || 0,
           is_liked_by_user: !!userLike,
-          comments_count: commentsCount || 0
+          comments_count: commentsCount || 0,
         };
-      })
+      }),
     );
     return c2.json({
       timeline: timelineWithLikes,
       page,
       limit,
-      hasMore: timelineWithLikes.length === limit
+      hasMore: timelineWithLikes.length === limit,
     });
   } catch (error) {
     console.error("Get timeline error:", error);
@@ -11825,9 +15024,14 @@ timelineRouter.get("/public", async (c2) => {
   const limit = parseInt(c2.req.query("limit") || "20");
   const offset = (page - 1) * limit;
   const currentUser = c2.get("user");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: timelinePosts, error: postsError } = await supabase.from("user_tracks").select(`
+    const { data: timelinePosts, error: postsError } = await supabase
+      .from("user_tracks")
+      .select(`
         *,
         profiles!user_tracks_user_id_fkey (
           id,
@@ -11851,32 +15055,45 @@ timelineRouter.get("/public", async (c2) => {
           external_url,
           duration_ms
         )
-      `).order("created_at", { ascending: false }).range(offset, offset + limit - 1);
+      `)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
     if (postsError) {
       throw postsError;
     }
     const timelineWithLikes = await Promise.all(
       (timelinePosts || []).map(async (post2) => {
-        const { count: likesCount } = await supabase.from("likes").select("*", { count: "exact", head: true }).eq("user_track_id", post2.id);
+        const { count: likesCount } = await supabase
+          .from("likes")
+          .select("*", { count: "exact", head: true })
+          .eq("user_track_id", post2.id);
         let userLike = null;
         if (currentUser) {
-          const { data } = await supabase.from("likes").select("id").eq("user_track_id", post2.id).eq("user_id", currentUser.id).single();
+          const { data } = await supabase
+            .from("likes")
+            .select("id")
+            .eq("user_track_id", post2.id)
+            .eq("user_id", currentUser.id)
+            .single();
           userLike = data;
         }
-        const { count: commentsCount } = await supabase.from("comments").select("*", { count: "exact", head: true }).eq("user_track_id", post2.id);
+        const { count: commentsCount } = await supabase
+          .from("comments")
+          .select("*", { count: "exact", head: true })
+          .eq("user_track_id", post2.id);
         return {
           ...post2,
           likes_count: likesCount || 0,
           is_liked_by_user: !!userLike,
-          comments_count: commentsCount || 0
+          comments_count: commentsCount || 0,
         };
-      })
+      }),
     );
     return c2.json({
       timeline: timelineWithLikes,
       page,
       limit,
-      hasMore: timelineWithLikes.length === limit
+      hasMore: timelineWithLikes.length === limit,
     });
   } catch (error) {
     console.error("Get public timeline error:", error);
@@ -11889,9 +15106,14 @@ timelineRouter.get("/user/:userId", async (c2) => {
   const limit = parseInt(c2.req.query("limit") || "20");
   const offset = (page - 1) * limit;
   const currentUser = c2.get("user");
-  const supabase = createSupabaseClient(c2.env.SUPABASE_URL, c2.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c2.env.SUPABASE_URL,
+    c2.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
   try {
-    const { data: timelinePosts, error: postsError } = await supabase.from("user_tracks").select(`
+    const { data: timelinePosts, error: postsError } = await supabase
+      .from("user_tracks")
+      .select(`
         *,
         profiles!user_tracks_user_id_fkey (
           id,
@@ -11915,58 +15137,78 @@ timelineRouter.get("/user/:userId", async (c2) => {
           external_url,
           duration_ms
         )
-      `).eq("user_id", userId).order("created_at", { ascending: false }).range(offset, offset + limit - 1);
+      `)
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
     if (postsError) {
       throw postsError;
     }
     const timelineWithLikes = await Promise.all(
       (timelinePosts || []).map(async (post2) => {
-        const { count: likesCount } = await supabase.from("likes").select("*", { count: "exact", head: true }).eq("user_track_id", post2.id);
+        const { count: likesCount } = await supabase
+          .from("likes")
+          .select("*", { count: "exact", head: true })
+          .eq("user_track_id", post2.id);
         let userLike = null;
         if (currentUser) {
-          const { data } = await supabase.from("likes").select("id").eq("user_track_id", post2.id).eq("user_id", currentUser.id).single();
+          const { data } = await supabase
+            .from("likes")
+            .select("id")
+            .eq("user_track_id", post2.id)
+            .eq("user_id", currentUser.id)
+            .single();
           userLike = data;
         }
-        const { count: commentsCount } = await supabase.from("comments").select("*", { count: "exact", head: true }).eq("user_track_id", post2.id);
+        const { count: commentsCount } = await supabase
+          .from("comments")
+          .select("*", { count: "exact", head: true })
+          .eq("user_track_id", post2.id);
         return {
           ...post2,
           likes_count: likesCount || 0,
           is_liked_by_user: !!userLike,
-          comments_count: commentsCount || 0
+          comments_count: commentsCount || 0,
         };
-      })
+      }),
     );
     return c2.json({
       timeline: timelineWithLikes,
       page,
       limit,
-      hasMore: timelineWithLikes.length === limit
+      hasMore: timelineWithLikes.length === limit,
     });
   } catch (error) {
     console.error("Get user timeline error:", error);
     return c2.json({ error: "Failed to get user timeline" }, 500);
   }
 });
-var timeline_default = timelineRouter;
+var timelineDefault = timelineRouter;
 
 // src/index.ts
 var app = new Hono2();
 app.use("*", logger());
 app.use("*", prettyJSON());
-app.use("*", cors({
-  origin: ["http://localhost:8081", "http://localhost:19006"],
-  // Expo dev server URLs
-  allowHeaders: ["Content-Type", "Authorization"],
-  allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-}));
+app.use(
+  "*",
+  cors({
+    origin: ["http://localhost:8081", "http://localhost:19006"],
+    // Expo dev server URLs
+    allowHeaders: ["Content-Type", "Authorization"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  }),
+);
 app.get("/", (c2) => {
   return c2.json({ message: "Stround API is running!" });
 });
 app.get("/health", (c2) => {
-  return c2.json({ status: "healthy", timestamp: (/* @__PURE__ */ new Date()).toISOString() });
+  return c2.json({
+    status: "healthy",
+    timestamp: /* @__PURE__ */ new Date().toISOString(),
+  });
 });
-app.route("/auth", auth_default);
-app.route("/api/profiles", profiles_default);
+app.route("/auth", authDefault);
+app.route("/api/profiles", profilesDefault);
 app.use("/api/posts/*", authMiddleware);
 app.use("/api/music/*", authMiddleware);
 app.use("/api/likes/*", authMiddleware);
@@ -11975,102 +15217,107 @@ app.use("/api/user-tracks/*", authMiddleware);
 app.use("/api/follows/*", authMiddleware);
 app.use("/api/timeline/*", authMiddleware);
 app.use("/api/notifications/*", authMiddleware);
-app.route("/api/categories", categories_default);
-app.route("/api/auth", auth_default);
-app.route("/api/posts", posts_default);
-app.route("/api/music", music_default);
-app.route("/api/likes", likes_default);
-app.route("/api/comments", comments_default);
-app.route("/api/user-tracks", userTracks_default);
-app.route("/api/follows", follows_default);
-app.route("/api/timeline", timeline_default);
+app.route("/api/categories", categoriesDefault);
+app.route("/api/auth", authDefault);
+app.route("/api/posts", postsDefault);
+app.route("/api/music", musicDefault);
+app.route("/api/likes", likesDefault);
+app.route("/api/comments", commentsDefault);
+app.route("/api/user-tracks", userTracksDefault);
+app.route("/api/follows", followsDefault);
+app.route("/api/timeline", timelineDefault);
 app.route("/api/notifications", notifications);
-var src_default = app;
+var srcDefault = app;
 
 // node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
-  try {
-    return await middlewareCtx.next(request, env);
-  } finally {
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var drainBody = /* @__PURE__ */ Name(
+  async (request, env, _ctx, middlewareCtx) => {
     try {
-      if (request.body !== null && !request.bodyUsed) {
-        const reader = request.body.getReader();
-        while (!(await reader.read()).done) {
+      return await middlewareCtx.next(request, env);
+    } finally {
+      try {
+        if (request.body !== null && !request.bodyUsed) {
+          const reader = request.body.getReader();
+          while (!(await reader.read()).done) {}
         }
+      } catch (e) {
+        console.error("Failed to drain the unused request body.", e);
       }
-    } catch (e) {
-      console.error("Failed to drain the unused request body.", e);
     }
-  }
-}, "drainBody");
-var middleware_ensure_req_body_drained_default = drainBody;
+  },
+  "drainBody",
+);
+var middlewareEnsureReqBodyDrainedDefault = drainBody;
 
 // node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
 function reduceError(e) {
   return {
     name: e?.name,
     message: e?.message ?? String(e),
     stack: e?.stack,
-    cause: e?.cause === void 0 ? void 0 : reduceError(e.cause)
+    cause: e?.cause === void 0 ? void 0 : reduceError(e.cause),
   };
 }
-__name(reduceError, "reduceError");
-var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
-  try {
-    return await middlewareCtx.next(request, env);
-  } catch (e) {
-    const error = reduceError(e);
-    return Response.json(error, {
-      status: 500,
-      headers: { "MF-Experimental-Error-Stack": "true" }
-    });
-  }
-}, "jsonError");
-var middleware_miniflare3_json_error_default = jsonError;
+Name(reduceError, "reduceError");
+var jsonError = /* @__PURE__ */ Name(
+  async (request, env, _ctx, middlewareCtx) => {
+    try {
+      return await middlewareCtx.next(request, env);
+    } catch (e) {
+      const error = reduceError(e);
+      return Response.json(error, {
+        status: 500,
+        headers: { "MF-Experimental-Error-Stack": "true" },
+      });
+    }
+  },
+  "jsonError",
+);
+var middlewareMiniflare3JsonErrorDefault = jsonError;
 
 // .wrangler/tmp/bundle-ZWIRFQ/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
-  middleware_ensure_req_body_drained_default,
-  middleware_miniflare3_json_error_default
+  middlewareEnsureReqBodyDrainedDefault,
+  middlewareMiniflare3JsonErrorDefault,
 ];
-var middleware_insertion_facade_default = src_default;
+var middlewareInsertionFacadeDefault = srcDefault;
 
 // node_modules/wrangler/templates/middleware/common.ts
-init_checked_fetch();
-init_strip_cf_connecting_ip_header();
-init_modules_watch_stub();
-var __facade_middleware__ = [];
-function __facade_register__(...args) {
-  __facade_middleware__.push(...args.flat());
+initCheckedFetch();
+initStripCfConnectingIpHeader();
+initModulesWatchStub();
+var FacadeMiddleware = [];
+function FacadeRegister(...args) {
+  FacadeMiddleware.push(...args.flat());
 }
-__name(__facade_register__, "__facade_register__");
-function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
+Name(FacadeRegister, "__facade_register__");
+function FacadeInvokeChain(request, env, ctx, dispatch, middlewareChain) {
   const [head2, ...tail] = middlewareChain;
   const middlewareCtx = {
     dispatch,
     next(newRequest, newEnv) {
-      return __facade_invokeChain__(newRequest, newEnv, ctx, dispatch, tail);
-    }
+      return FacadeInvokeChain(newRequest, newEnv, ctx, dispatch, tail);
+    },
   };
   return head2(request, env, ctx, middlewareCtx);
 }
-__name(__facade_invokeChain__, "__facade_invokeChain__");
-function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
-  return __facade_invokeChain__(request, env, ctx, dispatch, [
-    ...__facade_middleware__,
-    finalMiddleware
+Name(FacadeInvokeChain, "__facade_invokeChain__");
+function FacadeInvoke(request, env, ctx, dispatch, finalMiddleware) {
+  return FacadeInvokeChain(request, env, ctx, dispatch, [
+    ...FacadeMiddleware,
+    finalMiddleware,
   ]);
 }
-__name(__facade_invoke__, "__facade_invoke__");
+Name(FacadeInvoke, "__facade_invoke__");
 
 // .wrangler/tmp/bundle-ZWIRFQ/middleware-loader.entry.ts
-var __Facade_ScheduledController__ = class {
+var FacadeScheduledController = class {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
     this.cron = cron;
@@ -12078,21 +15325,24 @@ var __Facade_ScheduledController__ = class {
   }
   #noRetry;
   noRetry() {
-    if (!(this instanceof __Facade_ScheduledController__)) {
+    if (!(this instanceof FacadeScheduledController)) {
       throw new TypeError("Illegal invocation");
     }
     this.#noRetry();
   }
 };
-__name(__Facade_ScheduledController__, "__Facade_ScheduledController__");
+Name(FacadeScheduledController, "__Facade_ScheduledController__");
 function wrapExportedHandler(worker) {
-  if (__INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0) {
+  if (
+    __INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 ||
+    __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0
+  ) {
     return worker;
   }
   for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__) {
-    __facade_register__(middleware);
+    FacadeRegister(middleware);
   }
-  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
+  const fetchDispatcher = /* @__PURE__ */ Name((request, env, ctx) => {
     if (worker.fetch === void 0) {
       throw new Error("Handler does not export a fetch() function.");
     }
@@ -12101,28 +15351,30 @@ function wrapExportedHandler(worker) {
   return {
     ...worker,
     fetch(request, env, ctx) {
-      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
+      const dispatcher = /* @__PURE__ */ Name((type, init) => {
         if (type === "scheduled" && worker.scheduled !== void 0) {
-          const controller = new __Facade_ScheduledController__(
+          const controller = new FacadeScheduledController(
             Date.now(),
             init.cron ?? "",
-            () => {
-            }
+            () => {},
           );
           return worker.scheduled(controller, env, ctx);
         }
       }, "dispatcher");
-      return __facade_invoke__(request, env, ctx, dispatcher, fetchDispatcher);
-    }
+      return FacadeInvoke(request, env, ctx, dispatcher, fetchDispatcher);
+    },
   };
 }
-__name(wrapExportedHandler, "wrapExportedHandler");
+Name(wrapExportedHandler, "wrapExportedHandler");
 function wrapWorkerEntrypoint(klass) {
-  if (__INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0) {
+  if (
+    __INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 ||
+    __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0
+  ) {
     return klass;
   }
   for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__) {
-    __facade_register__(middleware);
+    FacadeRegister(middleware);
   }
   return class extends klass {
     #fetchDispatcher = (request, env, ctx) => {
@@ -12135,36 +15387,35 @@ function wrapWorkerEntrypoint(klass) {
     };
     #dispatcher = (type, init) => {
       if (type === "scheduled" && super.scheduled !== void 0) {
-        const controller = new __Facade_ScheduledController__(
+        const controller = new FacadeScheduledController(
           Date.now(),
           init.cron ?? "",
-          () => {
-          }
+          () => {},
         );
         return super.scheduled(controller);
       }
     };
     fetch(request) {
-      return __facade_invoke__(
+      return FacadeInvoke(
         request,
         this.env,
         this.ctx,
         this.#dispatcher,
-        this.#fetchDispatcher
+        this.#fetchDispatcher,
       );
     }
   };
 }
-__name(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
+Name(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
 var WRAPPED_ENTRY;
-if (typeof middleware_insertion_facade_default === "object") {
-  WRAPPED_ENTRY = wrapExportedHandler(middleware_insertion_facade_default);
-} else if (typeof middleware_insertion_facade_default === "function") {
-  WRAPPED_ENTRY = wrapWorkerEntrypoint(middleware_insertion_facade_default);
+if (typeof middlewareInsertionFacadeDefault === "object") {
+  WRAPPED_ENTRY = wrapExportedHandler(middlewareInsertionFacadeDefault);
+} else if (typeof middlewareInsertionFacadeDefault === "function") {
+  WRAPPED_ENTRY = wrapWorkerEntrypoint(middlewareInsertionFacadeDefault);
 }
 var middleware_loader_entry_default = WRAPPED_ENTRY;
 export {
   __INTERNAL_WRANGLER_MIDDLEWARE__,
-  middleware_loader_entry_default as default
+  middleware_loader_entry_default as default,
 };
 //# sourceMappingURL=index.js.map

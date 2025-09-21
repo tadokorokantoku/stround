@@ -1,7 +1,7 @@
-import { Hono } from 'hono';
-import { createSupabaseClient } from '../lib/supabase';
-import type { Env } from '../index';
-import { createNotification } from './notifications';
+import { Hono } from "hono";
+import type { Env } from "../index";
+import { createSupabaseClient } from "../lib/supabase";
+import { createNotification } from "./notifications";
 
 interface CommentWithProfile {
   id: string;
@@ -32,17 +32,17 @@ function buildCommentTree(comments: CommentWithProfile[]): CommentTree[] {
   const rootComments: CommentTree[] = [];
 
   // Create map of all comments
-  comments.forEach(comment => {
+  comments.forEach((comment) => {
     commentMap.set(comment.id, {
       ...comment,
-      replies: []
+      replies: [],
     });
   });
 
   // Build tree structure
-  comments.forEach(comment => {
+  comments.forEach((comment) => {
     const commentNode = commentMap.get(comment.id)!;
-    
+
     if (comment.parent_comment_id) {
       const parent = commentMap.get(comment.parent_comment_id);
       if (parent) {
@@ -60,18 +60,21 @@ function buildCommentTree(comments: CommentWithProfile[]): CommentTree[] {
 }
 
 // Get comments for a user track with nested replies
-commentsRouter.get('/user-track/:userTrackId', async (c) => {
-  const userTrackId = c.req.param('userTrackId');
-  const page = parseInt(c.req.query('page') || '1');
-  const limit = parseInt(c.req.query('limit') || '50');
+commentsRouter.get("/user-track/:userTrackId", async (c) => {
+  const userTrackId = c.req.param("userTrackId");
+  const page = parseInt(c.req.query("page") || "1", 10);
+  const limit = parseInt(c.req.query("limit") || "50", 10);
   const offset = (page - 1) * limit;
 
-  const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c.env.SUPABASE_URL,
+    c.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
 
   try {
     // Get all comments for the user track (including replies)
     const { data: comments, error } = await supabase
-      .from('comments')
+      .from("comments")
       .select(`
         *,
         profiles!comments_user_id_fkey (
@@ -81,8 +84,8 @@ commentsRouter.get('/user-track/:userTrackId', async (c) => {
           avatar_url
         )
       `)
-      .eq('user_track_id', userTrackId)
-      .order('created_at', { ascending: true });
+      .eq("user_track_id", userTrackId)
+      .order("created_at", { ascending: true });
 
     if (error) {
       throw error;
@@ -94,64 +97,70 @@ commentsRouter.get('/user-track/:userTrackId', async (c) => {
     // Apply pagination to root comments only
     const paginatedRootComments = commentTree.slice(offset, offset + limit);
 
-    return c.json({ 
-      comments: paginatedRootComments, 
-      page, 
+    return c.json({
+      comments: paginatedRootComments,
+      page,
       limit,
-      total: commentTree.length 
+      total: commentTree.length,
     });
   } catch (error) {
-    console.error('Get comments error:', error);
-    return c.json({ error: 'Failed to get comments' }, 500);
+    console.error("Get comments error:", error);
+    return c.json({ error: "Failed to get comments" }, 500);
   }
 });
 
 // Create a new comment or reply
-commentsRouter.post('/', async (c) => {
-  const user = c.get('user');
+commentsRouter.post("/", async (c) => {
+  const user = c.get("user");
   const body = await c.req.json();
   const { user_track_id, content, parent_comment_id } = body;
 
-  if (!user_track_id || !content || content.trim() === '') {
-    return c.json({ error: 'User track ID and content are required' }, 400);
+  if (!user_track_id || !content || content.trim() === "") {
+    return c.json({ error: "User track ID and content are required" }, 400);
   }
 
-  const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c.env.SUPABASE_URL,
+    c.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
 
   try {
     // Check if user track exists and get track owner
     const { data: userTrack } = await supabase
-      .from('user_tracks')
-      .select('id, user_id')
-      .eq('id', user_track_id)
+      .from("user_tracks")
+      .select("id, user_id")
+      .eq("id", user_track_id)
       .single();
 
     if (!userTrack) {
-      return c.json({ error: 'User track not found' }, 404);
+      return c.json({ error: "User track not found" }, 404);
     }
 
     // If this is a reply, check if parent comment exists and belongs to the same user track
     let parentCommentOwner = null;
     if (parent_comment_id) {
       const { data: parentComment } = await supabase
-        .from('comments')
-        .select('id, user_track_id, user_id')
-        .eq('id', parent_comment_id)
+        .from("comments")
+        .select("id, user_track_id, user_id")
+        .eq("id", parent_comment_id)
         .single();
 
       if (!parentComment) {
-        return c.json({ error: 'Parent comment not found' }, 404);
+        return c.json({ error: "Parent comment not found" }, 404);
       }
 
       if (parentComment.user_track_id !== user_track_id) {
-        return c.json({ error: 'Parent comment does not belong to the same user track' }, 400);
+        return c.json(
+          { error: "Parent comment does not belong to the same user track" },
+          400,
+        );
       }
 
       parentCommentOwner = parentComment.user_id;
     }
 
     const { data: comment, error } = await supabase
-      .from('comments')
+      .from("comments")
       .insert({
         user_id: user.id,
         user_track_id,
@@ -174,53 +183,60 @@ commentsRouter.post('/', async (c) => {
     }
 
     // Create notifications
-    if (parent_comment_id && parentCommentOwner && parentCommentOwner !== user.id) {
+    if (
+      parent_comment_id &&
+      parentCommentOwner &&
+      parentCommentOwner !== user.id
+    ) {
       // Reply notification - notify parent comment author
       await createNotification(
         parentCommentOwner,
-        'reply',
+        "reply",
         comment.id,
-        `${user.username}があなたのコメントに返信しました`
+        `${user.username}があなたのコメントに返信しました`,
       );
     } else if (!parent_comment_id && userTrack.user_id !== user.id) {
       // New comment notification - notify track owner
       await createNotification(
         userTrack.user_id,
-        'comment',
+        "comment",
         comment.id,
-        `${user.username}があなたの楽曲にコメントしました`
+        `${user.username}があなたの楽曲にコメントしました`,
       );
     }
 
     return c.json({ comment }, 201);
   } catch (error) {
-    console.error('Create comment error:', error);
-    return c.json({ error: 'Failed to create comment' }, 500);
+    console.error("Create comment error:", error);
+    return c.json({ error: "Failed to create comment" }, 500);
   }
 });
 
 // Update a comment (only by the author)
-commentsRouter.put('/:id', async (c) => {
-  const user = c.get('user');
-  const commentId = c.req.param('id');
+commentsRouter.put("/:id", async (c) => {
+  const user = c.get("user");
+  const commentId = c.req.param("id");
   const body = await c.req.json();
   const { content } = body;
 
-  if (!content || content.trim() === '') {
-    return c.json({ error: 'Content is required' }, 400);
+  if (!content || content.trim() === "") {
+    return c.json({ error: "Content is required" }, 400);
   }
 
-  const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+  const supabase = createSupabaseClient(
+    c.env.SUPABASE_URL,
+    c.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
 
   try {
     const { data: comment, error } = await supabase
-      .from('comments')
+      .from("comments")
       .update({
         content: content.trim(),
         updated_at: new Date().toISOString(),
       })
-      .eq('id', commentId)
-      .eq('user_id', user.id)
+      .eq("id", commentId)
+      .eq("user_id", user.id)
       .select(`
         *,
         profiles!comments_user_id_fkey (
@@ -233,51 +249,57 @@ commentsRouter.put('/:id', async (c) => {
       .single();
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        return c.json({ error: 'Comment not found or not authorized' }, 404);
+      if (error.code === "PGRST116") {
+        return c.json({ error: "Comment not found or not authorized" }, 404);
       }
       throw error;
     }
 
     return c.json({ comment });
   } catch (error) {
-    console.error('Update comment error:', error);
-    return c.json({ error: 'Failed to update comment' }, 500);
+    console.error("Update comment error:", error);
+    return c.json({ error: "Failed to update comment" }, 500);
   }
 });
 
 // Delete a comment (only by the author) - this will also delete all replies due to CASCADE
-commentsRouter.delete('/:id', async (c) => {
-  const user = c.get('user');
-  const commentId = c.req.param('id');
-  const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+commentsRouter.delete("/:id", async (c) => {
+  const user = c.get("user");
+  const commentId = c.req.param("id");
+  const supabase = createSupabaseClient(
+    c.env.SUPABASE_URL,
+    c.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
 
   try {
     const { error } = await supabase
-      .from('comments')
+      .from("comments")
       .delete()
-      .eq('id', commentId)
-      .eq('user_id', user.id);
+      .eq("id", commentId)
+      .eq("user_id", user.id);
 
     if (error) {
       throw error;
     }
 
-    return c.json({ message: 'Comment deleted successfully' });
+    return c.json({ message: "Comment deleted successfully" });
   } catch (error) {
-    console.error('Delete comment error:', error);
-    return c.json({ error: 'Failed to delete comment' }, 500);
+    console.error("Delete comment error:", error);
+    return c.json({ error: "Failed to delete comment" }, 500);
   }
 });
 
 // Get a specific comment with its replies
-commentsRouter.get('/:id', async (c) => {
-  const commentId = c.req.param('id');
-  const supabase = createSupabaseClient(c.env.SUPABASE_URL, c.env.SUPABASE_SERVICE_ROLE_KEY);
+commentsRouter.get("/:id", async (c) => {
+  const commentId = c.req.param("id");
+  const supabase = createSupabaseClient(
+    c.env.SUPABASE_URL,
+    c.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
 
   try {
     const { data: comment, error } = await supabase
-      .from('comments')
+      .from("comments")
       .select(`
         *,
         profiles!comments_user_id_fkey (
@@ -287,20 +309,20 @@ commentsRouter.get('/:id', async (c) => {
           avatar_url
         )
       `)
-      .eq('id', commentId)
+      .eq("id", commentId)
       .single();
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        return c.json({ error: 'Comment not found' }, 404);
+      if (error.code === "PGRST116") {
+        return c.json({ error: "Comment not found" }, 404);
       }
       throw error;
     }
 
     return c.json({ comment });
   } catch (error) {
-    console.error('Get comment error:', error);
-    return c.json({ error: 'Failed to get comment' }, 500);
+    console.error("Get comment error:", error);
+    return c.json({ error: "Failed to get comment" }, 500);
   }
 });
 

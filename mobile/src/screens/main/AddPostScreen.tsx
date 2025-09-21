@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  StyleSheet, 
-  ScrollView, 
-  FlatList, 
-  Image, 
-  TouchableOpacity,
+import React, { useEffect, useState } from "react";
+import {
   Alert,
-} from 'react-native';
-import { 
-  Text, 
-  Searchbar,
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import {
+  ActivityIndicator,
   Button,
   Card,
   Chip,
-  TextInput,
-  Portal,
   Modal,
-  ActivityIndicator,
-} from 'react-native-paper';
-import { useAuthStore } from '../../stores/authStore';
-import { API_BASE_URL } from '../../constants';
+  Portal,
+  Searchbar,
+  Text,
+  TextInput,
+} from "react-native-paper";
+import { API_BASE_URL } from "../../constants";
+import { useAuthStore } from "../../stores/authStore";
 
 interface Track {
   id?: string;
@@ -43,12 +43,14 @@ interface Category {
 
 export default function AddPostScreen() {
   const { session } = useAuthStore();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Track[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null,
+  );
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -61,12 +63,12 @@ export default function AddPostScreen() {
     try {
       const response = await fetch(`${API_BASE_URL}/api/categories`);
       const data = await response.json();
-      
+
       if (response.ok) {
         setCategories(data.categories);
       }
     } catch (error) {
-      console.error('Error loading categories:', error);
+      console.error("Error loading categories:", error);
     }
   };
 
@@ -82,9 +84,9 @@ export default function AddPostScreen() {
         `${API_BASE_URL}/api/music/search?q=${encodeURIComponent(query)}&limit=20`,
         {
           headers: {
-            'Authorization': `Bearer ${session?.access_token}`,
+            Authorization: `Bearer ${session?.access_token}`,
           },
-        }
+        },
       );
       const data = await response.json();
 
@@ -92,7 +94,7 @@ export default function AddPostScreen() {
         setSearchResults(data.tracks);
       }
     } catch (error) {
-      console.error('Error searching tracks:', error);
+      console.error("Error searching tracks:", error);
     } finally {
       setSearchLoading(false);
     }
@@ -100,17 +102,17 @@ export default function AddPostScreen() {
 
   const addTrackToLibrary = async () => {
     if (!selectedTrack || !selectedCategory || !session) {
-      Alert.alert('エラー', '楽曲とカテゴリを選択してください');
+      Alert.alert("エラー", "楽曲とカテゴリを選択してください");
       return;
     }
 
     setLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/api/user-tracks`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
           category_id: selectedCategory.id,
@@ -120,25 +122,25 @@ export default function AddPostScreen() {
       });
 
       if (response.ok) {
-        Alert.alert('成功', '楽曲をライブラリに追加しました', [
+        Alert.alert("成功", "楽曲をライブラリに追加しました", [
           {
-            text: 'OK',
+            text: "OK",
             onPress: () => {
               setSelectedTrack(null);
               setSelectedCategory(null);
-              setComment('');
-              setSearchQuery('');
+              setComment("");
+              setSearchQuery("");
               setSearchResults([]);
             },
           },
         ]);
       } else {
         const errorData = await response.json();
-        Alert.alert('エラー', errorData.error || '楽曲の追加に失敗しました');
+        Alert.alert("エラー", errorData.error || "楽曲の追加に失敗しました");
       }
     } catch (error) {
-      console.error('Error adding track:', error);
-      Alert.alert('エラー', '楽曲の追加に失敗しました');
+      console.error("Error adding track:", error);
+      Alert.alert("エラー", "楽曲の追加に失敗しました");
     } finally {
       setLoading(false);
     }
@@ -146,23 +148,30 @@ export default function AddPostScreen() {
 
   const renderTrackItem = ({ item }: { item: Track }) => (
     <TouchableOpacity onPress={() => setSelectedTrack(item)}>
-      <Card 
+      <Card
         style={[
           styles.trackCard,
-          selectedTrack?.spotify_id === item.spotify_id && styles.selectedTrack
+          selectedTrack?.spotify_id === item.spotify_id && styles.selectedTrack,
         ]}
       >
         <View style={styles.trackContent}>
           <Image
-            source={{ 
-              uri: item.image_url || 'https://via.placeholder.com/60x60?text=🎵' 
+            source={{
+              uri:
+                item.image_url || "https://via.placeholder.com/60x60?text=🎵",
             }}
             style={styles.trackImage}
           />
           <View style={styles.trackInfo}>
-            <Text style={styles.trackTitle} numberOfLines={1}>{item.title}</Text>
-            <Text style={styles.trackArtist} numberOfLines={1}>{item.artist}</Text>
-            <Text style={styles.trackAlbum} numberOfLines={1}>{item.album}</Text>
+            <Text style={styles.trackTitle} numberOfLines={1}>
+              {item.title}
+            </Text>
+            <Text style={styles.trackArtist} numberOfLines={1}>
+              {item.artist}
+            </Text>
+            <Text style={styles.trackAlbum} numberOfLines={1}>
+              {item.album}
+            </Text>
           </View>
         </View>
       </Card>
@@ -172,7 +181,7 @@ export default function AddPostScreen() {
   const renderCategoryChip = (category: Category) => (
     <Chip
       key={category.id}
-      mode={selectedCategory?.id === category.id ? 'outlined' : 'flat'}
+      mode={selectedCategory?.id === category.id ? "outlined" : "flat"}
       selected={selectedCategory?.id === category.id}
       onPress={() => {
         setSelectedCategory(category);
@@ -221,15 +230,23 @@ export default function AddPostScreen() {
             <Card style={styles.selectedTrackCard}>
               <View style={styles.trackContent}>
                 <Image
-                  source={{ 
-                    uri: selectedTrack.image_url || 'https://via.placeholder.com/80x80?text=🎵' 
+                  source={{
+                    uri:
+                      selectedTrack.image_url ||
+                      "https://via.placeholder.com/80x80?text=🎵",
                   }}
                   style={styles.selectedTrackImage}
                 />
                 <View style={styles.trackInfo}>
-                  <Text style={styles.selectedTrackTitle}>{selectedTrack.title}</Text>
-                  <Text style={styles.selectedTrackArtist}>{selectedTrack.artist}</Text>
-                  <Text style={styles.selectedTrackAlbum}>{selectedTrack.album}</Text>
+                  <Text style={styles.selectedTrackTitle}>
+                    {selectedTrack.title}
+                  </Text>
+                  <Text style={styles.selectedTrackArtist}>
+                    {selectedTrack.artist}
+                  </Text>
+                  <Text style={styles.selectedTrackAlbum}>
+                    {selectedTrack.album}
+                  </Text>
                 </View>
               </View>
             </Card>
@@ -245,7 +262,9 @@ export default function AddPostScreen() {
             style={styles.categoryButton}
             icon="tag"
           >
-            {selectedCategory ? selectedCategory.name : 'カテゴリを選択してください'}
+            {selectedCategory
+              ? selectedCategory.name
+              : "カテゴリを選択してください"}
           </Button>
         </View>
 
@@ -285,9 +304,7 @@ export default function AddPostScreen() {
           <ScrollView style={styles.categoryList}>
             {categories.map(renderCategoryChip)}
           </ScrollView>
-          <Button onPress={() => setShowCategoryModal(false)}>
-            閉じる
-          </Button>
+          <Button onPress={() => setShowCategoryModal(false)}>閉じる</Button>
         </Modal>
       </Portal>
     </View>
@@ -297,15 +314,15 @@ export default function AddPostScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
     marginTop: 10,
     paddingHorizontal: 16,
-    color: '#333',
+    color: "#333",
   },
   section: {
     marginBottom: 24,
@@ -313,9 +330,9 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 12,
-    color: '#333',
+    color: "#333",
   },
   searchbar: {
     marginBottom: 16,
@@ -329,13 +346,13 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   selectedTrack: {
-    borderColor: '#6200ee',
+    borderColor: "#6200ee",
     borderWidth: 2,
   },
   trackContent: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   trackImage: {
     width: 60,
@@ -348,22 +365,22 @@ const styles = StyleSheet.create({
   },
   trackTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: "600",
+    color: "#333",
   },
   trackArtist: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginTop: 2,
   },
   trackAlbum: {
     fontSize: 12,
-    color: '#999',
+    color: "#999",
     marginTop: 2,
   },
   selectedTrackCard: {
     elevation: 3,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
   },
   selectedTrackImage: {
     width: 80,
@@ -372,41 +389,41 @@ const styles = StyleSheet.create({
   },
   selectedTrackTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: "600",
+    color: "#333",
   },
   selectedTrackArtist: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
     marginTop: 4,
   },
   selectedTrackAlbum: {
     fontSize: 14,
-    color: '#999',
+    color: "#999",
     marginTop: 2,
   },
   categoryButton: {
     padding: 8,
   },
   commentInput: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   addButton: {
     margin: 16,
     padding: 8,
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
     margin: 20,
     borderRadius: 8,
-    maxHeight: '80%',
+    maxHeight: "80%",
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   categoryList: {
     maxHeight: 400,

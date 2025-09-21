@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Alert, ScrollView } from 'react-native';
-import { 
-  Text, 
-  TextInput, 
-  Button, 
-  Card, 
-  Title,
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Button,
+  Card,
   Paragraph,
-} from 'react-native-paper';
-import { useForm, Controller } from 'react-hook-form';
-import { useAuthStore } from '../../stores/authStore';
+  Text,
+  TextInput,
+  Title,
+} from "react-native-paper";
+import { useAuthStore } from "../../stores/authStore";
 
 interface RegisterFormData {
   username: string;
@@ -33,31 +33,31 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
     formState: { errors },
   } = useForm<RegisterFormData>({
     defaultValues: {
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
-  const password = watch('password');
+  const password = watch("password");
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setLoading(true);
       await signUp(data.email, data.password, data.username);
       Alert.alert(
-        '登録完了',
-        'アカウントが作成されました。確認メールをご確認ください。',
+        "登録完了",
+        "アカウントが作成されました。確認メールをご確認ください。",
         [
           {
-            text: 'OK',
-            onPress: () => navigation.navigate('Login'),
+            text: "OK",
+            onPress: () => navigation.navigate("Login"),
           },
-        ]
+        ],
       );
     } catch (error: any) {
-      Alert.alert('登録エラー', error.message || '登録に失敗しました');
+      Alert.alert("登録エラー", error.message || "登録に失敗しました");
     } finally {
       setLoading(false);
     }
@@ -75,18 +75,18 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
               control={control}
               name="username"
               rules={{
-                required: 'ユーザー名を入力してください',
+                required: "ユーザー名を入力してください",
                 minLength: {
                   value: 3,
-                  message: 'ユーザー名は3文字以上で入力してください',
+                  message: "ユーザー名は3文字以上で入力してください",
                 },
                 maxLength: {
                   value: 20,
-                  message: 'ユーザー名は20文字以下で入力してください',
+                  message: "ユーザー名は20文字以下で入力してください",
                 },
                 pattern: {
                   value: /^[a-zA-Z0-9_]+$/,
-                  message: 'ユーザー名は英数字とアンダースコアのみ使用できます',
+                  message: "ユーザー名は英数字とアンダースコアのみ使用できます",
                 },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -110,10 +110,10 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
               control={control}
               name="email"
               rules={{
-                required: 'メールアドレスを入力してください',
+                required: "メールアドレスを入力してください",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: '有効なメールアドレスを入力してください',
+                  message: "有効なメールアドレスを入力してください",
                 },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -138,10 +138,10 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
               control={control}
               name="password"
               rules={{
-                required: 'パスワードを入力してください',
+                required: "パスワードを入力してください",
                 minLength: {
                   value: 6,
-                  message: 'パスワードは6文字以上で入力してください',
+                  message: "パスワードは6文字以上で入力してください",
                 },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -165,9 +165,9 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
               control={control}
               name="confirmPassword"
               rules={{
-                required: 'パスワードを再入力してください',
+                required: "パスワードを再入力してください",
                 validate: (value) =>
-                  value === password || 'パスワードが一致しません',
+                  value === password || "パスワードが一致しません",
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
@@ -183,7 +183,9 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
               )}
             />
             {errors.confirmPassword && (
-              <Text style={styles.errorText}>{errors.confirmPassword.message}</Text>
+              <Text style={styles.errorText}>
+                {errors.confirmPassword.message}
+              </Text>
             )}
 
             <Button
@@ -198,7 +200,7 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
 
             <Button
               mode="text"
-              onPress={() => navigation.navigate('Login')}
+              onPress={() => navigation.navigate("Login")}
               style={styles.textButton}
             >
               既にアカウントをお持ちの方はこちら
@@ -213,32 +215,32 @@ export default function RegisterScreen({ navigation }: RegisterScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 16,
   },
   card: {
     padding: 16,
   },
   title: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 8,
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   subtitle: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 32,
-    color: '#666',
+    color: "#666",
   },
   input: {
     marginBottom: 8,
   },
   errorText: {
-    color: '#B00020',
+    color: "#B00020",
     fontSize: 12,
     marginBottom: 16,
   },

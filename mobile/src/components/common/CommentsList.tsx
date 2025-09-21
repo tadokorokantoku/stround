@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import type React from "react";
+import { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  FlatList,
   ActivityIndicator,
-  StyleSheet,
-  RefreshControl,
   Alert,
-} from 'react-native';
-import { CommentItem } from './CommentItem';
-import { apiService } from '../../services/api';
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { apiService } from "../../services/api";
+import { CommentItem } from "./CommentItem";
 
 interface CommentProfile {
   id: string;
@@ -42,9 +43,9 @@ interface CommentsListProps {
   refreshTrigger?: number; // 外部から更新をトリガーするためのプロップ
 }
 
-export const CommentsList: React.FC<CommentsListProps> = ({ 
+export const CommentsList: React.FC<CommentsListProps> = ({
   userTrackId,
-  refreshTrigger 
+  refreshTrigger,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,21 +54,27 @@ export const CommentsList: React.FC<CommentsListProps> = ({
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const fetchComments = async (pageNum: number = 1, append: boolean = false) => {
+  const fetchComments = async (
+    pageNum: number = 1,
+    append: boolean = false,
+  ) => {
     try {
-      const response: CommentsResponse = await apiService.getComments(userTrackId, pageNum);
-      
+      const response: CommentsResponse = await apiService.getComments(
+        userTrackId,
+        pageNum,
+      );
+
       if (append) {
-        setComments(prev => [...prev, ...response.comments]);
+        setComments((prev) => [...prev, ...response.comments]);
       } else {
         setComments(response.comments);
       }
-      
+
       setHasMore(response.comments.length === response.limit);
       setPage(pageNum + 1);
     } catch (error) {
-      console.error('Failed to fetch comments:', error);
-      Alert.alert('エラー', 'コメントの取得に失敗しました');
+      console.error("Failed to fetch comments:", error);
+      Alert.alert("エラー", "コメントの取得に失敗しました");
     }
   };
 
@@ -98,7 +105,7 @@ export const CommentsList: React.FC<CommentsListProps> = ({
       await apiService.createReply(userTrackId, content, parentCommentId);
       await handleRefresh(); // コメントツリーを再取得
     } catch (error) {
-      console.error('Reply failed:', error);
+      console.error("Reply failed:", error);
       throw error;
     }
   };
@@ -139,13 +146,15 @@ export const CommentsList: React.FC<CommentsListProps> = ({
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyText}>まだコメントがありません</Text>
-      <Text style={styles.emptySubtext}>最初のコメントを投稿してみましょう</Text>
+      <Text style={styles.emptySubtext}>
+        最初のコメントを投稿してみましょう
+      </Text>
     </View>
   );
 
   const renderFooter = () => {
     if (!loadingMore) return null;
-    
+
     return (
       <View style={styles.footerLoader}>
         <ActivityIndicator size="small" color="#007AFF" />
@@ -186,37 +195,37 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   loadingText: {
     marginTop: 10,
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   footerLoader: {
     padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 40,
   },
   emptyText: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: "600",
+    color: "#333",
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
     lineHeight: 20,
   },
 });

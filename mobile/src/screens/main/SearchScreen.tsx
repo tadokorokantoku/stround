@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
-import { Text, Searchbar, Card, Avatar, Button, SegmentedButtons, Chip } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useAuthStore } from '../../stores/authStore';
-import { API_BASE_URL } from '../../constants';
-import { RootStackParamList } from '../../navigation/AppNavigator';
-import { UserTrack, Track, User } from '../../types';
+import { useNavigation } from "@react-navigation/native";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import React, { useState } from "react";
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import {
+  Avatar,
+  Button,
+  Card,
+  Chip,
+  Searchbar,
+  SegmentedButtons,
+  Text,
+} from "react-native-paper";
+import { API_BASE_URL } from "../../constants";
+import type { RootStackParamList } from "../../navigation/AppNavigator";
+import { useAuthStore } from "../../stores/authStore";
+import { Track, User, type UserTrack } from "../../types";
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -50,20 +64,29 @@ interface SearchUserTrack {
   track: SearchTrack;
 }
 
-type SearchType = 'users' | 'tracks' | 'tags';
+type SearchType = "users" | "tracks" | "tags";
 
 export default function SearchScreen() {
   const { user } = useAuthStore();
   const navigation = useNavigation<NavigationProp>();
-  const [searchType, setSearchType] = useState<SearchType>('users');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchType, setSearchType] = useState<SearchType>("users");
+  const [searchQuery, setSearchQuery] = useState("");
   const [userResults, setUserResults] = useState<UserProfile[]>([]);
   const [trackResults, setTrackResults] = useState<SearchTrack[]>([]);
-  const [userTrackResults, setUserTrackResults] = useState<SearchUserTrack[]>([]);
+  const [userTrackResults, setUserTrackResults] = useState<SearchUserTrack[]>(
+    [],
+  );
   const [loading, setLoading] = useState(false);
   const [followStatus, setFollowStatus] = useState<FollowStatus>({});
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [availableTags] = useState<string[]>(['美しい曲', '学生時代の曲', 'ドライブ用', '仕事中に聴く曲', '切ない系', 'テンション上がる曲']);
+  const [availableTags] = useState<string[]>([
+    "美しい曲",
+    "学生時代の曲",
+    "ドライブ用",
+    "仕事中に聴く曲",
+    "切ない系",
+    "テンション上がる曲",
+  ]);
 
   const searchUsers = async (query: string) => {
     if (!query.trim()) {
@@ -73,33 +96,44 @@ export default function SearchScreen() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/profiles/search/${encodeURIComponent(query)}`, {
-        headers: {
-          'Authorization': `Bearer ${user?.access_token}`,
+      const response = await fetch(
+        `${API_BASE_URL}/api/profiles/search/${encodeURIComponent(query)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${user?.access_token}`,
+          },
         },
-      });
+      );
 
       if (response.ok) {
         const data = await response.json();
         setUserResults(data.profiles || []);
-        
+
         // 各ユーザーのフォロー状態を確認
-        const statusPromises = data.profiles.map(async (profile: UserProfile) => {
-          try {
-            const statusResponse = await fetch(`${API_BASE_URL}/api/follows/status/${profile.id}`, {
-              headers: {
-                'Authorization': `Bearer ${user?.access_token}`,
-              },
-            });
-            if (statusResponse.ok) {
-              const statusData = await statusResponse.json();
-              return { userId: profile.id, isFollowing: statusData.isFollowing };
+        const statusPromises = data.profiles.map(
+          async (profile: UserProfile) => {
+            try {
+              const statusResponse = await fetch(
+                `${API_BASE_URL}/api/follows/status/${profile.id}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${user?.access_token}`,
+                  },
+                },
+              );
+              if (statusResponse.ok) {
+                const statusData = await statusResponse.json();
+                return {
+                  userId: profile.id,
+                  isFollowing: statusData.isFollowing,
+                };
+              }
+            } catch (error) {
+              console.error("フォロー状態確認エラー:", error);
             }
-          } catch (error) {
-            console.error('フォロー状態確認エラー:', error);
-          }
-          return { userId: profile.id, isFollowing: false };
-        });
+            return { userId: profile.id, isFollowing: false };
+          },
+        );
 
         const statuses = await Promise.all(statusPromises);
         const statusMap: FollowStatus = {};
@@ -109,7 +143,7 @@ export default function SearchScreen() {
         setFollowStatus(statusMap);
       }
     } catch (error) {
-      console.error('ユーザー検索エラー:', error);
+      console.error("ユーザー検索エラー:", error);
     } finally {
       setLoading(false);
     }
@@ -123,18 +157,21 @@ export default function SearchScreen() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/music/search?q=${encodeURIComponent(query)}`, {
-        headers: {
-          'Authorization': `Bearer ${user?.access_token}`,
+      const response = await fetch(
+        `${API_BASE_URL}/api/music/search?q=${encodeURIComponent(query)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${user?.access_token}`,
+          },
         },
-      });
+      );
 
       if (response.ok) {
         const data = await response.json();
         setTrackResults(data.tracks || []);
       }
     } catch (error) {
-      console.error('楽曲検索エラー:', error);
+      console.error("楽曲検索エラー:", error);
     } finally {
       setLoading(false);
     }
@@ -148,21 +185,24 @@ export default function SearchScreen() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/user-tracks/search/tags`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${user?.access_token}`,
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${API_BASE_URL}/api/user-tracks/search/tags`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${user?.access_token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ tags }),
         },
-        body: JSON.stringify({ tags }),
-      });
+      );
 
       if (response.ok) {
         const data = await response.json();
         setUserTrackResults(data.userTracks || []);
       }
     } catch (error) {
-      console.error('タグ検索エラー:', error);
+      console.error("タグ検索エラー:", error);
     } finally {
       setLoading(false);
     }
@@ -170,13 +210,13 @@ export default function SearchScreen() {
 
   const handleSearch = () => {
     switch (searchType) {
-      case 'users':
+      case "users":
         searchUsers(searchQuery);
         break;
-      case 'tracks':
+      case "tracks":
         searchTracks(searchQuery);
         break;
-      case 'tags':
+      case "tags":
         searchByTags(selectedTags);
         break;
     }
@@ -184,45 +224,46 @@ export default function SearchScreen() {
 
   const toggleFollow = async (targetUserId: string) => {
     const isCurrentlyFollowing = followStatus[targetUserId];
-    const endpoint = isCurrentlyFollowing ? 'unfollow' : 'follow';
+    const endpoint = isCurrentlyFollowing ? "unfollow" : "follow";
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/follows/${endpoint}/${targetUserId}`, {
-        method: isCurrentlyFollowing ? 'DELETE' : 'POST',
-        headers: {
-          'Authorization': `Bearer ${user?.access_token}`,
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${API_BASE_URL}/api/follows/${endpoint}/${targetUserId}`,
+        {
+          method: isCurrentlyFollowing ? "DELETE" : "POST",
+          headers: {
+            Authorization: `Bearer ${user?.access_token}`,
+            "Content-Type": "application/json",
+          },
         },
-      });
+      );
 
       if (response.ok) {
-        setFollowStatus(prev => ({
+        setFollowStatus((prev) => ({
           ...prev,
           [targetUserId]: !isCurrentlyFollowing,
         }));
       }
     } catch (error) {
-      console.error('フォロー操作エラー:', error);
+      console.error("フォロー操作エラー:", error);
     }
   };
 
   const handleTagToggle = (tag: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
-        ? prev.filter(t => t !== tag)
-        : [...prev, tag]
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
   };
 
   const handleTrackPress = (track: SearchTrack) => {
     // Create a dummy UserTrack for navigation
     const userTrack: UserTrack = {
-      id: '',
-      userId: '',
-      categoryId: '',
+      id: "",
+      userId: "",
+      categoryId: "",
       spotifyTrackId: track.id,
       comment: null,
-      createdAt: '',
+      createdAt: "",
       track: {
         spotifyId: track.id,
         title: track.title,
@@ -231,11 +272,11 @@ export default function SearchScreen() {
         imageUrl: track.image_url || null,
         previewUrl: track.preview_url || null,
         externalUrl: track.external_url || null,
-        createdAt: '',
-      }
+        createdAt: "",
+      },
     };
-    
-    navigation.navigate('TrackDetail', { userTrack });
+
+    navigation.navigate("TrackDetail", { userTrack });
   };
 
   const handleUserTrackPress = (userTrack: SearchUserTrack) => {
@@ -252,15 +293,15 @@ export default function SearchScreen() {
         displayName: userTrack.user.display_name || null,
         bio: null,
         profileImageUrl: userTrack.user.avatar_url || null,
-        createdAt: '',
-        updatedAt: '',
+        createdAt: "",
+        updatedAt: "",
       },
       category: {
         id: userTrack.category.id,
         name: userTrack.category.name,
         description: null,
         isDefault: true,
-        createdAt: '',
+        createdAt: "",
       },
       track: {
         spotifyId: userTrack.track.id,
@@ -270,11 +311,11 @@ export default function SearchScreen() {
         imageUrl: userTrack.track.image_url || null,
         previewUrl: userTrack.track.preview_url || null,
         externalUrl: userTrack.track.external_url || null,
-        createdAt: '',
-      }
+        createdAt: "",
+      },
     };
-    
-    navigation.navigate('TrackDetail', { userTrack: navUserTrack });
+
+    navigation.navigate("TrackDetail", { userTrack: navUserTrack });
   };
 
   const renderUserItem = ({ item }: { item: UserProfile }) => (
@@ -284,11 +325,13 @@ export default function SearchScreen() {
           <View style={styles.userInfo}>
             <Avatar.Text
               size={50}
-              label={item.display_name?.charAt(0)?.toUpperCase() || 'U'}
+              label={item.display_name?.charAt(0)?.toUpperCase() || "U"}
               style={styles.avatar}
             />
             <View style={styles.userText}>
-              <Text style={styles.displayName}>{item.display_name || item.username}</Text>
+              <Text style={styles.displayName}>
+                {item.display_name || item.username}
+              </Text>
               <Text style={styles.username}>@{item.username}</Text>
               {item.bio && <Text style={styles.bio}>{item.bio}</Text>}
             </View>
@@ -299,7 +342,7 @@ export default function SearchScreen() {
               onPress={() => toggleFollow(item.id)}
               compact
             >
-              {followStatus[item.id] ? 'フォロー中' : 'フォロー'}
+              {followStatus[item.id] ? "フォロー中" : "フォロー"}
             </Button>
           )}
         </View>
@@ -313,13 +356,26 @@ export default function SearchScreen() {
         <Card.Content>
           <View style={styles.trackRow}>
             {item.image_url && (
-              <Image source={{ uri: item.image_url }} style={styles.trackImage} />
+              <Image
+                source={{ uri: item.image_url }}
+                style={styles.trackImage}
+              />
             )}
             <View style={styles.trackInfo}>
-              <Text style={styles.trackTitle} numberOfLines={2}>{item.title}</Text>
-              <Text style={styles.trackArtist} numberOfLines={1}>{item.artist}</Text>
-              {item.album && <Text style={styles.trackAlbum} numberOfLines={1}>{item.album}</Text>}
-              <Text style={styles.trackCount}>{item.user_tracks_count}人が登録</Text>
+              <Text style={styles.trackTitle} numberOfLines={2}>
+                {item.title}
+              </Text>
+              <Text style={styles.trackArtist} numberOfLines={1}>
+                {item.artist}
+              </Text>
+              {item.album && (
+                <Text style={styles.trackAlbum} numberOfLines={1}>
+                  {item.album}
+                </Text>
+              )}
+              <Text style={styles.trackCount}>
+                {item.user_tracks_count}人が登録
+              </Text>
             </View>
           </View>
         </Card.Content>
@@ -334,28 +390,46 @@ export default function SearchScreen() {
           <View style={styles.userTrackHeader}>
             <Avatar.Text
               size={30}
-              label={item.user.display_name?.charAt(0)?.toUpperCase() || 'U'}
+              label={item.user.display_name?.charAt(0)?.toUpperCase() || "U"}
               style={styles.smallAvatar}
             />
             <View style={styles.userTrackUserInfo}>
               <Text style={styles.userTrackUsername}>
                 {item.user.display_name || item.user.username}
               </Text>
-              <Chip style={styles.categoryChip} textStyle={styles.categoryChipText}>
+              <Chip
+                style={styles.categoryChip}
+                textStyle={styles.categoryChipText}
+              >
                 {item.category.name}
               </Chip>
             </View>
           </View>
-          
+
           <View style={styles.trackRow}>
             {item.track.image_url && (
-              <Image source={{ uri: item.track.image_url }} style={styles.trackImage} />
+              <Image
+                source={{ uri: item.track.image_url }}
+                style={styles.trackImage}
+              />
             )}
             <View style={styles.trackInfo}>
-              <Text style={styles.trackTitle} numberOfLines={2}>{item.track.title}</Text>
-              <Text style={styles.trackArtist} numberOfLines={1}>{item.track.artist}</Text>
-              {item.track.album && <Text style={styles.trackAlbum} numberOfLines={1}>{item.track.album}</Text>}
-              {item.comment && <Text style={styles.userComment} numberOfLines={2}>{item.comment}</Text>}
+              <Text style={styles.trackTitle} numberOfLines={2}>
+                {item.track.title}
+              </Text>
+              <Text style={styles.trackArtist} numberOfLines={1}>
+                {item.track.artist}
+              </Text>
+              {item.track.album && (
+                <Text style={styles.trackAlbum} numberOfLines={1}>
+                  {item.track.album}
+                </Text>
+              )}
+              {item.comment && (
+                <Text style={styles.userComment} numberOfLines={2}>
+                  {item.comment}
+                </Text>
+              )}
             </View>
           </View>
         </Card.Content>
@@ -365,38 +439,50 @@ export default function SearchScreen() {
 
   const getPlaceholderText = () => {
     switch (searchType) {
-      case 'users': return 'ユーザーを検索';
-      case 'tracks': return '楽曲を検索（タイトル・アーティスト）';
-      case 'tags': return 'タグで検索';
-      default: return '検索';
+      case "users":
+        return "ユーザーを検索";
+      case "tracks":
+        return "楽曲を検索（タイトル・アーティスト）";
+      case "tags":
+        return "タグで検索";
+      default:
+        return "検索";
     }
   };
 
   const getEmptyText = () => {
     switch (searchType) {
-      case 'users': 
-        return searchQuery ? 'ユーザーが見つかりません' : 'ユーザーを検索してください';
-      case 'tracks': 
-        return searchQuery ? '楽曲が見つかりません' : '楽曲を検索してください';
-      case 'tags': 
-        return selectedTags.length > 0 ? '該当する投稿が見つかりません' : 'タグを選択してください';
-      default: 
-        return '検索してください';
+      case "users":
+        return searchQuery
+          ? "ユーザーが見つかりません"
+          : "ユーザーを検索してください";
+      case "tracks":
+        return searchQuery ? "楽曲が見つかりません" : "楽曲を検索してください";
+      case "tags":
+        return selectedTags.length > 0
+          ? "該当する投稿が見つかりません"
+          : "タグを選択してください";
+      default:
+        return "検索してください";
     }
   };
 
   const getCurrentResults = () => {
     switch (searchType) {
-      case 'users': return userResults;
-      case 'tracks': return trackResults;
-      case 'tags': return userTrackResults;
-      default: return [];
+      case "users":
+        return userResults;
+      case "tracks":
+        return trackResults;
+      case "tags":
+        return userTrackResults;
+      default:
+        return [];
     }
   };
 
   const renderCurrentResults = () => {
     const results = getCurrentResults();
-    
+
     if (results.length === 0) {
       return (
         <View style={styles.emptyState}>
@@ -406,7 +492,7 @@ export default function SearchScreen() {
     }
 
     switch (searchType) {
-      case 'users':
+      case "users":
         return (
           <FlatList
             data={userResults}
@@ -416,7 +502,7 @@ export default function SearchScreen() {
             showsVerticalScrollIndicator={false}
           />
         );
-      case 'tracks':
+      case "tracks":
         return (
           <FlatList
             data={trackResults}
@@ -426,7 +512,7 @@ export default function SearchScreen() {
             showsVerticalScrollIndicator={false}
           />
         );
-      case 'tags':
+      case "tags":
         return (
           <FlatList
             data={userTrackResults}
@@ -448,22 +534,22 @@ export default function SearchScreen() {
           value={searchType}
           onValueChange={(value) => {
             setSearchType(value as SearchType);
-            setSearchQuery('');
+            setSearchQuery("");
             setSelectedTags([]);
             setUserResults([]);
             setTrackResults([]);
             setUserTrackResults([]);
           }}
           buttons={[
-            { value: 'users', label: 'ユーザー' },
-            { value: 'tracks', label: '楽曲' },
-            { value: 'tags', label: 'タグ' },
+            { value: "users", label: "ユーザー" },
+            { value: "tracks", label: "楽曲" },
+            { value: "tags", label: "タグ" },
           ]}
           style={styles.segmentedButtons}
         />
       </View>
 
-      {searchType !== 'tags' ? (
+      {searchType !== "tags" ? (
         <Searchbar
           placeholder={getPlaceholderText()}
           onChangeText={setSearchQuery}
@@ -482,11 +568,11 @@ export default function SearchScreen() {
                 onPress={() => handleTagToggle(tag)}
                 style={[
                   styles.tagChip,
-                  selectedTags.includes(tag) && styles.selectedTagChip
+                  selectedTags.includes(tag) && styles.selectedTagChip,
                 ]}
                 textStyle={[
                   styles.tagChipText,
-                  selectedTags.includes(tag) && styles.selectedTagChipText
+                  selectedTags.includes(tag) && styles.selectedTagChipText,
                 ]}
               >
                 {tag}
@@ -505,7 +591,7 @@ export default function SearchScreen() {
           )}
         </View>
       )}
-      
+
       {renderCurrentResults()}
     </View>
   );
@@ -514,7 +600,7 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   searchTypeContainer: {
     paddingHorizontal: 16,
@@ -522,7 +608,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   segmentedButtons: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   searchbar: {
     margin: 16,
@@ -531,7 +617,7 @@ const styles = StyleSheet.create({
   },
   tagsContainer: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     margin: 16,
     marginTop: 8,
     borderRadius: 8,
@@ -539,27 +625,27 @@ const styles = StyleSheet.create({
   },
   tagsTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 12,
-    color: '#333',
+    color: "#333",
   },
   tagsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
     marginBottom: 16,
   },
   tagChip: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
   },
   selectedTagChip: {
-    backgroundColor: '#2196F3',
+    backgroundColor: "#2196F3",
   },
   tagChipText: {
-    color: '#333',
+    color: "#333",
   },
   selectedTagChipText: {
-    color: '#fff',
+    color: "#fff",
   },
   searchButton: {
     marginTop: 8,
@@ -572,13 +658,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   userRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
   },
   avatar: {
@@ -589,25 +675,25 @@ const styles = StyleSheet.create({
   },
   displayName: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 2,
   },
   username: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginBottom: 4,
   },
   bio: {
     fontSize: 14,
-    color: '#888',
+    color: "#888",
   },
   trackCard: {
     margin: 8,
     marginHorizontal: 16,
   },
   trackRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   trackImage: {
     width: 60,
@@ -620,32 +706,32 @@ const styles = StyleSheet.create({
   },
   trackTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
-    color: '#333',
+    color: "#333",
   },
   trackArtist: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginBottom: 2,
   },
   trackAlbum: {
     fontSize: 12,
-    color: '#999',
+    color: "#999",
     marginBottom: 4,
   },
   trackCount: {
     fontSize: 12,
-    color: '#2196F3',
-    fontWeight: '600',
+    color: "#2196F3",
+    fontWeight: "600",
   },
   userTrackCard: {
     margin: 8,
     marginHorizontal: 16,
   },
   userTrackHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 12,
   },
   smallAvatar: {
@@ -653,39 +739,39 @@ const styles = StyleSheet.create({
   },
   userTrackUserInfo: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   userTrackUsername: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: "600",
+    color: "#333",
   },
   categoryChip: {
-    backgroundColor: '#e3f2fd',
+    backgroundColor: "#e3f2fd",
     height: 24,
   },
   categoryChipText: {
     fontSize: 12,
-    color: '#1976d2',
+    color: "#1976d2",
   },
   userComment: {
     fontSize: 13,
-    color: '#666',
-    fontStyle: 'italic',
+    color: "#666",
+    fontStyle: "italic",
     marginTop: 4,
   },
   emptyState: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 32,
   },
   emptyText: {
     fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
     lineHeight: 24,
   },
 });

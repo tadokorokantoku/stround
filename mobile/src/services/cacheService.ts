@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export interface CacheConfig {
   key: string;
@@ -7,7 +7,7 @@ export interface CacheConfig {
 
 export class CacheService {
   private static instance: CacheService;
-  
+
   static getInstance(): CacheService {
     if (!CacheService.instance) {
       CacheService.instance = new CacheService();
@@ -15,17 +15,21 @@ export class CacheService {
     return CacheService.instance;
   }
 
-  async set(key: string, data: any, ttl: number = 5 * 60 * 1000): Promise<void> {
+  async set(
+    key: string,
+    data: any,
+    ttl: number = 5 * 60 * 1000,
+  ): Promise<void> {
     const cacheItem = {
       data,
       timestamp: Date.now(),
       ttl,
     };
-    
+
     try {
       await AsyncStorage.setItem(key, JSON.stringify(cacheItem));
     } catch (error) {
-      console.error('Cache set error:', error);
+      console.error("Cache set error:", error);
     }
   }
 
@@ -36,7 +40,7 @@ export class CacheService {
 
       const cacheItem = JSON.parse(cached);
       const isExpired = Date.now() - cacheItem.timestamp > cacheItem.ttl;
-      
+
       if (isExpired) {
         await this.remove(key);
         return null;
@@ -44,7 +48,7 @@ export class CacheService {
 
       return cacheItem.data;
     } catch (error) {
-      console.error('Cache get error:', error);
+      console.error("Cache get error:", error);
       return null;
     }
   }
@@ -53,7 +57,7 @@ export class CacheService {
     try {
       await AsyncStorage.removeItem(key);
     } catch (error) {
-      console.error('Cache remove error:', error);
+      console.error("Cache remove error:", error);
     }
   }
 
@@ -61,7 +65,7 @@ export class CacheService {
     try {
       await AsyncStorage.clear();
     } catch (error) {
-      console.error('Cache clear error:', error);
+      console.error("Cache clear error:", error);
     }
   }
 
@@ -69,7 +73,7 @@ export class CacheService {
     try {
       const keys = await AsyncStorage.getAllKeys();
       const now = Date.now();
-      
+
       for (const key of keys) {
         const cached = await AsyncStorage.getItem(key);
         if (cached) {
@@ -85,7 +89,7 @@ export class CacheService {
         }
       }
     } catch (error) {
-      console.error('Cache cleanup error:', error);
+      console.error("Cache cleanup error:", error);
     }
   }
 
@@ -93,10 +97,10 @@ export class CacheService {
   async clearByPrefix(prefix: string): Promise<void> {
     try {
       const keys = await AsyncStorage.getAllKeys();
-      const keysToRemove = keys.filter(key => key.startsWith(prefix));
+      const keysToRemove = keys.filter((key) => key.startsWith(prefix));
       await AsyncStorage.multiRemove(keysToRemove);
     } catch (error) {
-      console.error('Cache clear by prefix error:', error);
+      console.error("Cache clear by prefix error:", error);
     }
   }
 
@@ -105,17 +109,17 @@ export class CacheService {
     try {
       const keys = await AsyncStorage.getAllKeys();
       let totalSize = 0;
-      
+
       for (const key of keys) {
         const value = await AsyncStorage.getItem(key);
         if (value) {
           totalSize += new Blob([value]).size;
         }
       }
-      
+
       return totalSize;
     } catch (error) {
-      console.error('Cache size calculation error:', error);
+      console.error("Cache size calculation error:", error);
       return 0;
     }
   }
@@ -127,7 +131,7 @@ export class CacheService {
       if (keys.length <= maxItems) return;
 
       const cacheItems: { key: string; timestamp: number }[] = [];
-      
+
       for (const key of keys) {
         const cached = await AsyncStorage.getItem(key);
         if (cached) {
@@ -144,11 +148,11 @@ export class CacheService {
       // 古いものから削除
       cacheItems.sort((a, b) => a.timestamp - b.timestamp);
       const itemsToRemove = cacheItems.slice(0, keys.length - maxItems);
-      const keysToRemove = itemsToRemove.map(item => item.key);
-      
+      const keysToRemove = itemsToRemove.map((item) => item.key);
+
       await AsyncStorage.multiRemove(keysToRemove);
     } catch (error) {
-      console.error('LRU cleanup error:', error);
+      console.error("LRU cleanup error:", error);
     }
   }
 }
@@ -156,14 +160,15 @@ export class CacheService {
 // キャッシュキー生成ヘルパー
 export const CacheKeys = {
   timeline: (page: number) => `timeline_${page}`,
-  userTimeline: (userId: string, page: number) => `user_timeline_${userId}_${page}`,
+  userTimeline: (userId: string, page: number) =>
+    `user_timeline_${userId}_${page}`,
   publicTimeline: (page: number) => `public_timeline_${page}`,
   userTracks: (userId?: string, categoryId?: string, page: number = 1) =>
-    `user_tracks_${userId || 'all'}_${categoryId || 'all'}_${page}`,
+    `user_tracks_${userId || "all"}_${categoryId || "all"}_${page}`,
   comments: (userTrackId: string) => `comments_${userTrackId}`,
-  notifications: () => 'notifications',
-  unreadCount: () => 'unread_count',
-  categories: () => 'categories',
+  notifications: () => "notifications",
+  unreadCount: () => "unread_count",
+  categories: () => "categories",
   searchTracks: (query: string) => `search_tracks_${query}`,
   newReleases: (country: string) => `new_releases_${country}`,
   followCounts: (userId: string) => `follow_counts_${userId}`,

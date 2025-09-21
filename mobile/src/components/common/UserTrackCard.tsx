@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Modal } from 'react-native';
-import { Surface, Text, Avatar, IconButton } from 'react-native-paper';
-import { CommentsList } from './CommentsList';
-import { CommentInput } from './CommentInput';
-import { UserTrackLikeButton } from './UserTrackLikeButton';
+import type React from "react";
+import { useState } from "react";
+import { Modal, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Avatar, IconButton, Surface, Text } from "react-native-paper";
+import { CommentInput } from "./CommentInput";
+import { CommentsList } from "./CommentsList";
+import { UserTrackLikeButton } from "./UserTrackLikeButton";
 
 interface Profile {
   id: string;
@@ -67,7 +68,7 @@ export const UserTrackCard: React.FC<UserTrackCardProps> = ({
       return `${diffHours}時間前`;
     } else {
       const diffMinutes = Math.floor(diffMs / (1000 * 60));
-      return diffMinutes > 0 ? `${diffMinutes}分前` : '今';
+      return diffMinutes > 0 ? `${diffMinutes}分前` : "今";
     }
   };
 
@@ -80,7 +81,7 @@ export const UserTrackCard: React.FC<UserTrackCardProps> = ({
   };
 
   const handleCommentPosted = () => {
-    setRefreshTrigger(prev => prev + 1);
+    setRefreshTrigger((prev) => prev + 1);
   };
 
   const handleCloseComments = () => {
@@ -106,7 +107,8 @@ export const UserTrackCard: React.FC<UserTrackCardProps> = ({
                 {userTrack.profiles.display_name || userTrack.profiles.username}
               </Text>
               <Text style={styles.username}>
-                @{userTrack.profiles.username} · {formatDate(userTrack.created_at)}
+                @{userTrack.profiles.username} ·{" "}
+                {formatDate(userTrack.created_at)}
               </Text>
             </View>
           </TouchableOpacity>
@@ -117,7 +119,7 @@ export const UserTrackCard: React.FC<UserTrackCardProps> = ({
         </View>
 
         {userTrack.tracks && (
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.trackInfo}
             onPress={() => onTrackPress?.(userTrack)}
           >
@@ -151,7 +153,10 @@ export const UserTrackCard: React.FC<UserTrackCardProps> = ({
         )}
 
         <View style={styles.actions}>
-          <TouchableOpacity style={styles.actionButton} onPress={handleCommentPress}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handleCommentPress}
+          >
             <IconButton
               icon="comment-outline"
               size={20}
@@ -182,14 +187,14 @@ export const UserTrackCard: React.FC<UserTrackCardProps> = ({
               <IconButton icon="close" size={24} />
             </TouchableOpacity>
           </View>
-          
+
           <View style={styles.modalContent}>
-            <CommentsList 
-              userTrackId={userTrack.id} 
+            <CommentsList
+              userTrackId={userTrack.id}
               refreshTrigger={refreshTrigger}
             />
           </View>
-          
+
           <CommentInput
             userTrackId={userTrack.id}
             onCommentPosted={handleCommentPosted}
@@ -205,15 +210,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     marginVertical: 4,
     borderRadius: 8,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   header: {
     padding: 16,
     paddingBottom: 8,
   },
   userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   avatar: {
     marginRight: 12,
@@ -223,12 +228,12 @@ const styles = StyleSheet.create({
   },
   displayName: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 2,
   },
   username: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   categoryContainer: {
     paddingHorizontal: 16,
@@ -236,16 +241,16 @@ const styles = StyleSheet.create({
   },
   categoryName: {
     fontSize: 14,
-    color: '#007AFF',
-    fontWeight: '600',
-    backgroundColor: '#f0f8ff',
+    color: "#007AFF",
+    fontWeight: "600",
+    backgroundColor: "#f0f8ff",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   trackInfo: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 16,
     paddingBottom: 8,
   },
@@ -254,21 +259,21 @@ const styles = StyleSheet.create({
   },
   trackDetails: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   trackTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 2,
   },
   trackArtist: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginBottom: 2,
   },
   trackAlbum: {
     fontSize: 12,
-    color: '#999',
+    color: "#999",
   },
   userComment: {
     paddingHorizontal: 16,
@@ -277,19 +282,19 @@ const styles = StyleSheet.create({
   commentText: {
     fontSize: 14,
     lineHeight: 20,
-    color: '#333',
-    fontStyle: 'italic',
+    color: "#333",
+    fontStyle: "italic",
   },
   actions: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 8,
     paddingVertical: 8,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: "#f0f0f0",
   },
   actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 32,
   },
   iconButton: {
@@ -297,26 +302,26 @@ const styles = StyleSheet.create({
   },
   actionCount: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginLeft: 4,
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   modalContent: {
     flex: 1,

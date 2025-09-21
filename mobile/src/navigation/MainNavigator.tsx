@@ -1,11 +1,11 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { MaterialIcons } from '@expo/vector-icons';
-import HomeScreen from '../screens/main/HomeScreen';
-import SearchScreen from '../screens/main/SearchScreen';
-import AddPostScreen from '../screens/main/AddPostScreen';
-import NotificationsScreen from '../screens/main/NotificationsScreen';
-import ProfileScreen from '../screens/main/ProfileScreen';
+import { MaterialIcons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React from "react";
+import AddPostScreen from "../screens/main/AddPostScreen";
+import HomeScreen from "../screens/main/HomeScreen";
+import NotificationsScreen from "../screens/main/NotificationsScreen";
+import ProfileScreen from "../screens/main/ProfileScreen";
+import SearchScreen from "../screens/main/SearchScreen";
 
 export type MainTabParamList = {
   Home: undefined;
@@ -24,51 +24,51 @@ export default function MainNavigator() {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: keyof typeof MaterialIcons.glyphMap;
 
-          if (route.name === 'Home') {
-            iconName = 'home';
-          } else if (route.name === 'Search') {
-            iconName = 'search';
-          } else if (route.name === 'AddPost') {
-            iconName = 'add';
-          } else if (route.name === 'Notifications') {
-            iconName = 'notifications';
-          } else if (route.name === 'Profile') {
-            iconName = 'person';
+          if (route.name === "Home") {
+            iconName = "home";
+          } else if (route.name === "Search") {
+            iconName = "search";
+          } else if (route.name === "AddPost") {
+            iconName = "add";
+          } else if (route.name === "Notifications") {
+            iconName = "notifications";
+          } else if (route.name === "Profile") {
+            iconName = "person";
           } else {
-            iconName = 'home';
+            iconName = "home";
           }
 
           return <MaterialIcons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#2196F3',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: "#2196F3",
+        tabBarInactiveTintColor: "gray",
         headerShown: false,
       })}
     >
-      <Tab.Screen 
-        name="Home" 
+      <Tab.Screen
+        name="Home"
         component={HomeScreen}
-        options={{ tabBarLabel: 'ホーム' }}
+        options={{ tabBarLabel: "ホーム" }}
       />
-      <Tab.Screen 
-        name="Search" 
+      <Tab.Screen
+        name="Search"
         component={SearchScreen}
-        options={{ tabBarLabel: '検索' }}
+        options={{ tabBarLabel: "検索" }}
       />
-      <Tab.Screen 
-        name="AddPost" 
+      <Tab.Screen
+        name="AddPost"
         component={AddPostScreen}
-        options={{ tabBarLabel: '投稿' }}
+        options={{ tabBarLabel: "投稿" }}
       />
-      <Tab.Screen 
-        name="Notifications" 
+      <Tab.Screen
+        name="Notifications"
         component={NotificationsScreen}
-        options={{ tabBarLabel: '通知' }}
+        options={{ tabBarLabel: "通知" }}
       />
-      <Tab.Screen 
-        name="Profile" 
+      <Tab.Screen
+        name="Profile"
         component={ProfileScreen}
-        options={{ tabBarLabel: 'プロフィール' }}
+        options={{ tabBarLabel: "プロフィール" }}
       />
     </Tab.Navigator>
   );

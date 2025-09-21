@@ -27,7 +27,8 @@ export class SpotifyAPI {
   private clientSecret: string;
   private accessToken: string | null = null;
   private tokenExpiry: number = 0;
-  private redirectUri: string = 'https://stround.example.com/auth/spotify/callback';
+  private redirectUri: string =
+    "https://stround.example.com/auth/spotify/callback";
 
   constructor(clientId: string, clientSecret: string) {
     this.clientId = clientId;
@@ -39,43 +40,49 @@ export class SpotifyAPI {
       return this.accessToken;
     }
 
-    const response = await fetch('https://accounts.spotify.com/api/token', {
-      method: 'POST',
+    const response = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Basic ${btoa(`${this.clientId}:${this.clientSecret}`)}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${btoa(`${this.clientId}:${this.clientSecret}`)}`,
       },
-      body: 'grant_type=client_credentials',
+      body: "grant_type=client_credentials",
     });
 
     if (!response.ok) {
-      throw new Error('Failed to get Spotify access token');
+      throw new Error("Failed to get Spotify access token");
     }
 
     const data = await response.json();
     this.accessToken = data.access_token;
-    this.tokenExpiry = Date.now() + (data.expires_in * 1000) - 60000; // Subtract 1 minute for safety
+    this.tokenExpiry = Date.now() + data.expires_in * 1000 - 60000; // Subtract 1 minute for safety
 
     return this.accessToken;
   }
 
-  async searchTracks(query: string, limit: number = 20): Promise<SpotifyTrack[]> {
+  async searchTracks(
+    query: string,
+    limit: number = 20,
+  ): Promise<SpotifyTrack[]> {
     const accessToken = await this.getAccessToken();
-    
+
     const searchParams = new URLSearchParams({
       q: query,
-      type: 'track',
+      type: "track",
       limit: limit.toString(),
     });
 
-    const response = await fetch(`https://api.spotify.com/v1/search?${searchParams}`, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
+    const response = await fetch(
+      `https://api.spotify.com/v1/search?${searchParams}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
-    });
+    );
 
     if (!response.ok) {
-      throw new Error('Failed to search Spotify tracks');
+      throw new Error("Failed to search Spotify tracks");
     }
 
     const data: SpotifySearchResponse = await response.json();
@@ -85,36 +92,45 @@ export class SpotifyAPI {
   async getTrack(trackId: string): Promise<SpotifyTrack> {
     const accessToken = await this.getAccessToken();
 
-    const response = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
+    const response = await fetch(
+      `https://api.spotify.com/v1/tracks/${trackId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
-    });
+    );
 
     if (!response.ok) {
-      throw new Error('Failed to get Spotify track');
+      throw new Error("Failed to get Spotify track");
     }
 
     return await response.json();
   }
 
-  async getNewReleases(limit: number = 20, country: string = 'JP'): Promise<SpotifyTrack[]> {
+  async getNewReleases(
+    limit: number = 20,
+    country: string = "JP",
+  ): Promise<SpotifyTrack[]> {
     const accessToken = await this.getAccessToken();
 
     const searchParams = new URLSearchParams({
       limit: limit.toString(),
-      offset: '0',
+      offset: "0",
       country: country,
     });
 
-    const response = await fetch(`https://api.spotify.com/v1/browse/new-releases?${searchParams}`, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
+    const response = await fetch(
+      `https://api.spotify.com/v1/browse/new-releases?${searchParams}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
-    });
+    );
 
     if (!response.ok) {
-      throw new Error('Failed to get new releases');
+      throw new Error("Failed to get new releases");
     }
 
     const data: any = await response.json();
@@ -122,11 +138,14 @@ export class SpotifyAPI {
 
     const tracks: SpotifyTrack[] = [];
     for (const album of albums) {
-      const albumTracksResponse = await fetch(`https://api.spotify.com/v1/albums/${album.id}/tracks?limit=1`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
+      const albumTracksResponse = await fetch(
+        `https://api.spotify.com/v1/albums/${album.id}/tracks?limit=1`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         },
-      });
+      );
 
       if (albumTracksResponse.ok) {
         const tracksData: any = await albumTracksResponse.json();
@@ -154,15 +173,15 @@ export class SpotifyAPI {
   // OAuth methods
   getAuthUrl(state: string): string {
     const scopes = [
-      'user-read-private',
-      'user-read-email',
-      'user-read-playback-state',
-      'user-modify-playback-state',
-      'streaming'
-    ].join(' ');
+      "user-read-private",
+      "user-read-email",
+      "user-read-playback-state",
+      "user-modify-playback-state",
+      "streaming",
+    ].join(" ");
 
     const params = new URLSearchParams({
-      response_type: 'code',
+      response_type: "code",
       client_id: this.clientId,
       scope: scopes,
       redirect_uri: this.redirectUri,
@@ -178,21 +197,21 @@ export class SpotifyAPI {
     expires_in: number;
     refresh_token: string;
   }> {
-    const response = await fetch('https://accounts.spotify.com/api/token', {
-      method: 'POST',
+    const response = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Basic ${btoa(`${this.clientId}:${this.clientSecret}`)}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${btoa(`${this.clientId}:${this.clientSecret}`)}`,
       },
       body: new URLSearchParams({
-        grant_type: 'authorization_code',
+        grant_type: "authorization_code",
         code: code,
         redirect_uri: this.redirectUri,
       }),
     });
 
     if (!response.ok) {
-      throw new Error('Failed to exchange code for token');
+      throw new Error("Failed to exchange code for token");
     }
 
     return await response.json();
@@ -203,20 +222,20 @@ export class SpotifyAPI {
     token_type: string;
     expires_in: number;
   }> {
-    const response = await fetch('https://accounts.spotify.com/api/token', {
-      method: 'POST',
+    const response = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Basic ${btoa(`${this.clientId}:${this.clientSecret}`)}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${btoa(`${this.clientId}:${this.clientSecret}`)}`,
       },
       body: new URLSearchParams({
-        grant_type: 'refresh_token',
+        grant_type: "refresh_token",
         refresh_token: refreshToken,
       }),
     });
 
     if (!response.ok) {
-      throw new Error('Failed to refresh access token');
+      throw new Error("Failed to refresh access token");
     }
 
     return await response.json();
@@ -228,14 +247,14 @@ export class SpotifyAPI {
     email: string;
     images: Array<{ url: string }>;
   }> {
-    const response = await fetch('https://api.spotify.com/v1/me', {
+    const response = await fetch("https://api.spotify.com/v1/me", {
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
     if (!response.ok) {
-      throw new Error('Failed to get user profile');
+      throw new Error("Failed to get user profile");
     }
 
     return await response.json();

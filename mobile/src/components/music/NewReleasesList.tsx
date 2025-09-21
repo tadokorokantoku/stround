@@ -1,13 +1,13 @@
-import React, { useCallback, memo } from 'react';
+import React, { memo, useCallback } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   RefreshControl,
-  View,
   StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
-import { Text } from 'react-native-paper';
-import TrackItem from './TrackItem';
+  View,
+} from "react-native";
+import { Text } from "react-native-paper";
+import TrackItem from "./TrackItem";
 
 interface NewReleasesListProps {
   tracks: any[];
@@ -26,11 +26,11 @@ const NewReleasesList = memo(function NewReleasesList({
         track={item}
         onPress={() => {
           // TODO: Navigate to track detail or add to playlist
-          console.log('Track pressed:', item.title);
+          console.log("Track pressed:", item.title);
         }}
       />
     ),
-    []
+    [],
   );
 
   const renderEmpty = useCallback(() => {
@@ -64,13 +64,15 @@ const NewReleasesList = memo(function NewReleasesList({
         <RefreshControl
           refreshing={false}
           onRefresh={onRefresh}
-          colors={['#1976d2']}
+          colors={["#1976d2"]}
         />
       }
       ListEmptyComponent={renderEmpty}
       showsVerticalScrollIndicator={false}
       style={styles.list}
-      contentContainerStyle={!tracks.length ? styles.emptyListContainer : undefined}
+      contentContainerStyle={
+        !tracks.length ? styles.emptyListContainer : undefined
+      }
     />
   );
 });
@@ -80,28 +82,28 @@ export default NewReleasesList;
 const styles = StyleSheet.create({
   list: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   emptyListContainer: {
     flex: 1,
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 32,
     paddingVertical: 64,
   },
   emptyTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 8,
   },
   emptyText: {
     fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
     lineHeight: 20,
   },
 });

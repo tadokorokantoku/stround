@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, FlatList, Alert } from 'react-native';
-import { 
-  Text, 
-  Button, 
-  Card, 
-  Avatar, 
+import React, { useEffect, useState } from "react";
+import { Alert, FlatList, ScrollView, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  Avatar,
+  Button,
+  Card,
   Chip,
-  Surface,
   IconButton,
-  ActivityIndicator 
-} from 'react-native-paper';
-import { useAuthStore } from '../../stores/authStore';
-import { supabase } from '../../lib/supabase';
-import MusicPlayer from '../../components/music/MusicPlayer';
-import TrackItem from '../../components/music/TrackItem';
-import { useMusicPlayer } from '../../hooks/useMusicPlayer';
+  Surface,
+  Text,
+} from "react-native-paper";
+import MusicPlayer from "../../components/music/MusicPlayer";
+import TrackItem from "../../components/music/TrackItem";
+import { useMusicPlayer } from "../../hooks/useMusicPlayer";
+import { supabase } from "../../lib/supabase";
+import { useAuthStore } from "../../stores/authStore";
 
 interface Category {
   id: string;
@@ -64,14 +64,20 @@ interface UserProfileScreenProps {
   navigation: any;
 }
 
-export default function UserProfileScreen({ route, navigation }: UserProfileScreenProps) {
+export default function UserProfileScreen({
+  route,
+  navigation,
+}: UserProfileScreenProps) {
   const { userId } = route.params;
   const { user } = useAuthStore();
-  const { currentTrack, isPlayerVisible, playTrack, closePlayer } = useMusicPlayer();
+  const { currentTrack, isPlayerVisible, playTrack, closePlayer } =
+    useMusicPlayer();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [userTracks, setUserTracks] = useState<UserTrack[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [tracksLoading, setTracksLoading] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -98,22 +104,22 @@ export default function UserProfileScreen({ route, navigation }: UserProfileScre
       // TODO: API エンドポイントを使用してプロフィールを取得
       // 現在はSupabaseクライアントを直接使用
       const { data, error } = await supabase
-        .from('profiles')
+        .from("profiles")
         .select(`
           *,
           followers:follows!follows_following_id_fkey(count),
           following:follows!follows_follower_id_fkey(count)
         `)
-        .eq('id', userId)
+        .eq("id", userId)
         .single();
 
       if (error) throw error;
 
       setProfile(data);
     } catch (error) {
-      console.error('プロフィール取得エラー:', error);
-      Alert.alert('エラー', 'プロフィールの取得に失敗しました', [
-        { text: 'OK', onPress: () => navigation.goBack() }
+      console.error("プロフィール取得エラー:", error);
+      Alert.alert("エラー", "プロフィールの取得に失敗しました", [
+        { text: "OK", onPress: () => navigation.goBack() },
       ]);
     } finally {
       setLoading(false);
@@ -125,26 +131,27 @@ export default function UserProfileScreen({ route, navigation }: UserProfileScre
       // TODO: userTracks APIを使用してカテゴリを取得
       // 現在はSupabaseクライアントを直接使用
       const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .order('created_at');
+        .from("categories")
+        .select("*")
+        .order("created_at");
 
       if (error) throw error;
 
       // カテゴリにtrack_countを追加（暫定実装）
-      const categoriesWithCount = data?.map(cat => ({
-        ...cat,
-        track_count: 0 // TODO: 実際の楽曲数を取得
-      })) || [];
+      const categoriesWithCount =
+        data?.map((cat) => ({
+          ...cat,
+          track_count: 0, // TODO: 実際の楽曲数を取得
+        })) || [];
 
       setCategories(categoriesWithCount);
-      
+
       // 最初のカテゴリを選択
       if (categoriesWithCount.length > 0) {
         setSelectedCategoryId(categoriesWithCount[0].id);
       }
     } catch (error) {
-      console.error('カテゴリ取得エラー:', error);
+      console.error("カテゴリ取得エラー:", error);
     }
   };
 
@@ -154,22 +161,22 @@ export default function UserProfileScreen({ route, navigation }: UserProfileScre
       // TODO: userTracks APIを使用
       // 現在はSupabaseクライアントを直接使用
       const { data, error } = await supabase
-        .from('user_tracks')
+        .from("user_tracks")
         .select(`
           *,
           categories!user_tracks_category_id_fkey(*),
           music!user_tracks_spotify_track_id_fkey(*)
         `)
-        .eq('user_id', userId)
-        .eq('category_id', categoryId)
-        .order('created_at', { ascending: false });
+        .eq("user_id", userId)
+        .eq("category_id", categoryId)
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
 
       setUserTracks(data || []);
     } catch (error) {
-      console.error('楽曲取得エラー:', error);
-      Alert.alert('エラー', '楽曲の取得に失敗しました');
+      console.error("楽曲取得エラー:", error);
+      Alert.alert("エラー", "楽曲の取得に失敗しました");
     } finally {
       setTracksLoading(false);
     }
@@ -177,53 +184,51 @@ export default function UserProfileScreen({ route, navigation }: UserProfileScre
 
   const checkFollowStatus = async () => {
     if (!user) return;
-    
+
     try {
       const { data, error } = await supabase
-        .from('follows')
-        .select('*')
-        .eq('follower_id', user.id)
-        .eq('following_id', userId)
+        .from("follows")
+        .select("*")
+        .eq("follower_id", user.id)
+        .eq("following_id", userId)
         .single();
 
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error && error.code !== "PGRST116") throw error;
 
       setIsFollowing(!!data);
     } catch (error) {
-      console.error('フォロー状態確認エラー:', error);
+      console.error("フォロー状態確認エラー:", error);
     }
   };
 
   const handleFollow = async () => {
     if (!user || followLoading) return;
-    
+
     setFollowLoading(true);
     try {
       if (isFollowing) {
         // アンフォロー
         const { error } = await supabase
-          .from('follows')
+          .from("follows")
           .delete()
-          .eq('follower_id', user.id)
-          .eq('following_id', userId);
+          .eq("follower_id", user.id)
+          .eq("following_id", userId);
 
         if (error) throw error;
         setIsFollowing(false);
       } else {
         // フォロー
-        const { error } = await supabase
-          .from('follows')
-          .insert({
-            follower_id: user.id,
-            following_id: userId,
-          });
+        const { error } = await supabase.from("follows").insert({
+          follower_id: user.id,
+          following_id: userId,
+        });
 
         if (error) throw error;
         setIsFollowing(true);
       }
     } catch (error) {
-      console.error('フォロー処理エラー:', error);
-      Alert.alert('エラー', 'フォロー処理に失敗しました');
+      console.error("フォロー処理エラー:", error);
+      Alert.alert("エラー", "フォロー処理に失敗しました");
     } finally {
       setFollowLoading(false);
     }
@@ -264,29 +269,31 @@ export default function UserProfileScreen({ route, navigation }: UserProfileScre
           <View style={styles.profileHeader}>
             <Avatar.Text
               size={80}
-              label={profile?.username?.charAt(0)?.toUpperCase() || 'U'}
+              label={profile?.username?.charAt(0)?.toUpperCase() || "U"}
               style={styles.avatar}
             />
             <Text style={styles.username}>
-              {profile?.display_name || profile?.username || 'ユーザー'}
+              {profile?.display_name || profile?.username || "ユーザー"}
             </Text>
             {profile?.username && profile?.display_name && (
               <Text style={styles.usernameSmall}>@{profile.username}</Text>
             )}
-            {profile?.bio && (
-              <Text style={styles.bio}>{profile.bio}</Text>
-            )}
+            {profile?.bio && <Text style={styles.bio}>{profile.bio}</Text>}
             <View style={styles.stats}>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{profile?.followers[0]?.count || 0}</Text>
+                <Text style={styles.statNumber}>
+                  {profile?.followers[0]?.count || 0}
+                </Text>
                 <Text style={styles.statLabel}>フォロワー</Text>
               </View>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{profile?.following[0]?.count || 0}</Text>
+                <Text style={styles.statNumber}>
+                  {profile?.following[0]?.count || 0}
+                </Text>
                 <Text style={styles.statLabel}>フォロー中</Text>
               </View>
             </View>
-            
+
             {/* フォローボタン（自分以外の場合） */}
             {!isOwnProfile && (
               <View style={styles.actionButtons}>
@@ -297,7 +304,7 @@ export default function UserProfileScreen({ route, navigation }: UserProfileScre
                   disabled={followLoading}
                   style={styles.followButton}
                 >
-                  {isFollowing ? 'フォロー中' : 'フォロー'}
+                  {isFollowing ? "フォロー中" : "フォロー"}
                 </Button>
               </View>
             )}
@@ -309,9 +316,15 @@ export default function UserProfileScreen({ route, navigation }: UserProfileScre
       <Card style={styles.card}>
         <Card.Content>
           <Text style={styles.sectionTitle}>
-            {isOwnProfile ? 'マイミュージック' : `${profile?.display_name || profile?.username}の音楽`}
+            {isOwnProfile
+              ? "マイミュージック"
+              : `${profile?.display_name || profile?.username}の音楽`}
           </Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.categoryScroll}
+          >
             {categories.map((category) => (
               <Chip
                 key={category.id}
@@ -319,7 +332,7 @@ export default function UserProfileScreen({ route, navigation }: UserProfileScre
                 onPress={() => setSelectedCategoryId(category.id)}
                 style={styles.categoryChip}
                 textStyle={{
-                  color: selectedCategoryId === category.id ? '#fff' : '#666'
+                  color: selectedCategoryId === category.id ? "#fff" : "#666",
                 }}
               >
                 {category.name} ({category.track_count})
@@ -344,15 +357,16 @@ export default function UserProfileScreen({ route, navigation }: UserProfileScre
                 renderItem={renderTrackItem}
                 keyExtractor={(item) => item.id}
                 scrollEnabled={false}
-                ItemSeparatorComponent={() => <View style={styles.trackSeparator} />}
+                ItemSeparatorComponent={() => (
+                  <View style={styles.trackSeparator} />
+                )}
               />
             ) : (
               <View style={styles.emptyState}>
                 <Text style={styles.emptyStateText}>
-                  {isOwnProfile 
-                    ? 'このカテゴリにはまだ楽曲がありません'
-                    : 'このカテゴリには楽曲がありません'
-                  }
+                  {isOwnProfile
+                    ? "このカテゴリにはまだ楽曲がありません"
+                    : "このカテゴリには楽曲がありません"}
                 </Text>
               </View>
             )}
@@ -362,10 +376,7 @@ export default function UserProfileScreen({ route, navigation }: UserProfileScre
 
       {/* 音楽プレイヤー */}
       {isPlayerVisible && (
-        <MusicPlayer
-          track={currentTrack}
-          onClose={closePlayer}
-        />
+        <MusicPlayer track={currentTrack} onClose={closePlayer} />
       )}
     </ScrollView>
   );
@@ -374,31 +385,31 @@ export default function UserProfileScreen({ route, navigation }: UserProfileScre
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: "#666",
   },
   header: {
     paddingHorizontal: 8,
     paddingTop: 50,
     paddingBottom: 8,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   card: {
     margin: 16,
     marginBottom: 8,
   },
   profileHeader: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 16,
   },
   avatar: {
@@ -406,41 +417,41 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
   },
   usernameSmall: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
     marginBottom: 8,
   },
   bio: {
     fontSize: 16,
-    color: '#444',
-    textAlign: 'center',
+    color: "#444",
+    textAlign: "center",
     marginBottom: 16,
     paddingHorizontal: 20,
   },
   stats: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     gap: 32,
     marginBottom: 16,
   },
   statItem: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   statNumber: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   statLabel: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   actionButtons: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
   },
   followButton: {
@@ -448,7 +459,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   categoryScroll: {
@@ -462,21 +473,21 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   tracksLoading: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 32,
   },
   trackSeparator: {
     height: 8,
   },
   emptyState: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 40,
   },
   emptyStateText: {
     fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
   },
 });

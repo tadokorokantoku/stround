@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, FlatList, Alert } from 'react-native';
-import { 
-  Text, 
-  Button, 
-  Card, 
-  Avatar, 
-  Divider, 
+import React, { useEffect, useState } from "react";
+import { Alert, FlatList, ScrollView, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  Avatar,
+  Button,
+  Card,
   Chip,
-  ActivityIndicator 
-} from 'react-native-paper';
-import { useAuthStore } from '../../stores/authStore';
-import { supabase } from '../../lib/supabase';
-import { API_BASE_URL } from '../../constants';
-import MusicPlayer from '../../components/music/MusicPlayer';
-import TrackItem from '../../components/music/TrackItem';
-import { useMusicPlayer } from '../../hooks/useMusicPlayer';
+  Divider,
+  Text,
+} from "react-native-paper";
+import MusicPlayer from "../../components/music/MusicPlayer";
+import TrackItem from "../../components/music/TrackItem";
+import { API_BASE_URL } from "../../constants";
+import { useMusicPlayer } from "../../hooks/useMusicPlayer";
+import { supabase } from "../../lib/supabase";
+import { useAuthStore } from "../../stores/authStore";
 
 interface FollowStats {
   followingCount: number;
@@ -60,12 +60,18 @@ interface Profile {
 
 export default function ProfileScreen() {
   const { user, signOut } = useAuthStore();
-  const { currentTrack, isPlayerVisible, playTrack, closePlayer } = useMusicPlayer();
+  const { currentTrack, isPlayerVisible, playTrack, closePlayer } =
+    useMusicPlayer();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [followStats, setFollowStats] = useState<FollowStats>({ followingCount: 0, followersCount: 0 });
+  const [followStats, setFollowStats] = useState<FollowStats>({
+    followingCount: 0,
+    followersCount: 0,
+  });
   const [categories, setCategories] = useState<Category[]>([]);
   const [userTracks, setUserTracks] = useState<UserTrack[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [tracksLoading, setTracksLoading] = useState(false);
 
@@ -88,7 +94,7 @@ export default function ProfileScreen() {
       if (user) {
         const profile: Profile = {
           id: user.id,
-          username: user.user_metadata?.username || 'user',
+          username: user.user_metadata?.username || "user",
           display_name: user.user_metadata?.display_name || null,
           bio: user.user_metadata?.bio || null,
           profile_image_url: null,
@@ -96,18 +102,21 @@ export default function ProfileScreen() {
         setProfile(profile);
       }
     } catch (error) {
-      console.error('プロフィール取得エラー:', error);
-      Alert.alert('エラー', 'プロフィールの取得に失敗しました');
+      console.error("プロフィール取得エラー:", error);
+      Alert.alert("エラー", "プロフィールの取得に失敗しました");
     }
   };
 
   const fetchFollowStats = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/follows/status/${user?.id}`, {
-        headers: {
-          'Authorization': `Bearer ${user?.access_token}`,
+      const response = await fetch(
+        `${API_BASE_URL}/api/follows/status/${user?.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${user?.access_token}`,
+          },
         },
-      });
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -117,7 +126,7 @@ export default function ProfileScreen() {
         });
       }
     } catch (error) {
-      console.error('フォロー統計の取得に失敗:', error);
+      console.error("フォロー統計の取得に失敗:", error);
     } finally {
       setLoading(false);
     }
@@ -125,54 +134,55 @@ export default function ProfileScreen() {
 
   const fetchCategories = async () => {
     if (!user) return;
-    
+
     try {
       const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .order('created_at');
+        .from("categories")
+        .select("*")
+        .order("created_at");
 
       if (error) throw error;
 
       // カテゴリにtrack_countを追加（暫定実装）
-      const categoriesWithCount = data?.map(cat => ({
-        ...cat,
-        track_count: 0 // TODO: 実際の楽曲数を取得
-      })) || [];
+      const categoriesWithCount =
+        data?.map((cat) => ({
+          ...cat,
+          track_count: 0, // TODO: 実際の楽曲数を取得
+        })) || [];
 
       setCategories(categoriesWithCount);
-      
+
       // 最初のカテゴリを選択
       if (categoriesWithCount.length > 0) {
         setSelectedCategoryId(categoriesWithCount[0].id);
       }
     } catch (error) {
-      console.error('カテゴリ取得エラー:', error);
+      console.error("カテゴリ取得エラー:", error);
     }
   };
 
   const fetchUserTracks = async (categoryId: string) => {
     if (!user) return;
-    
+
     setTracksLoading(true);
     try {
       const { data, error } = await supabase
-        .from('user_tracks')
+        .from("user_tracks")
         .select(`
           *,
           categories!user_tracks_category_id_fkey(*),
           music!user_tracks_spotify_track_id_fkey(*)
         `)
-        .eq('user_id', user.id)
-        .eq('category_id', categoryId)
-        .order('created_at', { ascending: false });
+        .eq("user_id", user.id)
+        .eq("category_id", categoryId)
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
 
       setUserTracks(data || []);
     } catch (error) {
-      console.error('楽曲取得エラー:', error);
-      Alert.alert('エラー', '楽曲の取得に失敗しました');
+      console.error("楽曲取得エラー:", error);
+      Alert.alert("エラー", "楽曲の取得に失敗しました");
     } finally {
       setTracksLoading(false);
     }
@@ -204,26 +214,28 @@ export default function ProfileScreen() {
           <View style={styles.profileHeader}>
             <Avatar.Text
               size={80}
-              label={profile?.username?.charAt(0)?.toUpperCase() || 'U'}
+              label={profile?.username?.charAt(0)?.toUpperCase() || "U"}
               style={styles.avatar}
             />
             <Text style={styles.username}>
-              {profile?.display_name || profile?.username || 'ユーザー'}
+              {profile?.display_name || profile?.username || "ユーザー"}
             </Text>
             {profile?.username && profile?.display_name && (
               <Text style={styles.usernameSmall}>@{profile.username}</Text>
             )}
             <Text style={styles.email}>{user?.email}</Text>
-            {profile?.bio && (
-              <Text style={styles.bio}>{profile.bio}</Text>
-            )}
+            {profile?.bio && <Text style={styles.bio}>{profile.bio}</Text>}
             <View style={styles.stats}>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{followStats.followersCount}</Text>
+                <Text style={styles.statNumber}>
+                  {followStats.followersCount}
+                </Text>
                 <Text style={styles.statLabel}>フォロワー</Text>
               </View>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{followStats.followingCount}</Text>
+                <Text style={styles.statNumber}>
+                  {followStats.followingCount}
+                </Text>
                 <Text style={styles.statLabel}>フォロー中</Text>
               </View>
             </View>
@@ -235,7 +247,11 @@ export default function ProfileScreen() {
       <Card style={styles.card}>
         <Card.Content>
           <Text style={styles.sectionTitle}>マイミュージック</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.categoryScroll}
+          >
             {categories.map((category) => (
               <Chip
                 key={category.id}
@@ -243,7 +259,7 @@ export default function ProfileScreen() {
                 onPress={() => setSelectedCategoryId(category.id)}
                 style={styles.categoryChip}
                 textStyle={{
-                  color: selectedCategoryId === category.id ? '#fff' : '#666'
+                  color: selectedCategoryId === category.id ? "#fff" : "#666",
                 }}
               >
                 {category.name} ({category.track_count})
@@ -268,12 +284,20 @@ export default function ProfileScreen() {
                 renderItem={renderTrackItem}
                 keyExtractor={(item) => item.id}
                 scrollEnabled={false}
-                ItemSeparatorComponent={() => <View style={styles.trackSeparator} />}
+                ItemSeparatorComponent={() => (
+                  <View style={styles.trackSeparator} />
+                )}
               />
             ) : (
               <View style={styles.emptyState}>
-                <Text style={styles.emptyStateText}>この カテゴリにはまだ楽曲がありません</Text>
-                <Button mode="outlined" onPress={() => {}} style={styles.addMusicButton}>
+                <Text style={styles.emptyStateText}>
+                  この カテゴリにはまだ楽曲がありません
+                </Text>
+                <Button
+                  mode="outlined"
+                  onPress={() => {}}
+                  style={styles.addMusicButton}
+                >
                   楽曲を追加する
                 </Button>
               </View>
@@ -286,18 +310,10 @@ export default function ProfileScreen() {
       <Card style={styles.card}>
         <Card.Content>
           <Text style={styles.sectionTitle}>設定</Text>
-          <Button
-            mode="outlined"
-            onPress={() => {}}
-            style={styles.menuButton}
-          >
+          <Button mode="outlined" onPress={() => {}} style={styles.menuButton}>
             プロフィール編集
           </Button>
-          <Button
-            mode="outlined"
-            onPress={() => {}}
-            style={styles.menuButton}
-          >
+          <Button mode="outlined" onPress={() => {}} style={styles.menuButton}>
             設定
           </Button>
           <Divider style={styles.divider} />
@@ -314,10 +330,7 @@ export default function ProfileScreen() {
 
       {/* 音楽プレイヤー */}
       {isPlayerVisible && (
-        <MusicPlayer
-          track={currentTrack}
-          onClose={closePlayer}
-        />
+        <MusicPlayer track={currentTrack} onClose={closePlayer} />
       )}
     </ScrollView>
   );
@@ -326,25 +339,25 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: "#666",
   },
   card: {
     margin: 16,
     marginBottom: 8,
   },
   profileHeader: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 16,
   },
   avatar: {
@@ -352,41 +365,41 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
   },
   usernameSmall: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
     marginBottom: 8,
   },
   bio: {
     fontSize: 16,
-    color: '#444',
-    textAlign: 'center',
+    color: "#444",
+    textAlign: "center",
     marginBottom: 16,
     paddingHorizontal: 20,
   },
   stats: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     gap: 32,
   },
   statItem: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   statNumber: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#6200ee',
+    fontWeight: "bold",
+    color: "#6200ee",
   },
   statLabel: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   categoryScroll: {
@@ -400,23 +413,23 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   tracksLoading: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 32,
   },
   trackSeparator: {
     height: 8,
   },
   emptyState: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 40,
   },
   emptyStateText: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
     marginBottom: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   addMusicButton: {
     marginTop: 8,
@@ -432,7 +445,7 @@ const styles = StyleSheet.create({
   },
   email: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
     marginBottom: 8,
   },
 });

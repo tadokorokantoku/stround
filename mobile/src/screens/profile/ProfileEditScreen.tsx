@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
-import { 
-  Text, 
-  TextInput, 
-  Button, 
-  Card, 
-  Title,
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import {
   Avatar,
+  Button,
+  Card,
   IconButton,
-} from 'react-native-paper';
-import { useForm, Controller } from 'react-hook-form';
-import { useAuthStore } from '../../stores/authStore';
-import { supabase } from '../../lib/supabase';
+  Text,
+  TextInput,
+  Title,
+} from "react-native-paper";
+import { supabase } from "../../lib/supabase";
+import { useAuthStore } from "../../stores/authStore";
 
 interface ProfileFormData {
   displayName: string;
@@ -22,7 +22,9 @@ interface ProfileEditScreenProps {
   navigation: any;
 }
 
-export default function ProfileEditScreen({ navigation }: ProfileEditScreenProps) {
+export default function ProfileEditScreen({
+  navigation,
+}: ProfileEditScreenProps) {
   const [loading, setLoading] = useState(false);
   const { user } = useAuthStore();
 
@@ -32,15 +34,15 @@ export default function ProfileEditScreen({ navigation }: ProfileEditScreenProps
     formState: { errors },
   } = useForm<ProfileFormData>({
     defaultValues: {
-      displayName: user?.user_metadata?.display_name || '',
-      bio: user?.user_metadata?.bio || '',
+      displayName: user?.user_metadata?.display_name || "",
+      bio: user?.user_metadata?.bio || "",
     },
   });
 
   const onSubmit = async (data: ProfileFormData) => {
     try {
       setLoading(true);
-      
+
       const { error } = await supabase.auth.updateUser({
         data: {
           display_name: data.displayName,
@@ -50,14 +52,17 @@ export default function ProfileEditScreen({ navigation }: ProfileEditScreenProps
 
       if (error) throw error;
 
-      Alert.alert('更新完了', 'プロフィールが更新されました', [
+      Alert.alert("更新完了", "プロフィールが更新されました", [
         {
-          text: 'OK',
+          text: "OK",
           onPress: () => navigation.goBack(),
         },
       ]);
     } catch (error: any) {
-      Alert.alert('更新エラー', error.message || 'プロフィールの更新に失敗しました');
+      Alert.alert(
+        "更新エラー",
+        error.message || "プロフィールの更新に失敗しました",
+      );
     } finally {
       setLoading(false);
     }
@@ -80,7 +85,9 @@ export default function ProfileEditScreen({ navigation }: ProfileEditScreenProps
           <View style={styles.avatarSection}>
             <Avatar.Text
               size={100}
-              label={user?.user_metadata?.username?.charAt(0)?.toUpperCase() || 'U'}
+              label={
+                user?.user_metadata?.username?.charAt(0)?.toUpperCase() || "U"
+              }
               style={styles.avatar}
             />
             <Button mode="text" onPress={() => {}}>
@@ -90,11 +97,9 @@ export default function ProfileEditScreen({ navigation }: ProfileEditScreenProps
 
           <Text style={styles.label}>ユーザー名</Text>
           <Text style={styles.readOnlyText}>
-            {user?.user_metadata?.username || 'ユーザー'}
+            {user?.user_metadata?.username || "ユーザー"}
           </Text>
-          <Text style={styles.readOnlyNote}>
-            ユーザー名は変更できません
-          </Text>
+          <Text style={styles.readOnlyNote}>ユーザー名は変更できません</Text>
 
           <Text style={styles.label}>メールアドレス</Text>
           <Text style={styles.readOnlyText}>{user?.email}</Text>
@@ -108,7 +113,7 @@ export default function ProfileEditScreen({ navigation }: ProfileEditScreenProps
             rules={{
               maxLength: {
                 value: 50,
-                message: '表示名は50文字以下で入力してください',
+                message: "表示名は50文字以下で入力してください",
               },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -134,7 +139,7 @@ export default function ProfileEditScreen({ navigation }: ProfileEditScreenProps
             rules={{
               maxLength: {
                 value: 200,
-                message: '自己紹介は200文字以下で入力してください',
+                message: "自己紹介は200文字以下で入力してください",
               },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -174,20 +179,20 @@ export default function ProfileEditScreen({ navigation }: ProfileEditScreenProps
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 8,
     paddingTop: 50,
     paddingBottom: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   placeholder: {
     width: 40,
@@ -196,7 +201,7 @@ const styles = StyleSheet.create({
     margin: 16,
   },
   avatarSection: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 24,
   },
   avatar: {
@@ -204,28 +209,28 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 16,
     marginBottom: 8,
   },
   readOnlyText: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
     paddingVertical: 12,
     paddingHorizontal: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     borderRadius: 4,
   },
   readOnlyNote: {
     fontSize: 12,
-    color: '#999',
+    color: "#999",
     marginBottom: 8,
   },
   input: {
     marginBottom: 8,
   },
   errorText: {
-    color: '#B00020',
+    color: "#B00020",
     fontSize: 12,
     marginBottom: 16,
   },

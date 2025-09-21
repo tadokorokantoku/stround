@@ -7,28 +7,29 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
-      "node_modules/**",
-      "dist/**",
-      "build/**",
-      "coverage/**",
-      ".expo/**",
-      ".next/**",
-      "android/**",
-      "ios/**",
-      "web-build/**",
-      ".git/**",
-      "assets/**",
-      "*.svg",
-      "*.png",
-      "*.jpg",
-      "*.jpeg",
-      "*.gif",
-      "*.ico",
-      "*.woff",
-      "*.woff2",
-      "*.ttf",
-      "*.eot"
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/coverage",
+      "!**/.expo",
+      "!**/.next",
+      "!**/android",
+      "!**/ios",
+      "!**/web-build",
+      "!**/.git",
+      "!**/assets",
+      "!**/*.svg",
+      "!**/*.png",
+      "!**/*.jpg",
+      "!**/*.jpeg",
+      "!**/*.gif",
+      "!**/*.ico",
+      "!**/*.woff",
+      "!**/*.woff2",
+      "!**/*.ttf",
+      "!**/*.eot"
     ]
   },
   "linter": {
@@ -44,7 +45,11 @@
     "lineEnding": "lf",
     "lineWidth": 80
   },
-  "organizeImports": {
-    "enabled": true
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   }
 }

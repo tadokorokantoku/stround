@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from './useAuth';
-import { supabase } from '../lib/supabase';
-import { apiService } from '../services/api';
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
+import { apiService } from "../services/api";
+import { useAuth } from "./useAuth";
 
 interface Notification {
   id: string;
@@ -32,7 +32,7 @@ export const useNotifications = () => {
         setNotifications(response);
       }
     } catch (error) {
-      console.error('通知取得エラー:', error);
+      console.error("通知取得エラー:", error);
     } finally {
       setLoading(false);
     }
@@ -42,11 +42,11 @@ export const useNotifications = () => {
     if (!session?.access_token) return;
     try {
       const response = await apiService.getUnreadNotificationCount();
-      if (response && typeof response.count === 'number') {
+      if (response && typeof response.count === "number") {
         setUnreadCount(response.count);
       }
     } catch (error) {
-      console.error('未読数取得エラー:', error);
+      console.error("未読数取得エラー:", error);
     }
   };
 
@@ -54,16 +54,16 @@ export const useNotifications = () => {
     if (!session?.access_token) return;
     try {
       await apiService.markNotificationAsRead(notificationId);
-      setNotifications(prevNotifications =>
-        prevNotifications.map(notification =>
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notification) =>
           notification.id === notificationId
             ? { ...notification, is_read: true }
-            : notification
-        )
+            : notification,
+        ),
       );
       await fetchUnreadCount();
     } catch (error) {
-      console.error('既読処理エラー:', error);
+      console.error("既読処理エラー:", error);
     }
   };
 
@@ -71,15 +71,15 @@ export const useNotifications = () => {
     if (!session?.access_token) return;
     try {
       await apiService.markAllNotificationsAsRead();
-      setNotifications(prevNotifications =>
-        prevNotifications.map(notification => ({
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notification) => ({
           ...notification,
-          is_read: true
-        }))
+          is_read: true,
+        })),
       );
       setUnreadCount(0);
     } catch (error) {
-      console.error('全既読処理エラー:', error);
+      console.error("全既読処理エラー:", error);
     }
   };
 
@@ -90,42 +90,42 @@ export const useNotifications = () => {
     const channel = supabase
       .channel(`notifications:${user.id}`)
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'notifications',
+          event: "INSERT",
+          schema: "public",
+          table: "notifications",
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          console.log('新しい通知:', payload.new);
+          console.log("新しい通知:", payload.new);
           const newNotification = payload.new as Notification;
-          setNotifications(prev => [newNotification, ...prev]);
-          setUnreadCount(prev => prev + 1);
-        }
+          setNotifications((prev) => [newNotification, ...prev]);
+          setUnreadCount((prev) => prev + 1);
+        },
       )
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'notifications',
+          event: "UPDATE",
+          schema: "public",
+          table: "notifications",
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          console.log('通知更新:', payload.new);
+          console.log("通知更新:", payload.new);
           const updatedNotification = payload.new as Notification;
-          setNotifications(prev =>
-            prev.map(notification =>
+          setNotifications((prev) =>
+            prev.map((notification) =>
               notification.id === updatedNotification.id
                 ? updatedNotification
-                : notification
-            )
+                : notification,
+            ),
           );
-        }
+        },
       )
       .subscribe((status) => {
-        console.log('通知チャンネル状態:', status);
+        console.log("通知チャンネル状態:", status);
       });
 
     fetchNotifications();

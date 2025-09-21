@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { 
-  Text, 
-  TextInput, 
-  Button, 
-  Card, 
-  Title,
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Alert, StyleSheet, View } from "react-native";
+import {
+  Button,
+  Card,
   Paragraph,
-} from 'react-native-paper';
-import { useForm, Controller } from 'react-hook-form';
-import { useAuthStore } from '../../stores/authStore';
+  Text,
+  TextInput,
+  Title,
+} from "react-native-paper";
+import { useAuthStore } from "../../stores/authStore";
 
 interface LoginFormData {
   email: string;
@@ -30,8 +30,8 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
     formState: { errors },
   } = useForm<LoginFormData>({
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
@@ -41,7 +41,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
       await signIn(data.email, data.password);
       // Navigation will be handled by auth state change
     } catch (error: any) {
-      Alert.alert('ログインエラー', error.message || 'ログインに失敗しました');
+      Alert.alert("ログインエラー", error.message || "ログインに失敗しました");
     } finally {
       setLoading(false);
     }
@@ -58,10 +58,10 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
             control={control}
             name="email"
             rules={{
-              required: 'メールアドレスを入力してください',
+              required: "メールアドレスを入力してください",
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: '有効なメールアドレスを入力してください',
+                message: "有効なメールアドレスを入力してください",
               },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -86,10 +86,10 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
             control={control}
             name="password"
             rules={{
-              required: 'パスワードを入力してください',
+              required: "パスワードを入力してください",
               minLength: {
                 value: 6,
-                message: 'パスワードは6文字以上で入力してください',
+                message: "パスワードは6文字以上で入力してください",
               },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -121,7 +121,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 
           <Button
             mode="text"
-            onPress={() => navigation.navigate('Register')}
+            onPress={() => navigation.navigate("Register")}
             style={styles.textButton}
           >
             アカウントをお持ちでない方はこちら
@@ -135,29 +135,29 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   card: {
     padding: 16,
   },
   title: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 8,
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   subtitle: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 32,
-    color: '#666',
+    color: "#666",
   },
   input: {
     marginBottom: 8,
   },
   errorText: {
-    color: '#B00020',
+    color: "#B00020",
     fontSize: 12,
     marginBottom: 16,
   },

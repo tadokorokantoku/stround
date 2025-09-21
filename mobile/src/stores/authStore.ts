@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
+import type { Session, User } from "@supabase/supabase-js";
+import { create } from "zustand";
+import { supabase } from "../lib/supabase";
 
 interface AuthState {
   user: User | null;
@@ -15,7 +15,7 @@ interface AuthState {
   initialize: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set, _get) => ({
   user: null,
   session: null,
   loading: true,
@@ -57,8 +57,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   initialize: async () => {
     try {
       // Get initial session
-      const { data: { session } } = await supabase.auth.getSession();
-      
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       set({
         user: session?.user ?? null,
         session,
@@ -74,7 +76,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         });
       });
     } catch (error) {
-      console.error('Error initializing auth:', error);
+      console.error("Error initializing auth:", error);
       set({ loading: false });
     }
   },

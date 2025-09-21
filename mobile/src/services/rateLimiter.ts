@@ -20,11 +20,17 @@ export class RateLimiter {
   };
 
   private endpointConfigs: Map<string, RateLimitConfig> = new Map([
-    ['/timeline', { maxRequests: 30, windowMs: 60 * 1000, retryAfter: 2000 }],
-    ['/notifications', { maxRequests: 20, windowMs: 60 * 1000, retryAfter: 3000 }],
-    ['/likes', { maxRequests: 50, windowMs: 60 * 1000, retryAfter: 1000 }],
-    ['/comments', { maxRequests: 20, windowMs: 60 * 1000, retryAfter: 2000 }],
-    ['/music/search', { maxRequests: 15, windowMs: 60 * 1000, retryAfter: 4000 }],
+    ["/timeline", { maxRequests: 30, windowMs: 60 * 1000, retryAfter: 2000 }],
+    [
+      "/notifications",
+      { maxRequests: 20, windowMs: 60 * 1000, retryAfter: 3000 },
+    ],
+    ["/likes", { maxRequests: 50, windowMs: 60 * 1000, retryAfter: 1000 }],
+    ["/comments", { maxRequests: 20, windowMs: 60 * 1000, retryAfter: 2000 }],
+    [
+      "/music/search",
+      { maxRequests: 15, windowMs: 60 * 1000, retryAfter: 4000 },
+    ],
   ]);
 
   static getInstance(): RateLimiter {
@@ -34,7 +40,9 @@ export class RateLimiter {
     return RateLimiter.instance;
   }
 
-  async checkRateLimit(endpoint: string): Promise<{ allowed: boolean; retryAfter?: number }> {
+  async checkRateLimit(
+    endpoint: string,
+  ): Promise<{ allowed: boolean; retryAfter?: number }> {
     const config = this.getConfigForEndpoint(endpoint);
     const now = Date.now();
     const key = this.getKey(endpoint);
@@ -68,13 +76,13 @@ export class RateLimiter {
     // /timeline/user/123 -> /timeline/user
     // /comments/456 -> /comments
     // /music/search?q=test -> /music/search
-    
-    let normalized = endpoint.split('?')[0]; // クエリパラメータを除去
-    
+
+    let normalized = endpoint.split("?")[0]; // クエリパラメータを除去
+
     // UUIDやIDらしきパスセグメントを除去
-    normalized = normalized.replace(/\/[a-f0-9-]{36}$/i, ''); // UUID
-    normalized = normalized.replace(/\/\d+$/, ''); // 数字のID
-    
+    normalized = normalized.replace(/\/[a-f0-9-]{36}$/i, ""); // UUID
+    normalized = normalized.replace(/\/\d+$/, ""); // 数字のID
+
     return normalized;
   }
 
@@ -88,8 +96,8 @@ export class RateLimiter {
     if (!requests) return;
 
     const cutoff = now - windowMs;
-    const validRequests = requests.filter(req => req.timestamp > cutoff);
-    
+    const validRequests = requests.filter((req) => req.timestamp > cutoff);
+
     if (validRequests.length === 0) {
       this.requestHistory.delete(key);
     } else {
@@ -97,12 +105,16 @@ export class RateLimiter {
     }
   }
 
-  private recordRequest(key: string, endpoint: string, timestamp: number): void {
+  private recordRequest(
+    key: string,
+    endpoint: string,
+    timestamp: number,
+  ): void {
     const requests = this.requestHistory.get(key) || [];
-    
+
     // 同じタイムスタンプのリクエストがあれば count を増やす
-    const existingRequest = requests.find(req => 
-      Math.abs(req.timestamp - timestamp) < 1000 // 1秒以内
+    const existingRequest = requests.find(
+      (req) => Math.abs(req.timestamp - timestamp) < 1000, // 1秒以内
     );
 
     if (existingRequest) {
@@ -119,13 +131,17 @@ export class RateLimiter {
   }
 
   // 統計情報を取得
-  getStats(): { [endpoint: string]: { requests: number; lastRequest: number } } {
-    const stats: { [endpoint: string]: { requests: number; lastRequest: number } } = {};
-    
+  getStats(): {
+    [endpoint: string]: { requests: number; lastRequest: number };
+  } {
+    const stats: {
+      [endpoint: string]: { requests: number; lastRequest: number };
+    } = {};
+
     this.requestHistory.forEach((requests, key) => {
       const totalRequests = requests.reduce((sum, req) => sum + req.count, 0);
-      const lastRequest = Math.max(...requests.map(req => req.timestamp));
-      
+      const lastRequest = Math.max(...requests.map((req) => req.timestamp));
+
       stats[key] = {
         requests: totalRequests,
         lastRequest,
@@ -166,7 +182,7 @@ export class RetryManager {
       maxDelay?: number;
       exponentialBackoff?: boolean;
       shouldRetry?: (error: any) => boolean;
-    } = {}
+    } = {},
   ): Promise<T> {
     const {
       maxAttempts = 3,
@@ -188,7 +204,12 @@ export class RetryManager {
           throw error;
         }
 
-        const delay = this.calculateDelay(attempt, baseDelay, maxDelay, exponentialBackoff);
+        const delay = this.calculateDelay(
+          attempt,
+          baseDelay,
+          maxDelay,
+          exponentialBackoff,
+        );
         await this.sleep(delay);
       }
     }
@@ -199,16 +220,18 @@ export class RetryManager {
   private defaultShouldRetry(error: any): boolean {
     // ネットワークエラー、サーバーエラー、レート制限エラーはリトライ
     if (error?.status) {
-      return error.status >= 500 || error.status === 429 || error.status === 408;
+      return (
+        error.status >= 500 || error.status === 429 || error.status === 408
+      );
     }
 
     // ネットワーク関連のエラーメッセージ
-    const errorMessage = error?.message?.toLowerCase() || '';
+    const errorMessage = error?.message?.toLowerCase() || "";
     return (
-      errorMessage.includes('network') ||
-      errorMessage.includes('timeout') ||
-      errorMessage.includes('connection') ||
-      errorMessage.includes('fetch')
+      errorMessage.includes("network") ||
+      errorMessage.includes("timeout") ||
+      errorMessage.includes("connection") ||
+      errorMessage.includes("fetch")
     );
   }
 
@@ -216,21 +239,21 @@ export class RetryManager {
     attempt: number,
     baseDelay: number,
     maxDelay: number,
-    exponentialBackoff: boolean
+    exponentialBackoff: boolean,
   ): number {
     if (!exponentialBackoff) {
       return Math.min(baseDelay, maxDelay);
     }
 
     // 指数バックオフ + ジッター
-    const exponentialDelay = baseDelay * Math.pow(2, attempt - 1);
+    const exponentialDelay = baseDelay * 2 ** (attempt - 1);
     const jitter = Math.random() * 0.1 * exponentialDelay; // 10%のジッター
-    
+
     return Math.min(exponentialDelay + jitter, maxDelay);
   }
 
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   // リトライ統計

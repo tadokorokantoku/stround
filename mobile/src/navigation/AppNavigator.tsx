@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { useAuthStore } from '../stores/authStore';
-import AuthNavigator from './AuthNavigator';
-import MainNavigator from './MainNavigator';
-import TrackDetailScreen from '../screens/track/TrackDetailScreen';
-import { UserTrack } from '../types';
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import React, { useEffect } from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import TrackDetailScreen from "../screens/track/TrackDetailScreen";
+import { useAuthStore } from "../stores/authStore";
+import type { UserTrack } from "../types";
+import AuthNavigator from "./AuthNavigator";
+import MainNavigator from "./MainNavigator";
 
 export type RootStackParamList = {
   Main: undefined;
@@ -34,16 +34,16 @@ export default function AppNavigator() {
     <NavigationContainer>
       {user ? (
         <Stack.Navigator initialRouteName="Main">
-          <Stack.Screen 
-            name="Main" 
-            component={MainNavigator} 
+          <Stack.Screen
+            name="Main"
+            component={MainNavigator}
             options={{ headerShown: false }}
           />
-          <Stack.Screen 
-            name="TrackDetail" 
+          <Stack.Screen
+            name="TrackDetail"
             component={TrackDetailScreen}
             options={{
-              title: '楽曲詳細',
+              title: "楽曲詳細",
               headerBackTitleVisible: false,
             }}
           />
@@ -58,8 +58,8 @@ export default function AppNavigator() {
 const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
 });

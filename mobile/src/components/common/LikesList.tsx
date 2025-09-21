@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet, Alert } from 'react-native';
-import { Text, Avatar, Surface, ActivityIndicator } from 'react-native-paper';
-import { useAuthStore } from '../../stores/authStore';
-import { API_BASE_URL } from '../../constants';
+import React, { useEffect, useState } from "react";
+import { Alert, FlatList, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Avatar, Surface, Text } from "react-native-paper";
+import { API_BASE_URL } from "../../constants";
+import { useAuthStore } from "../../stores/authStore";
 
 interface Like {
   id: string;
@@ -28,7 +28,6 @@ export default function LikesList({ postId, onUserPress }: LikesListProps) {
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-
   useEffect(() => {
     fetchLikes(1);
   }, [postId]);
@@ -48,30 +47,33 @@ export default function LikesList({ postId, onUserPress }: LikesListProps) {
         `${API_BASE_URL}/api/likes/post/${postId}?page=${pageNumber}&limit=20`,
         {
           headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+            "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.ok) {
         const data = await response.json();
-        
+
         if (isFirstPage) {
           setLikes(data.likes || []);
         } else {
-          setLikes(prev => [...prev, ...(data.likes || [])]);
+          setLikes((prev) => [...prev, ...(data.likes || [])]);
         }
-        
+
         setHasMore(data.likes?.length === 20);
         setPage(pageNumber);
       } else {
         const errorData = await response.json();
-        Alert.alert('エラー', errorData.error || 'いいね一覧の取得に失敗しました');
+        Alert.alert(
+          "エラー",
+          errorData.error || "いいね一覧の取得に失敗しました",
+        );
       }
     } catch (error) {
-      console.error('Error fetching likes:', error);
-      Alert.alert('エラー', 'ネットワークエラーが発生しました');
+      console.error("Error fetching likes:", error);
+      Alert.alert("エラー", "ネットワークエラーが発生しました");
     } finally {
       setIsLoading(false);
       setIsLoadingMore(false);
@@ -149,18 +151,18 @@ export default function LikesList({ postId, onUserPress }: LikesListProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: "#e0e0e0",
   },
   likeItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 12,
     marginHorizontal: 8,
     marginVertical: 4,
@@ -174,37 +176,37 @@ const styles = StyleSheet.create({
   },
   displayName: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 2,
   },
   username: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 32,
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: "#666",
   },
   loadingMore: {
     padding: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 32,
   },
   emptyText: {
     fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
   },
 });

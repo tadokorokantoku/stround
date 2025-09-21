@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
+import type { Session, User } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
 
 export interface AuthState {
   user: User | null;

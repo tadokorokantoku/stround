@@ -1,12 +1,22 @@
-import React, { useState, memo } from 'react';
-import { View, StyleSheet, Image, Pressable, Alert, TouchableOpacity } from 'react-native';
-import { Text, Card, IconButton, Menu, Divider } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { formatDistanceToNow } from 'date-fns';
-import { ja } from 'date-fns/locale';
-import { useLikeUserTrack, useUnlikeUserTrack } from '../../hooks/useOptimizedApi';
-import { RootStackParamList } from '../../navigation/AppNavigator';
+import { useNavigation } from "@react-navigation/native";
+import type { StackNavigationProp } from "@react-navigation/stack";
+import { formatDistanceToNow } from "date-fns";
+import { ja } from "date-fns/locale";
+import React, { memo, useState } from "react";
+import {
+  Alert,
+  Image,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Card, Divider, IconButton, Menu, Text } from "react-native-paper";
+import {
+  useLikeUserTrack,
+  useUnlikeUserTrack,
+} from "../../hooks/useOptimizedApi";
+import type { RootStackParamList } from "../../navigation/AppNavigator";
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -44,103 +54,112 @@ interface TimelinePostProps {
   onCommentPress?: () => void;
 }
 
-const TimelinePost = memo(function TimelinePost({ 
-  post, 
-  currentUserId, 
-  onLikePress, 
-  onCommentPress 
+const TimelinePost = memo(function TimelinePost({
+  post,
+  currentUserId,
+  onLikePress,
+  onCommentPress,
 }: TimelinePostProps) {
+  // エラー回避のための早期リターン
+  if (!post || !post.id || !post.profiles || !post.categories) {
+    console.warn("TimelinePost: Invalid post data received");
+    return null;
+  }
   const navigation = useNavigation<NavigationProp>();
   const [isLiked, setIsLiked] = useState(post.is_liked_by_user);
   const [likesCount, setLikesCount] = useState(post.likes_count);
   const [menuVisible, setMenuVisible] = useState(false);
-  
+
   const likeMutation = useLikeUserTrack();
   const unlikeMutation = useUnlikeUserTrack();
 
   const handleLikePress = async () => {
     if (likeMutation.isPending || unlikeMutation.isPending) return;
-    
+
     const previousLiked = isLiked;
     const previousCount = likesCount;
-    
+
     // Optimistic update
     setIsLiked(!isLiked);
     setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
-    
+
     try {
       if (isLiked) {
         await unlikeMutation.mutateAsync(post.id);
       } else {
         await likeMutation.mutateAsync(post.id);
       }
-      
+
       onLikePress?.();
     } catch (error) {
       // Revert on error
       setIsLiked(previousLiked);
       setLikesCount(previousCount);
-      
-      console.error('Failed to toggle like:', error);
-      Alert.alert('エラー', 'いいねの操作に失敗しました');
+
+      console.error("Failed to toggle like:", error);
+      Alert.alert("エラー", "いいねの操作に失敗しました");
     }
   };
 
   const handlePlayPreview = () => {
     if (post.music?.preview_url) {
       // TODO: Implement audio preview
-      Alert.alert('プレビュー', '音楽プレビュー機能は実装予定です');
+      Alert.alert("プレビュー", "音楽プレビュー機能は実装予定です");
     } else {
-      Alert.alert('プレビューなし', 'この楽曲にはプレビューがありません');
+      Alert.alert("プレビューなし", "この楽曲にはプレビューがありません");
     }
   };
 
   const handleOpenSpotify = () => {
     if (post.music?.external_url) {
       // TODO: Open Spotify link
-      Alert.alert('Spotify', 'Spotifyで開く機能は実装予定です');
+      Alert.alert("Spotify", "Spotifyで開く機能は実装予定です");
     }
   };
 
   const handleTrackPress = () => {
-    if (post.music) {
-      // Convert post to UserTrack format for navigation
-      const userTrack = {
-        id: post.id,
-        userId: post.profiles.id,
-        categoryId: post.categories.id,
-        spotifyTrackId: post.music.id,
-        comment: post.comment,
-        createdAt: post.created_at,
-        user: {
-          id: post.profiles.id,
-          username: post.profiles.username,
-          displayName: post.profiles.display_name,
-          bio: null,
-          profileImageUrl: post.profiles.avatar_url,
-          createdAt: '',
-          updatedAt: '',
-        },
-        category: {
-          id: post.categories.id,
-          name: post.categories.name,
-          description: post.categories.description,
-          isDefault: true,
-          createdAt: '',
-        },
-        track: {
-          spotifyId: post.music.id,
-          title: post.music.title,
-          artist: post.music.artist,
-          album: post.music.album,
-          imageUrl: post.music.image_url,
-          previewUrl: post.music.preview_url,
-          externalUrl: post.music.external_url,
-          createdAt: '',
-        }
-      };
-      
-      navigation.navigate('TrackDetail', { userTrack });
+    if (post.music && post.music.id) {
+      try {
+        // Convert post to UserTrack format for navigation
+        const userTrack = {
+          id: post.id,
+          userId: post.profiles?.id || "",
+          categoryId: post.categories?.id || "",
+          spotifyTrackId: post.music?.id || "",
+          comment: post.comment,
+          createdAt: post.created_at,
+          user: {
+            id: post.profiles?.id || "",
+            username: post.profiles?.username || "",
+            displayName: post.profiles?.display_name || "",
+            bio: null,
+            profileImageUrl: post.profiles?.avatar_url || null,
+            createdAt: "",
+            updatedAt: "",
+          },
+          category: {
+            id: post.categories?.id || "",
+            name: post.categories?.name || "",
+            description: post.categories?.description || null,
+            isDefault: true,
+            createdAt: "",
+          },
+          track: {
+            spotifyId: post.music?.id || "",
+            title: post.music?.title || "",
+            artist: post.music?.artist || "",
+            album: post.music?.album || "",
+            imageUrl: post.music?.image_url || null,
+            previewUrl: post.music?.preview_url || null,
+            externalUrl: post.music?.external_url || "",
+            createdAt: "",
+          },
+        };
+
+        navigation.navigate("TrackDetail", { userTrack });
+      } catch (error) {
+        console.error("Error navigating to track detail:", error);
+      }
     }
   };
 
@@ -149,108 +168,130 @@ const TimelinePost = memo(function TimelinePost({
     locale: ja,
   });
 
-  return (
-    <Card style={styles.card}>
-      <View style={styles.header}>
-        <View style={styles.userInfo}>
-          {post.profiles.avatar_url ? (
-            <Image source={{ uri: post.profiles.avatar_url }} style={styles.avatar} />
-          ) : (
-            <View style={[styles.avatar, styles.placeholderAvatar]}>
-              <Text style={styles.placeholderText}>
-                {(post.profiles.display_name || post.profiles.username).charAt(0).toUpperCase()}
-              </Text>
-            </View>
-          )}
-          <View style={styles.userDetails}>
-            <Text style={styles.displayName}>
-              {post.profiles.display_name || post.profiles.username}
-            </Text>
-            <Text style={styles.username}>@{post.profiles.username}</Text>
-            <Text style={styles.timestamp}>{relativeTime}</Text>
-          </View>
-        </View>
-        
-        <Menu
-          visible={menuVisible}
-          onDismiss={() => setMenuVisible(false)}
-          anchor={
-            <IconButton
-              icon="dots-vertical"
-              onPress={() => setMenuVisible(true)}
-            />
-          }
-        >
-          <Menu.Item onPress={handleOpenSpotify} title="Spotifyで開く" />
-          {post.music?.preview_url && (
-            <Menu.Item onPress={handlePlayPreview} title="プレビュー再生" />
-          )}
-        </Menu>
-      </View>
-
-      <View style={styles.categoryBadge}>
-        <Text style={styles.categoryText}>{post.categories.name}</Text>
-      </View>
-
-      {post.music && (
-        <TouchableOpacity style={styles.musicInfo} onPress={handleTrackPress}>
-          {post.music.image_url && (
-            <Image source={{ uri: post.music.image_url }} style={styles.albumArt} />
-          )}
-          <View style={styles.musicDetails}>
-            <Text style={styles.trackTitle} numberOfLines={2}>
-              {post.music.title}
-            </Text>
-            <Text style={styles.artist} numberOfLines={1}>
-              {post.music.artist}
-            </Text>
-            {post.music.album && (
-              <Text style={styles.album} numberOfLines={1}>
-                {post.music.album}
-              </Text>
+  try {
+    return (
+      <Card style={styles.card}>
+        <View style={styles.header}>
+          <View style={styles.userInfo}>
+            {post.profiles?.avatar_url ? (
+              <Image
+                source={{ uri: post.profiles.avatar_url }}
+                style={styles.avatar}
+              />
+            ) : (
+              <View style={[styles.avatar, styles.placeholderAvatar]}>
+                <Text style={styles.placeholderText}>
+                  {(
+                    post.profiles?.display_name ||
+                    post.profiles?.username ||
+                    "U"
+                  )
+                    .charAt(0)
+                    .toUpperCase()}
+                </Text>
+              </View>
             )}
+            <View style={styles.userDetails}>
+              <Text style={styles.displayName}>
+                {post.profiles?.display_name ||
+                  post.profiles?.username ||
+                  "Unknown User"}
+              </Text>
+              <Text style={styles.username}>
+                @{post.profiles?.username || "unknown"}
+              </Text>
+              <Text style={styles.timestamp}>{relativeTime}</Text>
+            </View>
           </View>
-        </TouchableOpacity>
-      )}
 
-      {post.comment && (
-        <View style={styles.commentSection}>
-          <Text style={styles.comment}>{post.comment}</Text>
+          <Menu
+            visible={menuVisible}
+            onDismiss={() => setMenuVisible(false)}
+            anchor={
+              <IconButton
+                icon="dots-vertical"
+                onPress={() => setMenuVisible(true)}
+              />
+            }
+          >
+            <Menu.Item onPress={handleOpenSpotify} title="Spotifyで開く" />
+            {post.music?.preview_url && (
+              <Menu.Item onPress={handlePlayPreview} title="プレビュー再生" />
+            )}
+          </Menu>
         </View>
-      )}
 
-      <Divider />
-      
-      <View style={styles.actions}>
-        <Pressable 
-          style={styles.actionButton}
-          onPress={handleLikePress}
-          disabled={likeMutation.isPending || unlikeMutation.isPending}
-        >
-          <IconButton
-            icon={isLiked ? 'heart' : 'heart-outline'}
-            iconColor={isLiked ? '#e91e63' : '#666'}
-            size={20}
-          />
-          <Text style={[styles.actionText, isLiked && { color: '#e91e63' }]}>
-            {likesCount}
+        <View style={styles.categoryBadge}>
+          <Text style={styles.categoryText}>
+            {post.categories?.name || "カテゴリなし"}
           </Text>
-        </Pressable>
+        </View>
 
-        <Pressable 
-          style={styles.actionButton}
-          onPress={onCommentPress}
-        >
-          <IconButton
-            icon="comment-outline"
-            iconColor="#666"
-            size={20}
-          />
-          <Text style={styles.actionText}>{post.comments_count}</Text>
-        </Pressable>
-      </View>
-    </Card>
-  );
+        {post.music && (
+          <TouchableOpacity style={styles.musicInfo} onPress={handleTrackPress}>
+            {post.music?.image_url && (
+              <Image
+                source={{ uri: post.music.image_url }}
+                style={styles.albumArt}
+              />
+            )}
+            <View style={styles.musicDetails}>
+              <Text style={styles.trackTitle} numberOfLines={2}>
+                {post.music?.title || "No Title"}
+              </Text>
+              <Text style={styles.artist} numberOfLines={1}>
+                {post.music?.artist || "Unknown Artist"}
+              </Text>
+              {post.music?.album && (
+                <Text style={styles.album} numberOfLines={1}>
+                  {post.music.album}
+                </Text>
+              )}
+            </View>
+          </TouchableOpacity>
+        )}
+
+        {post.comment && (
+          <View style={styles.commentSection}>
+            <Text style={styles.comment}>{post.comment}</Text>
+          </View>
+        )}
+
+        <Divider />
+
+        <View style={styles.actions}>
+          <Pressable
+            style={styles.actionButton}
+            onPress={handleLikePress}
+            disabled={likeMutation.isPending || unlikeMutation.isPending}
+          >
+            <IconButton
+              icon={isLiked ? "heart" : "heart-outline"}
+              iconColor={isLiked ? "#e91e63" : "#666"}
+              size={20}
+            />
+            <Text style={[styles.actionText, isLiked && { color: "#e91e63" }]}>
+              {likesCount}
+            </Text>
+          </Pressable>
+
+          <Pressable style={styles.actionButton} onPress={onCommentPress}>
+            <IconButton icon="comment-outline" iconColor="#666" size={20} />
+            <Text style={styles.actionText}>{post.comments_count}</Text>
+          </Pressable>
+        </View>
+      </Card>
+    );
+  } catch (error) {
+    console.error("Error rendering TimelinePost:", error, "Post data:", post);
+    return (
+      <Card style={styles.card}>
+        <View style={styles.header}>
+          <Text style={styles.displayName}>投稿の表示エラー</Text>
+        </View>
+      </Card>
+    );
+  }
 });
 
 export default TimelinePost;
@@ -261,14 +302,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     padding: 16,
     paddingBottom: 8,
   },
   userInfo: {
-    flexDirection: 'row',
+    flexDirection: "row",
     flex: 1,
   },
   avatar: {
@@ -278,36 +319,36 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   placeholderAvatar: {
-    backgroundColor: '#e0e0e0',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#e0e0e0",
+    justifyContent: "center",
+    alignItems: "center",
   },
   placeholderText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#666',
+    fontWeight: "bold",
+    color: "#666",
   },
   userDetails: {
     flex: 1,
   },
   displayName: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: "bold",
+    color: "#000",
   },
   username: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginTop: 2,
   },
   timestamp: {
     fontSize: 12,
-    color: '#999',
+    color: "#999",
     marginTop: 4,
   },
   categoryBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#e3f2fd',
+    alignSelf: "flex-start",
+    backgroundColor: "#e3f2fd",
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
@@ -316,11 +357,11 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 12,
-    color: '#1976d2',
-    fontWeight: '500',
+    color: "#1976d2",
+    fontWeight: "500",
   },
   musicInfo: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 16,
     paddingTop: 0,
   },
@@ -332,22 +373,22 @@ const styles = StyleSheet.create({
   },
   musicDetails: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   trackTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: "bold",
+    color: "#000",
     marginBottom: 4,
   },
   artist: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginBottom: 2,
   },
   album: {
     fontSize: 12,
-    color: '#999',
+    color: "#999",
   },
   commentSection: {
     padding: 16,
@@ -355,22 +396,22 @@ const styles = StyleSheet.create({
   },
   comment: {
     fontSize: 14,
-    color: '#333',
+    color: "#333",
     lineHeight: 20,
   },
   actions: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
   actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 24,
   },
   actionText: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginLeft: 4,
   },
 });

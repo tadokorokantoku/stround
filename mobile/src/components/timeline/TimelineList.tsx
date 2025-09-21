@@ -1,13 +1,13 @@
-import React, { useCallback, memo } from 'react';
-import { 
-  FlatList, 
-  RefreshControl, 
-  View, 
-  StyleSheet,
+import React, { memo, useCallback } from "react";
+import {
   ActivityIndicator,
-} from 'react-native';
-import { Text } from 'react-native-paper';
-import TimelinePost from './TimelinePost';
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from "react-native";
+import { Text } from "react-native-paper";
+import TimelinePost from "./TimelinePost";
 
 interface TimelineListProps {
   posts: any[];
@@ -31,23 +31,44 @@ const TimelineList = memo(function TimelineList({
   onPostUpdate,
 }: TimelineListProps) {
   const renderPost = useCallback(
-    ({ item }: { item: any }) => (
-      <TimelinePost
-        post={item}
-        currentUserId={currentUserId}
-        onLikePress={onPostUpdate}
-        onCommentPress={() => {
-          // TODO: Navigate to comments screen
-          console.log('Navigate to comments for post:', item.id);
-        }}
-      />
-    ),
-    [currentUserId, onPostUpdate]
+    ({ item }: { item: any }) => {
+      // postの妥当性をチェック
+      if (!item || !item.id || !item.profiles || !item.categories) {
+        console.warn("Invalid post data:", item);
+        return null;
+      }
+
+      // musicオブジェクトがnullでない場合、必要なプロパティの存在を確認
+      if (item.music !== null && item.music !== undefined) {
+        if (typeof item.music !== "object") {
+          console.warn("Invalid music data type:", typeof item.music, item);
+          return null;
+        }
+      }
+
+      try {
+        return (
+          <TimelinePost
+            post={item}
+            currentUserId={currentUserId}
+            onLikePress={onPostUpdate}
+            onCommentPress={() => {
+              // TODO: Navigate to comments screen
+              console.log("Navigate to comments for post:", item.id);
+            }}
+          />
+        );
+      } catch (error) {
+        console.error("Error rendering TimelinePost in list:", error);
+        return null;
+      }
+    },
+    [currentUserId, onPostUpdate],
   );
 
   const renderFooter = useCallback(() => {
     if (!hasMore) return null;
-    
+
     return (
       <View style={styles.footer}>
         <ActivityIndicator size="small" color="#1976d2" />
@@ -89,7 +110,7 @@ const TimelineList = memo(function TimelineList({
       offset: 200 * index,
       index,
     }),
-    []
+    [],
   );
 
   return (
@@ -102,7 +123,7 @@ const TimelineList = memo(function TimelineList({
         <RefreshControl
           refreshing={refreshing}
           onRefresh={onRefresh}
-          colors={['#1976d2']}
+          colors={["#1976d2"]}
         />
       }
       onEndReached={handleEndReached}
@@ -125,29 +146,29 @@ export default TimelineList;
 const styles = StyleSheet.create({
   list: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   footer: {
     paddingVertical: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 32,
     paddingVertical: 64,
   },
   emptyTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 8,
   },
   emptyText: {
     fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
     lineHeight: 20,
   },
 });

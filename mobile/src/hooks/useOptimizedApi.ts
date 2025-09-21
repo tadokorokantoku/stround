@@ -1,9 +1,14 @@
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
-import { apiService } from '../services/api';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { apiService } from "../services/api";
 
 export function useTimeline() {
   return useInfiniteQuery({
-    queryKey: ['timeline'],
+    queryKey: ["timeline"],
     queryFn: ({ pageParam = 1 }) => apiService.getTimeline(pageParam, 20),
     getNextPageParam: (lastPage, allPages) => {
       return lastPage?.hasMore ? allPages.length + 1 : undefined;
@@ -16,7 +21,7 @@ export function useTimeline() {
 
 export function usePublicTimeline() {
   return useInfiniteQuery({
-    queryKey: ['timeline', 'public'],
+    queryKey: ["timeline", "public"],
     queryFn: ({ pageParam = 1 }) => apiService.getPublicTimeline(pageParam, 20),
     getNextPageParam: (lastPage, allPages) => {
       return lastPage?.hasMore ? allPages.length + 1 : undefined;
@@ -29,8 +34,9 @@ export function usePublicTimeline() {
 
 export function useUserTimeline(userId: string) {
   return useInfiniteQuery({
-    queryKey: ['timeline', 'user', userId],
-    queryFn: ({ pageParam = 1 }) => apiService.getUserTimeline(userId, pageParam, 20),
+    queryKey: ["timeline", "user", userId],
+    queryFn: ({ pageParam = 1 }) =>
+      apiService.getUserTimeline(userId, pageParam, 20),
     getNextPageParam: (lastPage, allPages) => {
       return lastPage?.hasMore ? allPages.length + 1 : undefined;
     },
@@ -43,8 +49,9 @@ export function useUserTimeline(userId: string) {
 
 export function useUserTracks(userId?: string, categoryId?: string) {
   return useInfiniteQuery({
-    queryKey: ['userTracks', userId, categoryId],
-    queryFn: ({ pageParam = 1 }) => apiService.getUserTracks(userId, categoryId, pageParam, 20),
+    queryKey: ["userTracks", userId, categoryId],
+    queryFn: ({ pageParam = 1 }) =>
+      apiService.getUserTracks(userId, categoryId, pageParam, 20),
     getNextPageParam: (lastPage, allPages) => {
       return lastPage?.tracks?.length === 20 ? allPages.length + 1 : undefined;
     },
@@ -56,7 +63,7 @@ export function useUserTracks(userId?: string, categoryId?: string) {
 
 export function useComments(userTrackId: string) {
   return useQuery({
-    queryKey: ['comments', userTrackId],
+    queryKey: ["comments", userTrackId],
     queryFn: () => apiService.getComments(userTrackId, 1, 50),
     enabled: !!userTrackId,
     staleTime: 2 * 60 * 1000,
@@ -66,7 +73,7 @@ export function useComments(userTrackId: string) {
 
 export function useNotifications() {
   return useQuery({
-    queryKey: ['notifications'],
+    queryKey: ["notifications"],
     queryFn: () => apiService.getNotifications(),
     staleTime: 1 * 60 * 1000, // 1分
     gcTime: 3 * 60 * 1000,
@@ -76,7 +83,7 @@ export function useNotifications() {
 
 export function useUnreadNotificationCount() {
   return useQuery({
-    queryKey: ['notifications', 'unread-count'],
+    queryKey: ["notifications", "unread-count"],
     queryFn: () => apiService.getUnreadNotificationCount(),
     staleTime: 30 * 1000, // 30秒
     gcTime: 2 * 60 * 1000,
@@ -86,7 +93,7 @@ export function useUnreadNotificationCount() {
 
 export function useCategories() {
   return useQuery({
-    queryKey: ['categories'],
+    queryKey: ["categories"],
     queryFn: () => apiService.getCategories(),
     staleTime: 30 * 60 * 1000, // 30分
     gcTime: 60 * 60 * 1000, // 1時間
@@ -95,7 +102,7 @@ export function useCategories() {
 
 export function useSearchTracks(query: string, enabled = true) {
   return useQuery({
-    queryKey: ['tracks', 'search', query],
+    queryKey: ["tracks", "search", query],
     queryFn: () => apiService.searchTracks(query, 20),
     enabled: enabled && query.length > 2,
     staleTime: 10 * 60 * 1000, // 10分
@@ -103,9 +110,9 @@ export function useSearchTracks(query: string, enabled = true) {
   });
 }
 
-export function useNewReleases(limit: number = 20, country: string = 'JP') {
+export function useNewReleases(limit: number = 20, country: string = "JP") {
   return useQuery({
-    queryKey: ['tracks', 'new-releases', country, limit],
+    queryKey: ["tracks", "new-releases", country, limit],
     queryFn: () => apiService.getNewReleases(limit, country),
     staleTime: 30 * 60 * 1000, // 30分
     gcTime: 60 * 60 * 1000, // 1時間
@@ -114,7 +121,7 @@ export function useNewReleases(limit: number = 20, country: string = 'JP') {
 
 export function useFollowCounts(userId: string) {
   return useQuery({
-    queryKey: ['follows', 'counts', userId],
+    queryKey: ["follows", "counts", userId],
     queryFn: () => apiService.getFollowCounts(userId),
     enabled: !!userId,
     staleTime: 3 * 60 * 1000,
@@ -125,103 +132,113 @@ export function useFollowCounts(userId: string) {
 // Mutation hooks
 export function useLikeUserTrack() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (userTrackId: string) => apiService.likeUserTrack(userTrackId),
     onSuccess: () => {
       // タイムラインとユーザートラックのキャッシュを無効化
-      queryClient.invalidateQueries({ queryKey: ['timeline'] });
-      queryClient.invalidateQueries({ queryKey: ['userTracks'] });
+      queryClient.invalidateQueries({ queryKey: ["timeline"] });
+      queryClient.invalidateQueries({ queryKey: ["userTracks"] });
     },
   });
 }
 
 export function useUnlikeUserTrack() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: (userTrackId: string) => apiService.unlikeUserTrack(userTrackId),
+    mutationFn: (userTrackId: string) =>
+      apiService.unlikeUserTrack(userTrackId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['timeline'] });
-      queryClient.invalidateQueries({ queryKey: ['userTracks'] });
+      queryClient.invalidateQueries({ queryKey: ["timeline"] });
+      queryClient.invalidateQueries({ queryKey: ["userTracks"] });
     },
   });
 }
 
 export function useCreateComment() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: ({ userTrackId, content, parentCommentId }: {
+    mutationFn: ({
+      userTrackId,
+      content,
+      parentCommentId,
+    }: {
       userTrackId: string;
       content: string;
       parentCommentId?: string;
     }) => apiService.createComment(userTrackId, content, parentCommentId),
     onSuccess: (_, { userTrackId }) => {
-      queryClient.invalidateQueries({ queryKey: ['comments', userTrackId] });
-      queryClient.invalidateQueries({ queryKey: ['timeline'] });
+      queryClient.invalidateQueries({ queryKey: ["comments", userTrackId] });
+      queryClient.invalidateQueries({ queryKey: ["timeline"] });
     },
   });
 }
 
 export function useCreateUserTrack() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: ({ categoryId, spotifyTrackId, comment }: {
+    mutationFn: ({
+      categoryId,
+      spotifyTrackId,
+      comment,
+    }: {
       categoryId: string;
       spotifyTrackId: string;
       comment?: string;
     }) => apiService.createUserTrack(categoryId, spotifyTrackId, comment),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['timeline'] });
-      queryClient.invalidateQueries({ queryKey: ['userTracks'] });
+      queryClient.invalidateQueries({ queryKey: ["timeline"] });
+      queryClient.invalidateQueries({ queryKey: ["userTracks"] });
     },
   });
 }
 
 export function useFollowUser() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (userId: string) => apiService.followUser(userId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['follows'] });
-      queryClient.invalidateQueries({ queryKey: ['timeline'] });
+      queryClient.invalidateQueries({ queryKey: ["follows"] });
+      queryClient.invalidateQueries({ queryKey: ["timeline"] });
     },
   });
 }
 
 export function useUnfollowUser() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (userId: string) => apiService.unfollowUser(userId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['follows'] });
-      queryClient.invalidateQueries({ queryKey: ['timeline'] });
+      queryClient.invalidateQueries({ queryKey: ["follows"] });
+      queryClient.invalidateQueries({ queryKey: ["timeline"] });
     },
   });
 }
 
 export function useMarkNotificationAsRead() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: (notificationId: string) => apiService.markNotificationAsRead(notificationId),
+    mutationFn: (notificationId: string) =>
+      apiService.markNotificationAsRead(notificationId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
   });
 }
 
 export function useMarkAllNotificationsAsRead() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: () => apiService.markAllNotificationsAsRead(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
   });
 }

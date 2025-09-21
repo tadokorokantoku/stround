@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  StyleSheet, 
-  FlatList, 
-  TouchableOpacity,
+import React, { useState } from "react";
+import {
+  Alert,
+  FlatList,
   RefreshControl,
-  Alert
-} from 'react-native';
-import { 
-  Text, 
-  Card, 
-  Avatar, 
-  IconButton,
-  Button,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import {
   ActivityIndicator,
-  Chip
-} from 'react-native-paper';
-import { useNotifications } from '../../hooks/useNotifications';
+  Avatar,
+  Button,
+  Card,
+  Chip,
+  IconButton,
+  Text,
+} from "react-native-paper";
+import { useNotifications } from "../../hooks/useNotifications";
 
 interface Notification {
   id: string;
@@ -43,7 +43,7 @@ export default function NotificationsScreen() {
     markAsRead,
     markAllAsRead,
   } = useNotifications();
-  
+
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
@@ -55,41 +55,43 @@ export default function NotificationsScreen() {
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'like':
-        return 'heart';
-      case 'comment':
-        return 'comment';
-      case 'reply':
-        return 'reply';
-      case 'follow':
-        return 'account-plus';
+      case "like":
+        return "heart";
+      case "comment":
+        return "comment";
+      case "reply":
+        return "reply";
+      case "follow":
+        return "account-plus";
       default:
-        return 'bell';
+        return "bell";
     }
   };
 
   const getNotificationColor = (type: string) => {
     switch (type) {
-      case 'like':
-        return '#FF6B6B';
-      case 'comment':
-        return '#4ECDC4';
-      case 'reply':
-        return '#45B7D1';
-      case 'follow':
-        return '#96CEB4';
+      case "like":
+        return "#FF6B6B";
+      case "comment":
+        return "#4ECDC4";
+      case "reply":
+        return "#45B7D1";
+      case "follow":
+        return "#96CEB4";
       default:
-        return '#95E1D3';
+        return "#95E1D3";
     }
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    const diffInHours = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60),
+    );
 
     if (diffInHours < 1) {
-      return '今';
+      return "今";
     } else if (diffInHours < 24) {
       return `${diffInHours}時間前`;
     } else {
@@ -99,10 +101,10 @@ export default function NotificationsScreen() {
   };
 
   const renderNotification = ({ item }: { item: Notification }) => (
-    <Card 
+    <Card
       style={[
         styles.notificationCard,
-        !item.is_read && styles.unreadNotification
+        !item.is_read && styles.unreadNotification,
       ]}
     >
       <TouchableOpacity
@@ -112,8 +114,10 @@ export default function NotificationsScreen() {
         <View style={styles.notificationHeader}>
           <Avatar.Image
             size={48}
-            source={{ 
-              uri: item.related_user?.profile_image_url || 'https://via.placeholder.com/48' 
+            source={{
+              uri:
+                item.related_user?.profile_image_url ||
+                "https://via.placeholder.com/48",
             }}
           />
           <View style={styles.notificationMain}>
@@ -135,13 +139,14 @@ export default function NotificationsScreen() {
               )}
             </View>
             <Text style={styles.notificationMessage}>{item.message}</Text>
-            <Text style={styles.notificationTime}>{formatDate(item.created_at)}</Text>
+            <Text style={styles.notificationTime}>
+              {formatDate(item.created_at)}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>
     </Card>
   );
-
 
   if (loading) {
     return (
@@ -195,32 +200,32 @@ export default function NotificationsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#666',
+    color: "#666",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: "#e0e0e0",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   markAllButton: {
     marginLeft: 8,
@@ -229,19 +234,19 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 8,
     fontSize: 14,
-    color: '#666',
-    backgroundColor: '#fff',
+    color: "#666",
+    backgroundColor: "#fff",
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 32,
   },
   emptyText: {
     fontSize: 16,
-    color: '#999',
-    textAlign: 'center',
+    color: "#999",
+    textAlign: "center",
   },
   notificationsList: {
     padding: 16,
@@ -249,32 +254,32 @@ const styles = StyleSheet.create({
   },
   notificationCard: {
     marginBottom: 12,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
   },
   unreadNotification: {
     borderLeftWidth: 4,
-    borderLeftColor: '#2196F3',
-    backgroundColor: '#f8f9ff',
+    borderLeftColor: "#2196F3",
+    backgroundColor: "#f8f9ff",
   },
   notificationContent: {
     padding: 16,
   },
   notificationHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
   },
   notificationMain: {
     flex: 1,
     marginLeft: 12,
   },
   notificationTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 4,
   },
   notificationTypeIcon: {
@@ -283,21 +288,21 @@ const styles = StyleSheet.create({
   },
   unreadChip: {
     height: 24,
-    backgroundColor: '#2196F3',
-    marginLeft: 'auto',
+    backgroundColor: "#2196F3",
+    marginLeft: "auto",
   },
   unreadChipText: {
     fontSize: 12,
-    color: '#fff',
+    color: "#fff",
   },
   notificationMessage: {
     fontSize: 16,
-    color: '#333',
+    color: "#333",
     lineHeight: 22,
     marginBottom: 4,
   },
   notificationTime: {
     fontSize: 12,
-    color: '#999',
+    color: "#999",
   },
 });

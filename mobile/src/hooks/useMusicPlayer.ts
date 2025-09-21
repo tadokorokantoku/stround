@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from "react";
 
 interface Track {
   spotify_id: string;
@@ -33,7 +33,7 @@ export const useMusicPlayer = () => {
   }, []);
 
   const closePlayer = useCallback(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       isPlayerVisible: false,
       isPlaying: false,
@@ -41,7 +41,7 @@ export const useMusicPlayer = () => {
   }, []);
 
   const setIsPlaying = useCallback((playing: boolean) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       isPlaying: playing,
     }));

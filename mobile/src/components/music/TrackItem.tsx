@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Card, Text, IconButton, Surface, Avatar } from 'react-native-paper';
+import React from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Avatar, Card, IconButton, Surface, Text } from "react-native-paper";
 
 interface Track {
   spotify_id: string;
@@ -38,12 +38,12 @@ interface TrackItemProps {
   };
 }
 
-export default function TrackItem({ 
-  userTrack, 
-  onPlay, 
+export default function TrackItem({
+  userTrack,
+  onPlay,
   showCategory = false,
   showUser = false,
-  user 
+  user,
 }: TrackItemProps) {
   const { music, comment, categories } = userTrack;
 
@@ -52,10 +52,10 @@ export default function TrackItem({
   };
 
   const formatDuration = (ms: number | null) => {
-    if (!ms) return '';
+    if (!ms) return "";
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -66,7 +66,7 @@ export default function TrackItem({
           <View style={styles.userSection}>
             <Avatar.Text
               size={32}
-              label={user.username?.charAt(0)?.toUpperCase() || 'U'}
+              label={user.username?.charAt(0)?.toUpperCase() || "U"}
               style={styles.userAvatar}
             />
             <Text style={styles.userName}>
@@ -83,7 +83,10 @@ export default function TrackItem({
         {/* メイントラック情報 */}
         <View style={styles.trackInfo}>
           {/* アルバムアート */}
-          <TouchableOpacity onPress={handlePlay} style={styles.albumArtContainer}>
+          <TouchableOpacity
+            onPress={handlePlay}
+            style={styles.albumArtContainer}
+          >
             <Surface style={styles.albumArt} elevation={2}>
               {music.image_url ? (
                 // TODO: Image componentを使用してアルバムアートを表示
@@ -165,11 +168,11 @@ export default function TrackItem({
         {/* 追加情報 */}
         <View style={styles.metadata}>
           <Text style={styles.timestamp}>
-            {new Date(userTrack.created_at).toLocaleDateString('ja-JP', {
-              month: 'short',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
+            {new Date(userTrack.created_at).toLocaleDateString("ja-JP", {
+              month: "short",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
             })}
           </Text>
           {!music.preview_url && (
@@ -189,8 +192,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   userSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 12,
   },
   userAvatar: {
@@ -198,24 +201,24 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#333',
+    fontWeight: "500",
+    color: "#333",
     flex: 1,
   },
   categoryBadge: {
-    backgroundColor: '#e3f2fd',
+    backgroundColor: "#e3f2fd",
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 12,
   },
   categoryText: {
     fontSize: 12,
-    color: '#1976d2',
-    fontWeight: '500',
+    color: "#1976d2",
+    fontWeight: "500",
   },
   trackInfo: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
   },
   albumArtContainer: {
     marginRight: 12,
@@ -224,24 +227,24 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f0f0f0',
-    position: 'relative',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f0f0f0",
+    position: "relative",
   },
   albumArtPlaceholder: {
     fontSize: 20,
   },
   playOverlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: "rgba(0,0,0,0.5)",
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   trackDetails: {
     flex: 1,
@@ -249,62 +252,62 @@ const styles = StyleSheet.create({
   },
   trackTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 2,
   },
   trackArtist: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginBottom: 1,
   },
   trackAlbum: {
     fontSize: 13,
-    color: '#888',
+    color: "#888",
     marginBottom: 2,
   },
   duration: {
     fontSize: 12,
-    color: '#999',
+    color: "#999",
   },
   inlineCategory: {
     marginTop: 4,
   },
   inlineCategoryText: {
     fontSize: 12,
-    color: '#1976d2',
-    fontWeight: '500',
+    color: "#1976d2",
+    fontWeight: "500",
   },
   comment: {
     fontSize: 13,
-    color: '#555',
+    color: "#555",
     marginTop: 6,
-    fontStyle: 'italic',
+    fontStyle: "italic",
     lineHeight: 18,
   },
   actions: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   playButton: {
     margin: 0,
   },
   metadata: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: 0.5,
-    borderTopColor: '#e0e0e0',
+    borderTopColor: "#e0e0e0",
   },
   timestamp: {
     fontSize: 12,
-    color: '#999',
+    color: "#999",
   },
   noPreview: {
     fontSize: 11,
-    color: '#f44336',
-    backgroundColor: '#ffebee',
+    color: "#f44336",
+    backgroundColor: "#ffebee",
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
